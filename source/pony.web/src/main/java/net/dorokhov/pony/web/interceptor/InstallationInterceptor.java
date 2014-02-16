@@ -44,5 +44,4 @@ public class InstallationInterceptor extends HandlerInterceptorAdapter {
 		
 		return true;
 	}
-
 }

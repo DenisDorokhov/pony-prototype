@@ -3,7 +3,7 @@ package net.dorokhov.pony.core.test.unit;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.dorokhov.pony.core.dao.SqlSplitter;
+import net.dorokhov.pony.core.utility.SqlSplitter;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,5 +38,4 @@ public class TestSqlSplitter {
 
 		Assert.assertArrayEquals(expectedResult.toArray(), result.toArray());
 	}
-
 }

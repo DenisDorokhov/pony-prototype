@@ -33,5 +33,4 @@ public class BaseIntegrationCase {
 			installationService.uninstall();
 		}
 	}
-
 }

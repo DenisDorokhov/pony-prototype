@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.entity;
+package net.dorokhov.pony.core.entity.common;
 
 import java.util.Date;
 
@@ -24,7 +24,7 @@ public class BaseEntityVersioned {
 	}
 
 	public void setCreationDate(Date aCreationDate) {
-		this.creationDate = aCreationDate;
+		creationDate = aCreationDate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -34,7 +34,7 @@ public class BaseEntityVersioned {
 	}
 
 	public void setUpdateDate(Date aUpdateDate) {
-		this.updateDate = aUpdateDate;
+		updateDate = aUpdateDate;
 	}
 
 	@Version
@@ -44,7 +44,7 @@ public class BaseEntityVersioned {
 	}
 
 	public void setGeneration(long aGeneration) {
-		this.generation = aGeneration;
+		generation = aGeneration;
 	}
 
 }

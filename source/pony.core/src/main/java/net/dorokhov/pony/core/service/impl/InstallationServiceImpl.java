@@ -57,5 +57,4 @@ public class InstallationServiceImpl implements InstallationService {
 
 		log.info("Successfully uninstalled.");
 	}
-
 }

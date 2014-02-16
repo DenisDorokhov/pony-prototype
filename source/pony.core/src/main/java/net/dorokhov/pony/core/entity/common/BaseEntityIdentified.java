@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.entity;
+package net.dorokhov.pony.core.entity.common;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -19,7 +19,7 @@ public abstract class BaseEntityIdentified extends BaseEntityVersioned {
 	}
 
 	public void setId(Integer aId) {
-		this.id = aId;
+		id = aId;
 	}
 	
 	@Override
@@ -43,5 +43,4 @@ public abstract class BaseEntityIdentified extends BaseEntityVersioned {
 		
 		return false;
 	}
-
 }

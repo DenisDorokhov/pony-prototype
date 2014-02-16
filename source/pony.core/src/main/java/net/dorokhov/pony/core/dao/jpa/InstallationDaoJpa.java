@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import net.dorokhov.pony.core.dao.InstallationDao;
-import net.dorokhov.pony.core.dao.SqlSplitter;
+import net.dorokhov.pony.core.utility.SqlSplitter;
 import net.dorokhov.pony.core.entity.Installation;
 
 import org.apache.commons.io.IOUtils;
@@ -112,5 +112,4 @@ public class InstallationDaoJpa implements InstallationDao {
 
 		return builder.toString();
 	}
-
 }

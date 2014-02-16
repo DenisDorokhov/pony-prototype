@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.dao;
+package net.dorokhov.pony.core.utility;
 
 import java.io.File;
 import java.io.FileReader;
@@ -195,5 +195,4 @@ public class SqlSplitter {
 
         return aSource.replaceAll(sqlCommentsRegExp, "$1");
     }
-
 }

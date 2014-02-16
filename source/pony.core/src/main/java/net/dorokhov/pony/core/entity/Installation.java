@@ -1,5 +1,7 @@
 package net.dorokhov.pony.core.entity;
 
+import net.dorokhov.pony.core.entity.common.BaseEntityIdentified;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
