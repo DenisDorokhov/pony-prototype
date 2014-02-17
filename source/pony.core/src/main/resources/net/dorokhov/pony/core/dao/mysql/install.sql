@@ -9,12 +9,16 @@ CREATE TABLE song_file (
 
 	path VARCHAR(255) NOT NULL,
 	type VARCHAR(255) NOT NULL,
-
 	size BIGINT NOT NULL,
-	duration BIGINT NOT NULL,
+
+	duration INT NOT NULL,
+	bit_rate INT NOT NULL,
 
 	disc_number INT,
+	disc_count INT,
+
 	track_number INT,
+	track_count INT,
 
 	name VARCHAR(255),
 	artist VARCHAR(255),
@@ -22,6 +26,7 @@ CREATE TABLE song_file (
 
 	year INT,
 
+	UNIQUE(path),
 	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
@@ -51,6 +56,8 @@ CREATE TABLE album (
 	generation BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
+	disc_count INT,
+	track_count INT,
 	year INT,
 
 	artist_id INT NOT NULL,

@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "song_file")
@@ -17,11 +18,17 @@ public class SongFile extends BaseEntityIdentified {
 
 	private Long size;
 
-	private Long duration;
+	private Integer duration;
+
+	private Integer bitRate;
 
 	private Integer discNumber;
 
+	private Integer discCount;
+
 	private Integer trackNumber;
+
+	private Integer trackCount;
 
 	private String name;
 
@@ -31,7 +38,7 @@ public class SongFile extends BaseEntityIdentified {
 
 	private int year;
 
-	@Column(name = "path")
+	@Column(name = "path", unique = true)
 	@NotBlank
 	public String getPath() {
 		return path;
@@ -52,6 +59,7 @@ public class SongFile extends BaseEntityIdentified {
 	}
 
 	@Column(name = "size")
+	@NotNull
 	public Long getSize() {
 		return size;
 	}
@@ -61,12 +69,23 @@ public class SongFile extends BaseEntityIdentified {
 	}
 
 	@Column(name = "duration")
-	public Long getDuration() {
+	@NotNull
+	public Integer getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Long aDuration) {
+	public void setDuration(Integer aDuration) {
 		duration = aDuration;
+	}
+
+	@Column(name = "bit_rate")
+	@NotNull
+	public Integer getBitRate() {
+		return bitRate;
+	}
+
+	public void setBitRate(Integer aBitRate) {
+		bitRate = aBitRate;
 	}
 
 	@Column(name = "disc_number")
@@ -78,6 +97,15 @@ public class SongFile extends BaseEntityIdentified {
 		discNumber = aDiscNumber;
 	}
 
+	@Column(name = "disc_count")
+	public Integer getDiscCount() {
+		return discCount;
+	}
+
+	public void setDiscCount(Integer aDiscCount) {
+		discCount = aDiscCount;
+	}
+
 	@Column(name = "track_number")
 	public Integer getTrackNumber() {
 		return trackNumber;
@@ -85,6 +113,15 @@ public class SongFile extends BaseEntityIdentified {
 
 	public void setTrackNumber(Integer aTrackNumber) {
 		trackNumber = aTrackNumber;
+	}
+
+	@Column(name = "track_count")
+	public Integer getTrackCount() {
+		return trackCount;
+	}
+
+	public void setTrackCount(Integer aTrackCount) {
+		trackCount = aTrackCount;
 	}
 
 	@Column(name = "name")

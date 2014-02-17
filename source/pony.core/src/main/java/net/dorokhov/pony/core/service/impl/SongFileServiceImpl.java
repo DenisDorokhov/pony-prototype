@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 public class SongFileServiceImpl extends AbstractEntityService<SongFile, SongFileDao> implements SongFileService {
 
 	@Override
+	public SongFile getByPath(String aPath) {
+		return dao.findByPath(aPath);
+	}
+
+	@Override
 	protected void normalize(SongFile aSongFile) {
 		if (aSongFile.getName() != null) {
 			aSongFile.setName(aSongFile.getName().trim());

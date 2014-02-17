@@ -14,6 +14,10 @@ public class Album extends BaseEntityIdentified {
 
 	private Integer year;
 
+	private Integer discCount;
+
+	private Integer trackCount;
+
 	private List<Song> songs;
 
 	private Artist artist;
@@ -35,6 +39,24 @@ public class Album extends BaseEntityIdentified {
 
 	public void setYear(Integer aYear) {
 		year = aYear;
+	}
+
+	@Column(name = "disc_count")
+	public Integer getDiscCount() {
+		return discCount;
+	}
+
+	public void setDiscCount(Integer aDiscCount) {
+		discCount = aDiscCount;
+	}
+
+	@Column(name = "track_count")
+	public Integer getTrackCount() {
+		return trackCount;
+	}
+
+	public void setTrackCount(Integer aTrackCount) {
+		trackCount = aTrackCount;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "album")

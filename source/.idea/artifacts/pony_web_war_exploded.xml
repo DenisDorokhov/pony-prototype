@@ -44,6 +44,7 @@
           <element id="library" level="project" name="Maven: javax.validation:validation-api:1.1.0.Final" />
           <element id="library" level="project" name="Maven: com.fasterxml:classmate:1.0.0" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.28" />
+          <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
         </element>
       </element>
     </root>

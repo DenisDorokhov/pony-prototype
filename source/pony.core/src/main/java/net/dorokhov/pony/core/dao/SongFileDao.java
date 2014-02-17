@@ -5,4 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface SongFileDao extends PagingAndSortingRepository<SongFile, Integer> {
 
+	public SongFile findByPath(String aPath);
+
 }

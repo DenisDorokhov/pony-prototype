@@ -27,12 +27,16 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		songFile.setPath("path1");
 		songFile.setType("type1");
-
 		songFile.setSize(1000L);
-		songFile.setDuration(100L);
+
+		songFile.setDuration(100);
+		songFile.setBitRate(2000);
 
 		songFile.setDiscNumber(1);
+		songFile.setDiscCount(2);
+
 		songFile.setTrackNumber(2);
+		songFile.setTrackCount(8);
 
 		songFile.setName("name1");
 		songFile.setArtist("artist1");
@@ -44,6 +48,10 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		checkProperties(songFile);
 
 		songFile = service.getById(songFile.getId());
+
+		checkProperties(songFile);
+
+		songFile = service.getByPath("path1");
 
 		checkProperties(songFile);
 
@@ -80,7 +88,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			assertEquals(e.getConstraintViolations().size(), 2);
+			assertEquals(e.getConstraintViolations().size(), 5);
 		}
 
 		assertTrue(isExceptionThrown);
@@ -95,12 +103,16 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		assertEquals(aSongFile.getPath(), "path1");
 		assertEquals(aSongFile.getType(), "type1");
-
 		assertEquals((long)aSongFile.getSize(), 1000L);
-		assertEquals((long)aSongFile.getDuration(), 100L);
+
+		assertEquals((int)aSongFile.getDuration(), 100);
+		assertEquals((int)aSongFile.getBitRate(), 2000);
 
 		assertEquals((int)aSongFile.getDiscNumber(), 1);
+		assertEquals((int)aSongFile.getDiscCount(), 2);
+
 		assertEquals((int)aSongFile.getTrackNumber(), 2);
+		assertEquals((int)aSongFile.getTrackCount(), 8);
 
 		assertEquals(aSongFile.getName(), "name1");
 		assertEquals(aSongFile.getArtist(), "artist1");

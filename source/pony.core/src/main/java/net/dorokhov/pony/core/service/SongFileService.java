@@ -14,6 +14,8 @@ public interface SongFileService {
 
 	public SongFile getById(Integer aId);
 
+	public SongFile getByPath(String aPath);
+
 	public SongFile save(SongFile aSongFile) throws ConstraintViolationException;
 
 	public void deleteById(Integer aId);
