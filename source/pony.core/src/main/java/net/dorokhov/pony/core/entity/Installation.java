@@ -10,8 +10,6 @@ import javax.persistence.*;
 @Table(name = "installation")
 public class Installation extends BaseEntityIdentified implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	private String version;
 
 	@Column(name = "version")
@@ -22,5 +20,4 @@ public class Installation extends BaseEntityIdentified implements Serializable {
 	public void setVersion(String aVersion) {
 		version = aVersion;
 	}
-
 }

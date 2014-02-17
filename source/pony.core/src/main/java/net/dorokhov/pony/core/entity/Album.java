@@ -4,7 +4,6 @@ import net.dorokhov.pony.core.entity.common.BaseEntityIdentified;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -21,7 +20,6 @@ public class Album extends BaseEntityIdentified {
 
 	@Column(name = "name")
 	@NotBlank
-	@Size(max = 255)
 	public String getName() {
 		return name;
 	}
@@ -48,8 +46,7 @@ public class Album extends BaseEntityIdentified {
 		songs = aSongs;
 	}
 
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "artist_id")
+	@ManyToOne(optional = false)
 	public Artist getArtist() {
 		return artist;
 	}
