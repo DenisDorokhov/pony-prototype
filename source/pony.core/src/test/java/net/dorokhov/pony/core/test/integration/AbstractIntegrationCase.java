@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class BaseIntegrationCase {
+public class AbstractIntegrationCase {
 
 	protected ApplicationContext context;
 

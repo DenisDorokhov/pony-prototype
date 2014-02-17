@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.dao.jpa;
+package net.dorokhov.pony.core.dao.impl;
 
 import java.io.InputStream;
 import java.sql.DatabaseMetaData;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Installation DAO - JPA implementation.
  */
 @Repository
-public class InstallationDaoJpa implements InstallationDao {
+public class InstallationDaoImpl implements InstallationDao {
 
 	private final static String BASE_PACKAGE = "/net/dorokhov/pony/core/dao";
 

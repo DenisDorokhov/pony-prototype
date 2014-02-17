@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd">
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/jpa
+    	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-	<bean id="core.validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-	<bean id="core.dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.username}" />
 	</bean>
 
-	<bean id="core.entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="core.dataSource" />
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan" value="net.dorokhov.pony.core.entity" />
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 		</property>
 		<property name="jpaPropertyMap">
 			<map>
-				<entry key="javax.persistence.validation.factory" value-ref="core.validatorFactory" />
+				<entry key="javax.persistence.validation.factory" value-ref="validatorFactory" />
 			</map>
 		</property>
 	</bean>
 
-	<bean id="core.transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="core.entityManagerFactory" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 	
-	<tx:annotation-driven transaction-manager="core.transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<context:component-scan base-package="net.dorokhov.pony.core" />
+
+	<jpa:repositories base-package="net.dorokhov.pony.core.dao" />
 
 </beans>

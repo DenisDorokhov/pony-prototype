@@ -33,7 +33,7 @@ public abstract class BaseEntityIdentified extends BaseEntityVersioned {
 		if (this == aObj) {
 			return true;
 		}
-		
+
 		if (aObj != null && getId() != null && getClass().equals(aObj.getClass())) {
 			
 			BaseEntityIdentified entity = (BaseEntityIdentified)aObj;

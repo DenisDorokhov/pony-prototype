@@ -13,7 +13,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="" />
         <datasource-mapping>
-          <factory-entry name="core.entityManagerFactory" value="core.dataSource" />
+          <factory-entry name="entityManagerFactory" value="dataSource" />
         </datasource-mapping>
       </configuration>
     </facet>
