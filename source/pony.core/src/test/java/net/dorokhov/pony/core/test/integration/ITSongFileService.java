@@ -2,6 +2,7 @@ package net.dorokhov.pony.core.test.integration;
 
 import net.dorokhov.pony.core.entity.SongFile;
 import net.dorokhov.pony.core.service.SongFileService;
+import net.dorokhov.pony.core.test.AbstractIntegrationCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
@@ -94,7 +95,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		songFile.setSize(1000L);
 
 		songFile.setDuration(100);
-		songFile.setBitRate(2000);
+		songFile.setBitRate(2000L);
 
 		songFile.setDiscNumber(1);
 		songFile.setDiscCount(2);
@@ -122,7 +123,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertEquals((long)aSongFile.getSize(), 1000L);
 
 		assertEquals((int)aSongFile.getDuration(), 100);
-		assertEquals((int)aSongFile.getBitRate(), 2000);
+		assertEquals((long)aSongFile.getBitRate(), 2000L);
 
 		assertEquals((int)aSongFile.getDiscNumber(), 1);
 		assertEquals((int)aSongFile.getDiscCount(), 2);

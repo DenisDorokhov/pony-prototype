@@ -12,7 +12,7 @@ CREATE TABLE song_file (
 	size BIGINT NOT NULL,
 
 	duration INT NOT NULL,
-	bit_rate INT NOT NULL,
+	bit_rate BIGINT NOT NULL,
 
 	disc_number INT,
 	disc_count INT,

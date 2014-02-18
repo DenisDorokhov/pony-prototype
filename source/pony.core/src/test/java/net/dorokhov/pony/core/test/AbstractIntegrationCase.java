@@ -1,20 +1,18 @@
-package net.dorokhov.pony.core.test.integration;
+package net.dorokhov.pony.core.test;
 
 import net.dorokhov.pony.core.service.InstallationService;
-
-import org.junit.After;
-import org.junit.Before;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class AbstractIntegrationCase {
+public class AbstractIntegrationCase extends AbstractCase {
 
 	protected ApplicationContext context;
 
 	protected InstallationService installationService;
 
-	@Before
 	public void baseSetUp() throws Exception {
+
+		super.baseSetUp();
 
 		context = new ClassPathXmlApplicationContext("context.xml");
 
@@ -27,8 +25,10 @@ public class AbstractIntegrationCase {
 		installationService.install();
 	}
 
-	@After
 	public void baseTearDown() throws Exception {
+
+		super.baseTearDown();
+
 		if (installationService.getInstallation() != null) {
 			installationService.uninstall();
 		}

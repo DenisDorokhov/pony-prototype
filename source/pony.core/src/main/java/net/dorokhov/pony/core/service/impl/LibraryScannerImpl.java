@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.*;
 
 @Service
 public class LibraryScannerImpl implements LibraryScanner {
 
-	private final static int NUMBER_OF_THREADS = 6;
+	private final static int NUMBER_OF_THREADS = 4;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -34,6 +35,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 	@Override
 	public Result scan(Iterable<File> aFiles) {
 
+		log.info("scanning library {}", aFiles);
+
+		long startTime = System.nanoTime();
+
 		LibraryScannerResult result = new LibraryScannerResult();
 
 		Date scanDate = new Date();
@@ -41,7 +46,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
 		for (File file : aFiles) {
-			scanRecursively(file, executor);
+			result.add(scanRecursively(file, executor));
 		}
 
 		executor.shutdown();
@@ -56,7 +61,23 @@ public class LibraryScannerImpl implements LibraryScanner {
 			throw new RuntimeException(e);
 		}
 
+		long endTime = System.nanoTime();
+
+		result.setDuration(endTime - startTime);
+
+		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds", aFiles, result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getDuration() / 1000000000.0);
+
 		return result;
+	}
+
+	@Override
+	public Result scan(File aFile) {
+
+		ArrayList<File> files = new ArrayList<File>();
+
+		files.add(aFile);
+
+		return scan(files);
 	}
 
 	private LibraryScannerResult scanRecursively(File aFile, ExecutorService aExecutor) {
@@ -71,13 +92,14 @@ public class LibraryScannerImpl implements LibraryScanner {
 				for (File file : subFiles) {
 					if (file.isDirectory()) {
 						result.add(scanRecursively(file, aExecutor));
-						result.incrementScannedFoldersCount();
 					} else {
 						aExecutor.submit(new FileHandler(file));
 						result.incrementScannedFilesCount();
 					}
 				}
 			}
+
+			result.incrementScannedFoldersCount();
 
 		} else {
 			aExecutor.submit(new FileHandler(aFile));
@@ -93,6 +115,8 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		private long scannedFilesCount = 0;
 
+		private long duration = 0;
+
 		@Override
 		public long getScannedFoldersCount() {
 			return scannedFoldersCount;
@@ -103,8 +127,16 @@ public class LibraryScannerImpl implements LibraryScanner {
 			return scannedFilesCount;
 		}
 
+		public long getDuration() {
+			return duration;
+		}
+
+		public void setDuration(long aDuration) {
+			duration = aDuration;
+		}
+
 		public void incrementScannedFoldersCount() {
-			scannedFilesCount++;
+			scannedFoldersCount++;
 		}
 
 		public void incrementScannedFilesCount() {
@@ -133,31 +165,54 @@ public class LibraryScannerImpl implements LibraryScanner {
 			AudioHeader header = file.getAudioHeader();
 			Tag tag = file.getTag();
 
-			SongFile songFile = songFileService.getByPath(target.getAbsolutePath());
+			SongFile songFile = null;
 
-			if (songFile == null) {
-				songFile = new SongFile();
+			try {
+
+				songFile = songFileService.getByPath(target.getAbsolutePath());
+
+				if (songFile == null) {
+					songFile = new SongFile();
+				}
+
+				songFile.setPath(target.getAbsolutePath());
+				songFile.setType(header.getFormat());
+				songFile.setSize(target.length());
+
+				songFile.setDuration(header.getTrackLength());
+				songFile.setBitRate(header.getBitRateAsNumber());
+
+				songFile.setDiscNumber(parseIntTag(tag, FieldKey.DISC_NO));
+				songFile.setDiscCount(parseIntTag(tag, FieldKey.DISC_TOTAL));
+
+				songFile.setTrackNumber(parseIntTag(tag, FieldKey.TRACK));
+				songFile.setTrackCount(parseIntTag(tag, FieldKey.TRACK_TOTAL));
+
+				songFile.setName(tag.getFirst(FieldKey.TITLE));
+				songFile.setAlbum(tag.getFirst(FieldKey.ALBUM));
+				songFile.setArtist(tag.getFirst(FieldKey.ARTIST));
+				songFile.setYear(Integer.valueOf(tag.getFirst(FieldKey.YEAR)));
+
+				songFile = songFileService.save(songFile);
+
+				log.debug("File [{}] successfully scanned.", target.getAbsolutePath());
+
+			} catch (Exception e) {
+				log.error("File [{}] could not be scanned.", target.getAbsolutePath(), e);
 			}
 
-			songFile.setPath(target.getAbsolutePath());
-			songFile.setType(header.getFormat());
-
-			songFile.setSize(target.length());
-			songFile.setDuration(header.getTrackLength());
-
-			songFile.setDiscNumber(Integer.valueOf(tag.getFirst(FieldKey.DISC_NO)));
-			songFile.setTrackNumber(Integer.valueOf(tag.getFirst(FieldKey.TRACK)));
-
-			songFile.setName(tag.getFirst(FieldKey.TITLE));
-			songFile.setAlbum(tag.getFirst(FieldKey.ALBUM));
-			songFile.setArtist(tag.getFirst(FieldKey.ARTIST));
-			songFile.setYear(Integer.valueOf(tag.getFirst(FieldKey.YEAR)));
-
-			songFile = songFileService.save(songFile);
-
-			log.debug("File [{}] successfully scanned.", target.getAbsolutePath());
-
 			return songFile;
+		}
+
+		private Integer parseIntTag(Tag aTag, FieldKey aKey) {
+
+			Integer result = null;
+
+			try {
+				result = Integer.valueOf(aTag.getFirst(aKey));
+			} catch (NumberFormatException e) {}
+
+			return result;
 		}
 	}
 }

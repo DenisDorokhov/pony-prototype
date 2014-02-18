@@ -20,7 +20,7 @@ public class SongFile extends BaseEntityIdentified {
 
 	private Integer duration;
 
-	private Integer bitRate;
+	private Long bitRate;
 
 	private Integer discNumber;
 
@@ -80,11 +80,11 @@ public class SongFile extends BaseEntityIdentified {
 
 	@Column(name = "bit_rate")
 	@NotNull
-	public Integer getBitRate() {
+	public Long getBitRate() {
 		return bitRate;
 	}
 
-	public void setBitRate(Integer aBitRate) {
+	public void setBitRate(Long aBitRate) {
 		bitRate = aBitRate;
 	}
 
