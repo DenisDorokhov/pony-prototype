@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -21,39 +22,21 @@ public class ITSongFileService extends AbstractIntegrationCase {
 	}
 
 	@Test
-	public void testCrud() {
+	public void testCrud() throws Exception {
 
-		SongFile songFile = new SongFile();
-
-		songFile.setPath("path1");
-		songFile.setType("type1");
-		songFile.setSize(1000L);
-
-		songFile.setDuration(100);
-		songFile.setBitRate(2000);
-
-		songFile.setDiscNumber(1);
-		songFile.setDiscCount(2);
-
-		songFile.setTrackNumber(2);
-		songFile.setTrackCount(8);
-
-		songFile.setName("name1");
-		songFile.setArtist("artist1");
-		songFile.setAlbum("album1");
-		songFile.setYear(1986);
+		SongFile songFile = buildSongFile();
 
 		songFile = service.save(songFile);
 
-		checkProperties(songFile);
+		checkSongFile(songFile);
 
 		songFile = service.getById(songFile.getId());
 
-		checkProperties(songFile);
+		checkSongFile(songFile);
 
 		songFile = service.getByPath("path1");
 
-		checkProperties(songFile);
+		checkSongFile(songFile);
 
 		assertEquals((long)service.getCount(), 1L);
 
@@ -63,13 +46,21 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		songFile = songFileList.get(0);
 
-		checkProperties(songFile);
+		checkSongFile(songFile);
 
 		service.deleteById(songFile.getId());
 
 		songFile = service.getById(songFile.getId());
 
 		assertNull(songFile);
+
+		service.save(buildSongFile());
+
+		Thread.sleep(1000L);
+
+		service.deleteByUpdateDateBefore(new Date());
+
+		assertEquals((long)service.getCount(), 0L);
 	}
 
 	@Test
@@ -94,7 +85,32 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertTrue(isExceptionThrown);
 	}
 
-	private void checkProperties(SongFile aSongFile) {
+	private SongFile buildSongFile() {
+
+		SongFile songFile = new SongFile();
+
+		songFile.setPath("path1");
+		songFile.setType("type1");
+		songFile.setSize(1000L);
+
+		songFile.setDuration(100);
+		songFile.setBitRate(2000);
+
+		songFile.setDiscNumber(1);
+		songFile.setDiscCount(2);
+
+		songFile.setTrackNumber(2);
+		songFile.setTrackCount(8);
+
+		songFile.setName("name1");
+		songFile.setArtist("artist1");
+		songFile.setAlbum("album1");
+		songFile.setYear(1986);
+
+		return songFile;
+	}
+
+	private void checkSongFile(SongFile aSongFile) {
 
 		assertNotNull(aSongFile.getId());
 

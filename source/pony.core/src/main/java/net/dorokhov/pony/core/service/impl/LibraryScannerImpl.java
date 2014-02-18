@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.entity.SongFile;
-import net.dorokhov.pony.core.service.SongFileScanner;
+import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.core.service.SongFileService;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -14,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.concurrent.*;
 
 @Service
-public class SongFileScannerImpl implements SongFileScanner {
+public class LibraryScannerImpl implements LibraryScanner {
+
+	private final static int NUMBER_OF_THREADS = 6;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -29,14 +32,16 @@ public class SongFileScannerImpl implements SongFileScanner {
 	}
 
 	@Override
-	public void scanFolders(Iterable<File> aFolders) {
+	public Result scan(Iterable<File> aFiles) {
 
-		// TODO: count number of files scanned
+		LibraryScannerResult result = new LibraryScannerResult();
 
-		ExecutorService executor = Executors.newCachedThreadPool();
+		Date scanDate = new Date();
 
-		for (File folder : aFolders) {
-			scanFolderRecursively(folder, executor);
+		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+		for (File file : aFiles) {
+			scanRecursively(file, executor);
 		}
 
 		executor.shutdown();
@@ -45,31 +50,71 @@ public class SongFileScannerImpl implements SongFileScanner {
 
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-			// TODO: delete not touched files (modification date < scan start)
+			songFileService.deleteByUpdateDateBefore(scanDate);
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+
+		return result;
 	}
 
-	private boolean scanFolderRecursively(File aTarget, ExecutorService aExecutor) {
+	private LibraryScannerResult scanRecursively(File aFile, ExecutorService aExecutor) {
 
-		if (aTarget.isDirectory()) {
+		LibraryScannerResult result = new LibraryScannerResult();
 
-			File[] subFiles = aTarget.listFiles();
+		if (aFile.isDirectory()) {
+
+			File[] subFiles = aFile.listFiles();
 
 			if (subFiles != null) {
 				for (File file : subFiles) {
-					if (!scanFolderRecursively(file, aExecutor)) {
+					if (file.isDirectory()) {
+						result.add(scanRecursively(file, aExecutor));
+						result.incrementScannedFoldersCount();
+					} else {
 						aExecutor.submit(new FileHandler(file));
+						result.incrementScannedFilesCount();
 					}
 				}
 			}
 
-			return true;
+		} else {
+			aExecutor.submit(new FileHandler(aFile));
+			result.incrementScannedFilesCount();
 		}
 
-		return false;
+		return result;
+	}
+
+	private class LibraryScannerResult implements Result {
+
+		private long scannedFoldersCount = 0;
+
+		private long scannedFilesCount = 0;
+
+		@Override
+		public long getScannedFoldersCount() {
+			return scannedFoldersCount;
+		}
+
+		@Override
+		public long getScannedFilesCount() {
+			return scannedFilesCount;
+		}
+
+		public void incrementScannedFoldersCount() {
+			scannedFilesCount++;
+		}
+
+		public void incrementScannedFilesCount() {
+			scannedFilesCount++;
+		}
+
+		public void add(Result aResult) {
+			scannedFoldersCount += aResult.getScannedFoldersCount();
+			scannedFilesCount += aResult.getScannedFilesCount();
+		}
 	}
 
 	private class FileHandler implements Callable<SongFile> {
@@ -88,9 +133,11 @@ public class SongFileScannerImpl implements SongFileScanner {
 			AudioHeader header = file.getAudioHeader();
 			Tag tag = file.getTag();
 
-			// TODO: check if song file exists
+			SongFile songFile = songFileService.getByPath(target.getAbsolutePath());
 
-			SongFile songFile = new SongFile();
+			if (songFile == null) {
+				songFile = new SongFile();
+			}
 
 			songFile.setPath(target.getAbsolutePath());
 			songFile.setType(header.getFormat());
