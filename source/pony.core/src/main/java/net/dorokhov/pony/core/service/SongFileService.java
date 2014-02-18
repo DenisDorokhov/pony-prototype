@@ -21,7 +21,7 @@ public interface SongFileService {
 
 	public void deleteById(Integer aId);
 
-	public void deleteByUpdateDateBefore(Date aDate);
+	public void deleteUpdatedBefore(Date aDate);
 
 	public void validate(SongFile aSongFile) throws ConstraintViolationException;
 

@@ -50,7 +50,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-			songFileService.deleteByUpdateDateBefore(scanDate);
+			songFileService.deleteUpdatedBefore(scanDate);
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

@@ -58,7 +58,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		Thread.sleep(1000L);
 
-		service.deleteByUpdateDateBefore(new Date());
+		service.deleteUpdatedBefore(new Date());
 
 		assertEquals((long)service.getCount(), 0L);
 	}

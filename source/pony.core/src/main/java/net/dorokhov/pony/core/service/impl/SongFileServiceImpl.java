@@ -19,7 +19,7 @@ public class SongFileServiceImpl extends AbstractEntityService<SongFile, SongFil
 
 	@Override
 	@Transactional
-	public void deleteByUpdateDateBefore(Date aDate) {
+	public void deleteUpdatedBefore(Date aDate) {
 		dao.deleteUpdatedBefore(aDate);
 	}
 
