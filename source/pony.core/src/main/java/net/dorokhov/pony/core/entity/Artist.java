@@ -14,7 +14,7 @@ public class Artist extends BaseEntityIdentified {
 
     private List<Album> albums;
 
-	@Column(name = "name")
+	@Column(name = "name", unique = true)
 	@NotBlank
 	public String getName() {
 		return name;

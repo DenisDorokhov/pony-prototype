@@ -26,7 +26,7 @@ CREATE TABLE song_file (
 
 	year INT,
 
-	UNIQUE(path),
+	UNIQUE (path),
 	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
@@ -42,6 +42,7 @@ CREATE TABLE artist (
 
 	name VARCHAR(255) NOT NULL,
 
+	UNIQUE (name),
 	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
@@ -62,6 +63,7 @@ CREATE TABLE album (
 
 	artist_id INT NOT NULL,
 
+	UNIQUE (name, artist_id),
 	PRIMARY KEY (id),
 
 	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -80,6 +82,7 @@ CREATE TABLE song (
 	song_file_id INT NOT NULL,
 	album_id INT NOT NULL,
 
+	UNIQUE (song_file_id),
 	PRIMARY KEY (id),
 
 	FOREIGN KEY (song_file_id) REFERENCES song_file(id) ON DELETE CASCADE ON UPDATE CASCADE,

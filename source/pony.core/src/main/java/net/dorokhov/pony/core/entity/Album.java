@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "album")
+@Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 public class Album extends BaseEntityIdentified {
 
 	private String name;
@@ -69,6 +69,7 @@ public class Album extends BaseEntityIdentified {
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "artist_id")
 	public Artist getArtist() {
 		return artist;
 	}
