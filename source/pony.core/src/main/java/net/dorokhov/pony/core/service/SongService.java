@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.service;
 
 import net.dorokhov.pony.core.entity.Song;
+import net.dorokhov.pony.core.entity.SongFile;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -14,9 +15,10 @@ public interface SongService {
 	public List<Song> getByArtist(Integer aArtistId);
 
 	public Song getById(Integer aId);
-	public Song getByFile(Integer aAlbumId);
+	public Song getByFile(Integer aSongFileId);
 
 	public Song save(Song aSong) throws ConstraintViolationException;
+	public Song save(SongFile aSongFile) throws ConstraintViolationException;
 
 	public void deleteById(Integer aId);
 
