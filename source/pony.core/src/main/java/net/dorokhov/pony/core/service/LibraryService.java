@@ -7,7 +7,7 @@ import java.util.Date;
 
 public interface LibraryService {
 
-	public SongFile importSongFile(File aFile) throws Exception;
+	public SongFile importSongFile(File aFile);
 
 	public void clearSongFilesImportedBefore(Date aDate);
 

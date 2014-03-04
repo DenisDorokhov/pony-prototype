@@ -21,10 +21,13 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 	@Test
 	public void testScan() {
 
-		LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/AC-DC"));
+		for (int i = 0; i < 3; i++) {
 
-		assertTrue(result.getScannedFoldersCount() > 0);
-		assertTrue(result.getScannedFilesCount() > 0);
+			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/AC-DC"));
+
+			assertTrue(result.getScannedFoldersCount() > 0);
+			assertTrue(result.getScannedFilesCount() > 0);
+		}
 	}
 
 }

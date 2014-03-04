@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @Service
 public class LibraryScannerImpl implements LibraryScanner {
 
-	private final static int NUMBER_OF_THREADS = 4;
+	private final static int NUMBER_OF_THREADS = 10;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 

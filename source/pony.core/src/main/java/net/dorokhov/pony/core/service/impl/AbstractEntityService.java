@@ -62,10 +62,10 @@ public abstract class AbstractEntityService<EntityType extends BaseEntityIdentif
 			aEntity.setCreationDate(storedProject.getCreationDate());
 
 		} else {
-
 			aEntity.setCreationDate(currentDate);
-			aEntity.setUpdateDate(currentDate);
 		}
+
+		aEntity.setUpdateDate(currentDate);
 
 		return dao.save(aEntity);
 	}

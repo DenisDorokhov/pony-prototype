@@ -14,7 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.File;
 import java.util.Date;
@@ -25,6 +29,8 @@ public class LibraryServiceImpl implements LibraryService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
 
+	private TransactionTemplate transactionTemplate;
+
 	private SongFileService songFileService;
 
 	private ArtistService artistService;
@@ -32,6 +38,11 @@ public class LibraryServiceImpl implements LibraryService {
 	private AlbumService albumService;
 
 	private SongService songService;
+
+	@Autowired
+	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
+		transactionTemplate = new TransactionTemplate(aTransactionManager);
+	}
 
 	@Autowired
 	public void setSongFileService(SongFileService aSongFileService) {
@@ -54,44 +65,54 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	@Transactional
-	public SongFile importSongFile(File aFile) throws Exception {
+	public SongFile importSongFile(File aFile) {
 
-		AudioFile audioFile = AudioFileIO.read(aFile);
+		final AudioFile audioFile;
 
-		SongFile songFile;
+		try {
+			audioFile = AudioFileIO.read(aFile);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 		synchronized (lock) {
 
-			songFile = importFile(audioFile);
+			return transactionTemplate.execute(new TransactionCallback<SongFile>() {
 
-			if (songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
+				@Override
+				public SongFile doInTransaction(TransactionStatus status) {
 
-				try {
+					SongFile songFile = importFile(audioFile);
 
-					Artist artist = importArtist(songFile);
-					Album album = importAlbum(songFile, artist);
+					if (songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
 
-					importSong(songFile, album);
+						try {
 
-				} catch (Exception e) {
+							Artist artist = importArtist(songFile);
+							Album album = importAlbum(songFile, artist);
 
-					log.error("could not create song entities for song file: {}", songFile, e);
+							importSong(songFile, album);
 
-					throw e;
+						} catch (Exception e) {
+
+							log.error("could not create song entities for song file: {}", songFile, e);
+
+							throw new RuntimeException(e);
+						}
+
+					} else {
+						log.warn("could not create song entities for inconsistent song file: {}", songFile);
+					}
+
+					return songFile;
 				}
-
-			} else {
-				log.warn("could not create song entities for inconsistent song file: {}", songFile);
-			}
+			});
 		}
-
-		return songFile;
 	}
 
 	@Override
 	@Transactional
-	synchronized public void clearSongFilesImportedBefore(Date aDate) {
+	public void clearSongFilesImportedBefore(Date aDate) {
 
 		artistService.deleteUpdatedBefore(aDate);
 		albumService.deleteUpdatedBefore(aDate);
@@ -100,7 +121,7 @@ public class LibraryServiceImpl implements LibraryService {
 		songFileService.deleteUpdatedBefore(aDate);
 	}
 
-	private SongFile importFile(AudioFile aFile) throws Exception {
+	private SongFile importFile(AudioFile aFile) {
 
 		AudioHeader header = aFile.getAudioHeader();
 		Tag tag = aFile.getTag();
