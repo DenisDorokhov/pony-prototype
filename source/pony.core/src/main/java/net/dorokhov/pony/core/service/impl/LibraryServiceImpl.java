@@ -90,8 +90,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 							Artist artist = importArtist(songFile);
 							Album album = importAlbum(songFile, artist);
+							Song song = importSong(songFile, album);
 
-							importSong(songFile, album);
+							log.debug("song {} -> {} -> {} imported", song.getAlbum().getArtist().getName(), song.getAlbum().getName(), song.getFile().getName());
 
 						} catch (Exception e) {
 
@@ -148,6 +149,7 @@ public class LibraryServiceImpl implements LibraryService {
 		songFile.setName(tag.getFirst(FieldKey.TITLE));
 		songFile.setAlbum(tag.getFirst(FieldKey.ALBUM));
 		songFile.setArtist(tag.getFirst(FieldKey.ARTIST));
+
 		songFile.setYear(Integer.valueOf(tag.getFirst(FieldKey.YEAR)));
 
 		songFile = songFileService.save(songFile);

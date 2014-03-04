@@ -30,7 +30,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	@Override
 	public Result scan(Iterable<File> aFiles) {
 
-		log.info("scanning library {}", aFiles);
+		log.info("scanning library {}...", aFiles);
 
 		long startTime = System.nanoTime();
 
