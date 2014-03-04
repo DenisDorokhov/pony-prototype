@@ -2,13 +2,14 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.dao.SongDao;
 import net.dorokhov.pony.core.entity.Song;
-import net.dorokhov.pony.core.entity.SongFile;
 import net.dorokhov.pony.core.service.SongService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
+import java.util.Date;
 import java.util.List;
 
+@Service
 public class SongServiceImpl extends AbstractEntityService<Song, SongDao> implements SongService {
 
 	@Override
@@ -43,10 +44,7 @@ public class SongServiceImpl extends AbstractEntityService<Song, SongDao> implem
 
 	@Override
 	@Transactional
-	public Song save(SongFile aSongFile) throws ConstraintViolationException {
-
-		// TODO: implement
-
-		return null;
+	public void deleteUpdatedBefore(Date aDate) {
+		dao.deleteUpdatedBefore(aDate);
 	}
 }

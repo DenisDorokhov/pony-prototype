@@ -159,4 +159,23 @@ public class SongFile extends BaseEntityIdentified {
 	public void setYear(int aYear) {
 		year = aYear;
 	}
+
+	@Override
+	public String toString() {
+		return "SongFile{" +
+				"path='" + path + '\'' +
+				", type='" + type + '\'' +
+				", size=" + size +
+				", duration=" + duration +
+				", bitRate=" + bitRate +
+				", discNumber=" + discNumber +
+				", discCount=" + discCount +
+				", trackNumber=" + trackNumber +
+				", trackCount=" + trackCount +
+				", name='" + name + '\'' +
+				", artist='" + artist + '\'' +
+				", album='" + album + '\'' +
+				", year=" + year +
+				'}';
+	}
 }
