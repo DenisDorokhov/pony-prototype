@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LibraryScannerImpl implements LibraryScanner {
@@ -36,8 +38,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		LibraryScannerResult result = new LibraryScannerResult();
 
-		Date scanDate = new Date();
-
 		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
 		for (File file : aFiles) {
@@ -50,7 +50,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-			libraryService.clearSongFilesImportedBefore(scanDate);
+			libraryService.cleanUpSongFiles();
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

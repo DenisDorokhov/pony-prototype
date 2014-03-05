@@ -13,6 +13,10 @@ import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -21,10 +25,15 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.File;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
+
+	private static final int SONG_FILE_BUFFER_SIZE = 100;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -113,13 +122,61 @@ public class LibraryServiceImpl implements LibraryService {
 
 	@Override
 	@Transactional
-	public void clearSongFilesImportedBefore(Date aDate) {
+	public void cleanUpSongFiles() {
 
-		artistService.deleteUpdatedBefore(aDate);
-		albumService.deleteUpdatedBefore(aDate);
-		songService.deleteUpdatedBefore(aDate);
+		List<Integer> songFileIds = new ArrayList<Integer>();
+		Set<Integer> albumIds = new HashSet<Integer>();
 
-		songFileService.deleteUpdatedBefore(aDate);
+		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, SONG_FILE_BUFFER_SIZE, Sort.Direction.ASC, "path"));
+
+		do {
+
+			for (SongFile songFile : songFiles.getContent()) {
+
+				File file = new File(songFile.getPath());
+
+				if (!file.exists()) {
+
+					songFileIds.add(songFile.getId());
+
+					Song song = songService.getByFile(songFile.getId());
+
+					if (song != null) {
+
+						albumIds.add(song.getAlbum().getId());
+
+						songService.deleteById(song.getId());
+					}
+				}
+			}
+
+			Pageable nextPageable = songFiles.nextPageable();
+
+			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
+
+		} while (songFiles != null);
+
+		for (Integer id : songFileIds) {
+			songFileService.deleteById(id);
+		}
+
+		for (Integer id : albumIds) {
+
+			Album album = albumService.getById(id);
+
+			if (album != null) {
+
+				Artist artist = album.getArtist();
+
+				if (songService.getCountByAlbum(id) == 0) {
+					albumService.deleteById(id);
+				}
+
+				if (artist != null && songService.getCountByArtist(artist.getId()) == 0) {
+					artistService.deleteById(artist.getId());
+				}
+			}
+		}
 	}
 
 	private SongFile importFile(AudioFile aFile) {

@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -56,12 +55,6 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertNull(songFile);
 
 		service.save(buildSongFile());
-
-		Thread.sleep(1000L);
-
-		service.deleteUpdatedBefore(new Date());
-
-		assertEquals((long)service.getCount(), 0L);
 	}
 
 	@Test

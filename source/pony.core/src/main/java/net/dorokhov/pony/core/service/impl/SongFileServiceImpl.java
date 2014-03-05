@@ -6,8 +6,6 @@ import net.dorokhov.pony.core.service.SongFileService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-
 @Service
 public class SongFileServiceImpl extends AbstractEntityService<SongFile, SongFileDao> implements SongFileService {
 
@@ -15,12 +13,6 @@ public class SongFileServiceImpl extends AbstractEntityService<SongFile, SongFil
 	@Transactional(readOnly = true)
 	public SongFile getByPath(String aPath) {
 		return dao.findByPath(aPath);
-	}
-
-	@Override
-	@Transactional
-	public void deleteUpdatedBefore(Date aDate) {
-		dao.deleteUpdatedBefore(aDate);
 	}
 
 	@Override

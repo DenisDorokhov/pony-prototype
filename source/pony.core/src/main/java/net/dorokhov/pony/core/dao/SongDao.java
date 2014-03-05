@@ -23,7 +23,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM Song s WHERE s.updateDate < ?1")
-	public void deleteUpdatedBefore(Date aDate);
+	@Query("DELETE FROM Song s WHERE s.file.id = ?1")
+	public void deleteByFileId(Integer aSongFileId);
 
 }

@@ -6,7 +6,6 @@ import net.dorokhov.pony.core.service.AlbumService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,12 +27,6 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, AlbumDao> imp
 	@Transactional(readOnly = true)
 	public Album getByArtistAndName(Integer aArtistId, String aName) {
 		return dao.findByArtistIdAndName(aArtistId, aName.trim());
-	}
-
-	@Override
-	@Transactional
-	public void deleteUpdatedBefore(Date aDate) {
-		dao.deleteUpdatedBefore(aDate);
 	}
 
 	@Override

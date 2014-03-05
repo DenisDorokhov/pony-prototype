@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Date;
 
 public interface ArtistService {
 
@@ -19,7 +18,6 @@ public interface ArtistService {
 	public Artist save(Artist aSong) throws ConstraintViolationException;
 
 	public void deleteById(Integer aId);
-	public void deleteUpdatedBefore(Date aDate);
 
 	public void validate(Artist aSong) throws ConstraintViolationException;
 
