@@ -163,19 +163,8 @@ public class SongFile extends BaseEntityIdentified {
 	@Override
 	public String toString() {
 		return "SongFile{" +
-				"path='" + path + '\'' +
-				", type='" + type + '\'' +
-				", size=" + size +
-				", duration=" + duration +
-				", bitRate=" + bitRate +
-				", discNumber=" + discNumber +
-				", discCount=" + discCount +
-				", trackNumber=" + trackNumber +
-				", trackCount=" + trackCount +
-				", name='" + name + '\'' +
-				", artist='" + artist + '\'' +
-				", album='" + album + '\'' +
-				", year=" + year +
+				"id=" + getId() +
+				", path='" + path + '\'' +
 				'}';
 	}
 }

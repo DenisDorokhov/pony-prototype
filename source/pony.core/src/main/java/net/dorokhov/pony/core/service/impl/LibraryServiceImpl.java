@@ -76,48 +76,55 @@ public class LibraryServiceImpl implements LibraryService {
 	@Override
 	public SongFile importSongFile(File aFile) {
 
-		final AudioFile audioFile;
+		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
 
-		try {
-			audioFile = AudioFileIO.read(aFile);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		if (songFile == null || songFile.getUpdateDate().getTime() < aFile.lastModified()) {
 
-		synchronized (lock) {
+			final AudioFile audioFile;
 
-			return transactionTemplate.execute(new TransactionCallback<SongFile>() {
+			try {
+				audioFile = AudioFileIO.read(aFile);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 
-				@Override
-				public SongFile doInTransaction(TransactionStatus status) {
+			synchronized (lock) {
 
-					SongFile songFile = importFile(audioFile);
+				songFile = transactionTemplate.execute(new TransactionCallback<SongFile>() {
 
-					if (songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
+					@Override
+					public SongFile doInTransaction(TransactionStatus status) {
 
-						try {
+						SongFile songFile = importFile(audioFile);
 
-							Artist artist = importArtist(songFile);
-							Album album = importAlbum(songFile, artist);
-							Song song = importSong(songFile, album);
+						if (songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
 
-							log.debug("song {} -> {} -> {} imported", song.getAlbum().getArtist().getName(), song.getAlbum().getName(), song.getFile().getName());
+							try {
 
-						} catch (Exception e) {
+								Artist artist = importArtist(songFile);
+								Album album = importAlbum(songFile, artist);
+								Song song = importSong(songFile, album);
 
-							log.error("could not create song entities for song file: {}", songFile, e);
+								log.debug("song imported: {}", song);
 
-							throw new RuntimeException(e);
+							} catch (Exception e) {
+
+								log.error("could not create song entities for song file: {}", songFile, e);
+
+								throw new RuntimeException(e);
+							}
+
+						} else {
+							log.warn("could not create song entities for inconsistent song file: {}", songFile);
 						}
 
-					} else {
-						log.warn("could not create song entities for inconsistent song file: {}", songFile);
+						return songFile;
 					}
-
-					return songFile;
-				}
-			});
+				});
+			}
 		}
+
+		return songFile;
 	}
 
 	@Override
@@ -139,6 +146,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 					songFileIds.add(songFile.getId());
 
+					log.debug("song file deleted: {}", songFile);
+
 					Song song = songService.getByFile(songFile.getId());
 
 					if (song != null) {
@@ -146,6 +155,8 @@ public class LibraryServiceImpl implements LibraryService {
 						albumIds.add(song.getAlbum().getId());
 
 						songService.deleteById(song.getId());
+
+						log.debug("song deleted: {}", song);
 					}
 				}
 			}
@@ -169,11 +180,17 @@ public class LibraryServiceImpl implements LibraryService {
 				Artist artist = album.getArtist();
 
 				if (songService.getCountByAlbum(id) == 0) {
+
 					albumService.deleteById(id);
+
+					log.debug("album deleted: {}", album);
 				}
 
 				if (artist != null && songService.getCountByArtist(artist.getId()) == 0) {
+
 					artistService.deleteById(artist.getId());
+
+					log.debug("artist deleted: {}", album);
 				}
 			}
 		}

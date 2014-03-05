@@ -77,4 +77,13 @@ public class Album extends BaseEntityIdentified {
 	public void setArtist(Artist aArtist) {
 		artist = aArtist;
 	}
+
+	@Override
+	public String toString() {
+		return "Album{" +
+				"id=" + getId() +
+				", artist='" + artist + '\'' +
+				", name='" + name + '\'' +
+				'}';
+	}
 }

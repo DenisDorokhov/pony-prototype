@@ -32,4 +32,12 @@ public class Artist extends BaseEntityIdentified {
 	public void setAlbums(List<Album> aAlbums) {
 		albums = aAlbums;
 	}
+
+	@Override
+	public String toString() {
+		return "Artist{" +
+				"id=" + getId() +
+				", name='" + name + '\'' +
+				'}';
+	}
 }

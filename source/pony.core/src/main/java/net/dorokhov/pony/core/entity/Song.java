@@ -31,4 +31,14 @@ public class Song extends BaseEntityIdentified {
 	public void setAlbum(Album aAlbum) {
 		album = aAlbum;
 	}
+
+	@Override
+	public String toString() {
+		return "Song{" +
+				"id=" + getId() +
+				", album='" + album + '\'' +
+				", name='" + (file != null ? file.getName() : null) + '\'' +
+				", path='" + (file != null ? file.getPath() : null) + '\'' +
+				'}';
+	}
 }
