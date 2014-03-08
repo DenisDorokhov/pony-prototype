@@ -82,13 +82,13 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		LibraryScannerResult result = new LibraryScannerResult();
 
-		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+		log.info("listing files...");
 
-		log.info("getting files...");
+		List<File> filesToProcess = new ArrayList<File>();
 
 		for (File file : aFiles) {
 			if (file.exists()) {
-				scanRecursively(file, executor, result);
+				scanRecursively(file, filesToProcess, result);
 			} else {
 				log.error("file [{}] does not exist", file.getAbsolutePath());
 			}
@@ -98,19 +98,23 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.info("processing files...");
 
+		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+		for (File file : filesToProcess) {
+			executor.submit(new FileProcessor(file, result));
+		}
+
 		executor.shutdown();
 
 		try {
-
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-
-			log.info("checking files for deletion...");
-
-			libraryService.cleanUpSongFiles();
-
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+
+		log.info("checking files for deletion...");
+
+		libraryService.cleanUpSongFiles();
 
 		long endTime = System.nanoTime();
 
@@ -140,7 +144,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		return scan(files);
 	}
 
-	private void scanRecursively(File aFile, ExecutorService aExecutor, LibraryScannerResult aResult) {
+	private void scanRecursively(File aFile, List<File> aFilesToProcess, LibraryScannerResult aResult) {
 
 		if (aFile.isDirectory()) {
 
@@ -152,9 +156,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 				for (File file : subFiles) {
 					if (file.isDirectory()) {
-						scanRecursively(file, aExecutor, aResult);
+						scanRecursively(file, aFilesToProcess, aResult);
 					} else {
-						aExecutor.submit(new FileProcessor(file, aResult));
+						aFilesToProcess.add(file);
 						aResult.incrementScannedFilesCount();
 					}
 				}
@@ -163,7 +167,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			aResult.incrementScannedFoldersCount();
 
 		} else {
-			aExecutor.submit(new FileProcessor(aFile, aResult));
+			aFilesToProcess.add(aFile);
 			aResult.incrementScannedFilesCount();
 		}
 	}

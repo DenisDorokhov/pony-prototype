@@ -9,7 +9,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.Format;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class ITLibraryScanner extends AbstractIntegrationCase {
 
@@ -18,14 +18,12 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 	private LibraryScanner service;
 
 	private boolean didCallStart;
-	private double lastProgress;
 	private boolean didCallFinish;
 
 	@Before
 	public void setUp() throws Exception {
 
 		didCallStart = false;
-		lastProgress = 0.0;
 		didCallFinish = false;
 
 		service = context.getBean(LibraryScanner.class);
@@ -39,9 +37,6 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 			@Override
 			public void onScanProgress(double aProgress) {
-
-				assertTrue(aProgress >= lastProgress);
-
 				log.info("library scanner did progress {}%", progressFormatter.format(aProgress * 100.0));
 			}
 
@@ -57,7 +52,7 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 		for (int i = 0; i < 2; i++) {
 
-			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/Slayer"));
+			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis"));
 
 			assertTrue(result.getScannedFoldersCount() > 0);
 			assertTrue(result.getScannedFilesCount() > 0);
