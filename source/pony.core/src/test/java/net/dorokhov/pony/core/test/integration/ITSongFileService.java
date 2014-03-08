@@ -127,7 +127,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertEquals(aSongFile.getName(), "name1");
 		assertEquals(aSongFile.getArtist(), "artist1");
 		assertEquals(aSongFile.getAlbum(), "album1");
-		assertEquals(aSongFile.getYear(), 1986);
+		assertEquals((int)aSongFile.getYear(), 1986);
 	}
 
 }

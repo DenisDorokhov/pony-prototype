@@ -74,7 +74,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public SongFile importSongFile(File aFile) {
+	public SongFile importSongFile(final File aFile) {
 
 		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
 
@@ -95,9 +95,18 @@ public class LibraryServiceImpl implements LibraryService {
 					@Override
 					public SongFile doInTransaction(TransactionStatus status) {
 
-						SongFile songFile = importFile(audioFile);
+						SongFile songFile;
 
-						if (songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
+						try {
+							songFile = importFile(audioFile);
+						} catch (Exception e) {
+
+							log.error("could not import song file: {}", aFile.getAbsolutePath(), e);
+
+							throw new RuntimeException(e);
+						}
+
+						if (songFile != null && songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
 
 							try {
 
@@ -214,17 +223,17 @@ public class LibraryServiceImpl implements LibraryService {
 		songFile.setDuration(header.getTrackLength());
 		songFile.setBitRate(header.getBitRateAsNumber());
 
-		songFile.setDiscNumber(parseIntTag(tag, FieldKey.DISC_NO));
-		songFile.setDiscCount(parseIntTag(tag, FieldKey.DISC_TOTAL));
+		songFile.setDiscNumber(parseIntegerTag(tag, FieldKey.DISC_NO));
+		songFile.setDiscCount(parseIntegerTag(tag, FieldKey.DISC_TOTAL));
 
-		songFile.setTrackNumber(parseIntTag(tag, FieldKey.TRACK));
-		songFile.setTrackCount(parseIntTag(tag, FieldKey.TRACK_TOTAL));
+		songFile.setTrackNumber(parseIntegerTag(tag, FieldKey.TRACK));
+		songFile.setTrackCount(parseIntegerTag(tag, FieldKey.TRACK_TOTAL));
 
-		songFile.setName(tag.getFirst(FieldKey.TITLE));
-		songFile.setAlbum(tag.getFirst(FieldKey.ALBUM));
-		songFile.setArtist(tag.getFirst(FieldKey.ARTIST));
+		songFile.setName(parseStringTag(tag, FieldKey.TITLE));
+		songFile.setAlbum(parseStringTag(tag, FieldKey.ALBUM));
+		songFile.setArtist(parseStringTag(tag, FieldKey.ARTIST));
 
-		songFile.setYear(Integer.valueOf(tag.getFirst(FieldKey.YEAR)));
+		songFile.setYear(parseIntegerTag(tag, FieldKey.YEAR));
 
 		songFile = songFileService.save(songFile);
 
@@ -283,7 +292,23 @@ public class LibraryServiceImpl implements LibraryService {
 		return songService.save(song);
 	}
 
-	private Integer parseIntTag(Tag aTag, FieldKey aKey) {
+	private String parseStringTag(Tag aTag, FieldKey aKey) {
+
+		String result = aTag.getFirst(aKey);
+
+		if (result != null) {
+
+			result = result.trim();
+
+			if (result.length() == 0) {
+				result = null;
+			}
+		}
+
+		return result;
+	}
+
+	private Integer parseIntegerTag(Tag aTag, FieldKey aKey) {
 
 		Integer result = null;
 

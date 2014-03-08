@@ -36,7 +36,7 @@ public class SongFile extends BaseEntityIdentified {
 
 	private String album;
 
-	private int year;
+	private Integer year;
 
 	@Column(name = "path", unique = true)
 	@NotBlank
@@ -152,11 +152,11 @@ public class SongFile extends BaseEntityIdentified {
 	}
 
 	@Column(name = "year")
-	public int getYear() {
+	public Integer getYear() {
 		return year;
 	}
 
-	public void setYear(int aYear) {
+	public void setYear(Integer aYear) {
 		year = aYear;
 	}
 
