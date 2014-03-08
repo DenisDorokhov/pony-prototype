@@ -52,7 +52,7 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 		for (int i = 0; i < 2; i++) {
 
-			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis"));
+			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/Slayer"));
 
 			assertTrue(result.getScannedFoldersCount() > 0);
 			assertTrue(result.getScannedFilesCount() > 0);
