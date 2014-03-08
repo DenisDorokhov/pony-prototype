@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class LibraryScannerImpl implements LibraryScanner {
@@ -22,6 +25,12 @@ public class LibraryScannerImpl implements LibraryScanner {
 	private final static int NUMBER_OF_THREADS = 10;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Object lock = new Object();
+
+	private final List<Delegate> delegates = new ArrayList<Delegate>();
+
+	private final AtomicBoolean isScanning = new AtomicBoolean();
+	private final AtomicBoolean isTrackingProgress = new AtomicBoolean();
 
 	private LibraryService libraryService;
 
@@ -31,7 +40,41 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
+	public void addDelegate(Delegate aDelegate) {
+		synchronized (lock) {
+			if (!delegates.contains(aDelegate)) {
+				delegates.add(aDelegate);
+			}
+		}
+	}
+
+	@Override
+	public void removeDelegate(Delegate aDelegate) {
+		synchronized (lock) {
+			delegates.remove(aDelegate);
+		}
+	}
+
+	@Override
+	public boolean isScanning() {
+		return isScanning.get();
+	}
+
+	@Override
 	public Result scan(Iterable<File> aFiles) {
+
+		if (isScanning()) {
+			throw new RuntimeException("Concurrent scan.");
+		}
+
+		isScanning.set(true);
+		isTrackingProgress.set(false);
+
+		synchronized (lock) {
+			for (Delegate next : delegates) {
+				next.onScanStart();
+			}
+		}
 
 		log.info("scanning library {}...", aFiles);
 
@@ -41,13 +84,19 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
+		log.info("getting files...");
+
 		for (File file : aFiles) {
 			if (file.exists()) {
-				result.add(scanRecursively(file, executor));
+				scanRecursively(file, executor, result);
 			} else {
 				log.error("file [{}] does not exist", file.getAbsolutePath());
 			}
 		}
+
+		isTrackingProgress.set(true);
+
+		log.info("processing files...");
 
 		executor.shutdown();
 
@@ -55,7 +104,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-			log.info("cleaning up deleted song files...");
+			log.info("checking files for deletion...");
 
 			libraryService.cleanUpSongFiles();
 
@@ -68,6 +117,15 @@ public class LibraryScannerImpl implements LibraryScanner {
 		result.setDuration(endTime - startTime);
 
 		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds", aFiles, result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getDuration() / 1000000000.0);
+
+		isTrackingProgress.set(false);
+		isScanning.set(false);
+
+		synchronized (lock) {
+			for (Delegate next : delegates) {
+				next.onScanFinish(result);
+			}
+		}
 
 		return result;
 	}
@@ -82,9 +140,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		return scan(files);
 	}
 
-	private LibraryScannerResult scanRecursively(File aFile, ExecutorService aExecutor) {
-
-		LibraryScannerResult result = new LibraryScannerResult();
+	private void scanRecursively(File aFile, ExecutorService aExecutor, LibraryScannerResult aResult) {
 
 		if (aFile.isDirectory()) {
 
@@ -96,78 +152,95 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 				for (File file : subFiles) {
 					if (file.isDirectory()) {
-						result.add(scanRecursively(file, aExecutor));
+						scanRecursively(file, aExecutor, aResult);
 					} else {
-						aExecutor.submit(new FileHandler(file, libraryService));
-						result.incrementScannedFilesCount();
+						aExecutor.submit(new FileProcessor(file, aResult));
+						aResult.incrementScannedFilesCount();
 					}
 				}
 			}
 
-			result.incrementScannedFoldersCount();
+			aResult.incrementScannedFoldersCount();
 
 		} else {
-			aExecutor.submit(new FileHandler(aFile, libraryService));
-			result.incrementScannedFilesCount();
+			aExecutor.submit(new FileProcessor(aFile, aResult));
+			aResult.incrementScannedFilesCount();
 		}
-
-		return result;
 	}
 
-	private class LibraryScannerResult implements Result {
+	private static class LibraryScannerResult implements Result {
 
-		private long scannedFoldersCount = 0;
-
-		private long scannedFilesCount = 0;
-
-		private long duration = 0;
+		private AtomicLong scannedFoldersCount = new AtomicLong();
+		private AtomicLong scannedFilesCount = new AtomicLong();
+		private AtomicLong processedFilesCount = new AtomicLong();
+		private AtomicLong duration = new AtomicLong();
 
 		@Override
 		public long getScannedFoldersCount() {
-			return scannedFoldersCount;
+			return scannedFoldersCount.get();
 		}
 
 		@Override
 		public long getScannedFilesCount() {
-			return scannedFilesCount;
+			return scannedFilesCount.get();
 		}
 
 		public long getDuration() {
-			return duration;
+			return duration.get();
 		}
 
 		public void setDuration(long aDuration) {
-			duration = aDuration;
+			duration.set(aDuration);
 		}
 
 		public void incrementScannedFoldersCount() {
-			scannedFoldersCount++;
+			scannedFoldersCount.incrementAndGet();
 		}
 
 		public void incrementScannedFilesCount() {
-			scannedFilesCount++;
+			scannedFilesCount.incrementAndGet();
 		}
 
-		public void add(Result aResult) {
-			scannedFoldersCount += aResult.getScannedFoldersCount();
-			scannedFilesCount += aResult.getScannedFilesCount();
+		public void incrementProcessedFilesCount() {
+			processedFilesCount.incrementAndGet();
+		}
+
+		public double getProgress() {
+			return (double) processedFilesCount.get() / scannedFilesCount.get();
 		}
 	}
 
-	private class FileHandler implements Callable<SongFile> {
+	private class FileProcessor implements Callable<SongFile> {
 
 		private File file;
 
-		private LibraryService libraryService;
+		private LibraryScannerResult result;
 
-		private FileHandler(File aFile, LibraryService aLibraryService) {
+		public FileProcessor(File aFile, LibraryScannerResult aResult) {
 			file = aFile;
-			libraryService = aLibraryService;
+			result = aResult;
 		}
 
 		@Override
 		public SongFile call() throws Exception {
-			return libraryService.importSongFile(file);
+
+			SongFile songFile = null;
+
+			try {
+				songFile = libraryService.importSongFile(file);
+			} catch (Exception e) {}
+
+			result.incrementProcessedFilesCount();
+
+			if (isTrackingProgress.get()) {
+				synchronized (lock) {
+					for (Delegate next : delegates) {
+						next.onScanProgress(result.getProgress());
+					}
+				}
+			}
+
+			return songFile;
 		}
 	}
 }

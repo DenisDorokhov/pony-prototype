@@ -26,7 +26,7 @@ import java.util.Set;
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
-	private static final int SONG_FILE_BUFFER_SIZE = 100;
+	private static final int SONG_FILE_BUFFER_SIZE = 300;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
