@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service;
 
-import net.dorokhov.pony.core.entity.SongFile;
+import net.dorokhov.pony.core.domain.SongFile;
 
 import java.io.File;
 

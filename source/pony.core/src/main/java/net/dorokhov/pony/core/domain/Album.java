@@ -1,6 +1,6 @@
-package net.dorokhov.pony.core.entity;
+package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.entity.common.BaseEntityIdentified;
+import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;

@@ -1,12 +1,11 @@
 package net.dorokhov.pony.core.dao;
 
-import net.dorokhov.pony.core.entity.Song;
+import net.dorokhov.pony.core.domain.Song;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 public interface SongDao extends PagingAndSortingRepository<Song, Integer> {

@@ -21,7 +21,7 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 	@Test
 	public void testScan() {
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 
 			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/Slayer"));
 

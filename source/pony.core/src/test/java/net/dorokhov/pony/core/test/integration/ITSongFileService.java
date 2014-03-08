@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.test.integration;
 
-import net.dorokhov.pony.core.entity.SongFile;
+import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.service.SongFileService;
 import net.dorokhov.pony.core.test.AbstractIntegrationCase;
 import org.junit.Before;

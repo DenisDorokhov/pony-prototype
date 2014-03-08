@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service;
 
-import net.dorokhov.pony.core.entity.Song;
+import net.dorokhov.pony.core.domain.Song;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;

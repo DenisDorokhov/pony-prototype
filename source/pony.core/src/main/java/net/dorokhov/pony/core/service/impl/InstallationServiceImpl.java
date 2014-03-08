@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.dao.InstallationDao;
-import net.dorokhov.pony.core.entity.Installation;
+import net.dorokhov.pony.core.domain.Installation;
 import net.dorokhov.pony.core.service.InstallationService;
 
 import org.slf4j.Logger;

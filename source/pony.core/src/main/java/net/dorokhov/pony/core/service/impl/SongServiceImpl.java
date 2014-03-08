@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.dao.SongDao;
-import net.dorokhov.pony.core.entity.Song;
+import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SongService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.test.integration;
 
-import net.dorokhov.pony.core.entity.Installation;
+import net.dorokhov.pony.core.domain.Installation;
 import net.dorokhov.pony.core.service.InstallationService;
 
 import org.junit.After;

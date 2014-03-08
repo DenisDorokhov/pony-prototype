@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.entity.common.BaseEntityIdentified;
+import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
 import net.dorokhov.pony.core.utility.ValidationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

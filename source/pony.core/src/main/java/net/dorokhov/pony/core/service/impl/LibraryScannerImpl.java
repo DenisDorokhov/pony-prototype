@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.entity.SongFile;
+import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.core.service.LibraryService;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,7 +42,11 @@ public class LibraryScannerImpl implements LibraryScanner {
 		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
 		for (File file : aFiles) {
-			result.add(scanRecursively(file, executor));
+			if (file.exists()) {
+				result.add(scanRecursively(file, executor));
+			} else {
+				log.error("file [{}] does not exist", file.getAbsolutePath());
+			}
 		}
 
 		executor.shutdown();
@@ -49,6 +54,8 @@ public class LibraryScannerImpl implements LibraryScanner {
 		try {
 
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+
+			log.info("cleaning up deleted song files...");
 
 			libraryService.cleanUpSongFiles();
 
@@ -84,6 +91,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 			File[] subFiles = aFile.listFiles();
 
 			if (subFiles != null) {
+
+				Arrays.sort(subFiles);
+
 				for (File file : subFiles) {
 					if (file.isDirectory()) {
 						result.add(scanRecursively(file, aExecutor));

@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 import net.dorokhov.pony.core.dao.InstallationDao;
 import net.dorokhov.pony.core.utility.SqlSplitter;
-import net.dorokhov.pony.core.entity.Installation;
+import net.dorokhov.pony.core.domain.Installation;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;

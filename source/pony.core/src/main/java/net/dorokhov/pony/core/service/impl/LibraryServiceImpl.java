@@ -1,15 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.entity.Album;
-import net.dorokhov.pony.core.entity.Artist;
-import net.dorokhov.pony.core.entity.Song;
-import net.dorokhov.pony.core.entity.SongFile;
+import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.AudioHeader;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +15,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +40,8 @@ public class LibraryServiceImpl implements LibraryService {
 	private AlbumService albumService;
 
 	private SongService songService;
+
+	private SongDataReader songDataReader;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -73,17 +68,22 @@ public class LibraryServiceImpl implements LibraryService {
 		songService = aSongService;
 	}
 
+	@Autowired
+	public void setSongDataReader(SongDataReader aSongDataReader) {
+		songDataReader = aSongDataReader;
+	}
+
 	@Override
-	public SongFile importSongFile(final File aFile) {
+	public SongFile importSongFile(File aFile) {
 
 		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
 
 		if (songFile == null || songFile.getUpdateDate().getTime() < aFile.lastModified()) {
 
-			final AudioFile audioFile;
+			final SongData metaData;
 
 			try {
-				audioFile = AudioFileIO.read(aFile);
+				metaData = songDataReader.readSongData(aFile);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -98,10 +98,10 @@ public class LibraryServiceImpl implements LibraryService {
 						SongFile songFile;
 
 						try {
-							songFile = importFile(audioFile);
+							songFile = importSongFile(metaData);
 						} catch (Exception e) {
 
-							log.error("could not import song file: {}", aFile.getAbsolutePath(), e);
+							log.error("could not import song file: {}", metaData.getPath(), e);
 
 							throw new RuntimeException(e);
 						}
@@ -205,37 +205,61 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	private SongFile importFile(AudioFile aFile) {
+	private SongFile importSongFile(SongData aMetaData) {
 
-		AudioHeader header = aFile.getAudioHeader();
-		Tag tag = aFile.getTag();
+		SongFile songFile = songFileService.getByPath(aMetaData.getPath());
 
-		SongFile songFile = songFileService.getByPath(aFile.getFile().getAbsolutePath());
+		boolean shouldSave = false;
 
 		if (songFile == null) {
+
 			songFile = new SongFile();
+
+			songFile.setPath(aMetaData.getPath());
+
+			shouldSave = true;
 		}
 
-		songFile.setPath(aFile.getFile().getAbsolutePath());
-		songFile.setType(header.getFormat());
-		songFile.setSize(aFile.getFile().length());
+		if (songFile.getId() != null) {
+			if (!ObjectUtils.nullSafeEquals(songFile.getSize(), aMetaData.getSize()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aMetaData.getDuration()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aMetaData.getBitRate()) ||
 
-		songFile.setDuration(header.getTrackLength());
-		songFile.setBitRate(header.getBitRateAsNumber());
+				!ObjectUtils.nullSafeEquals(songFile.getDiscNumber(), aMetaData.getDiscNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDiscCount(), aMetaData.getDiscCount()) ||
 
-		songFile.setDiscNumber(parseIntegerTag(tag, FieldKey.DISC_NO));
-		songFile.setDiscCount(parseIntegerTag(tag, FieldKey.DISC_TOTAL));
+				!ObjectUtils.nullSafeEquals(songFile.getTrackNumber(), aMetaData.getTrackNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getTrackCount(), aMetaData.getTrackCount()) ||
 
-		songFile.setTrackNumber(parseIntegerTag(tag, FieldKey.TRACK));
-		songFile.setTrackCount(parseIntegerTag(tag, FieldKey.TRACK_TOTAL));
+				!ObjectUtils.nullSafeEquals(songFile.getName(), aMetaData.getName()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aMetaData.getArtist()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aMetaData.getAlbum()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getYear(), aMetaData.getYear())) {
 
-		songFile.setName(parseStringTag(tag, FieldKey.TITLE));
-		songFile.setAlbum(parseStringTag(tag, FieldKey.ALBUM));
-		songFile.setArtist(parseStringTag(tag, FieldKey.ARTIST));
+				shouldSave = true;
+			}
+		}
 
-		songFile.setYear(parseIntegerTag(tag, FieldKey.YEAR));
+		if (shouldSave) {
 
-		songFile = songFileService.save(songFile);
+			songFile.setType(aMetaData.getType());
+			songFile.setSize(aMetaData.getSize());
+			songFile.setDuration(aMetaData.getDuration());
+			songFile.setBitRate(aMetaData.getBitRate());
+
+			songFile.setDiscNumber(aMetaData.getDiscNumber());
+			songFile.setDiscCount(aMetaData.getDiscCount());
+
+			songFile.setDiscNumber(aMetaData.getTrackNumber());
+			songFile.setDiscCount(aMetaData.getTrackCount());
+
+			songFile.setName(aMetaData.getName());
+			songFile.setArtist(aMetaData.getArtist());
+			songFile.setAlbum(aMetaData.getAlbum());
+			songFile.setYear(aMetaData.getYear());
+
+			songFile = songFileService.save(songFile);
+		}
 
 		return songFile;
 	}
@@ -247,75 +271,79 @@ public class LibraryServiceImpl implements LibraryService {
 		if (artist == null) {
 
 			artist = new Artist();
+
 			artist.setName(aSongFile.getArtist());
+
+			artist = artistService.save(artist);
 		}
 
-		return artistService.save(artist);
+		return artist;
 	}
 
-	public Album importAlbum(SongFile aSongFile, Artist aArtist) {
+	private Album importAlbum(SongFile aSongFile, Artist aArtist) {
 
 		Album album = albumService.getByArtistAndName(aArtist.getId(), aSongFile.getAlbum());
+
+		boolean shouldSave = false;
 
 		if (album == null) {
 
 			album = new Album();
+
 			album.setName(aSongFile.getAlbum());
 			album.setArtist(aArtist);
+
+			shouldSave = true;
 		}
 
-		if (album.getYear() == null) {
+		if (album.getId() != null) {
+			if (!ObjectUtils.nullSafeEquals(album.getYear(), aSongFile.getYear()) ||
+				!ObjectUtils.nullSafeEquals(album.getDiscCount(), aSongFile.getDiscCount()) ||
+				!ObjectUtils.nullSafeEquals(album.getTrackCount(), aSongFile.getTrackCount())) {
+
+				shouldSave = true;
+			}
+		}
+
+		if (shouldSave) {
+
 			album.setYear(aSongFile.getYear());
-		}
-		if (album.getDiscCount() == null) {
 			album.setDiscCount(aSongFile.getDiscCount());
-		}
-		if (album.getTrackCount() == null) {
 			album.setTrackCount(aSongFile.getTrackCount());
+
+			album = albumService.save(album);
 		}
 
-		return albumService.save(album);
+		return album;
 	}
 
 	private Song importSong(SongFile aSongFile, Album aAlbum) {
 
 		Song song = songService.getByFile(aSongFile.getId());
 
+		boolean shouldSave = false;
+
 		if (song == null) {
 
 			song = new Song();
 			song.setFile(aSongFile);
+
+			shouldSave = true;
 		}
 
-		song.setAlbum(aAlbum);
-
-		return songService.save(song);
-	}
-
-	private String parseStringTag(Tag aTag, FieldKey aKey) {
-
-		String result = aTag.getFirst(aKey);
-
-		if (result != null) {
-
-			result = result.trim();
-
-			if (result.length() == 0) {
-				result = null;
+		if (song.getId() != null) {
+			if (!ObjectUtils.nullSafeEquals(song.getAlbum(), aAlbum)) {
+				shouldSave = true;
 			}
 		}
 
-		return result;
-	}
+		if (shouldSave) {
 
-	private Integer parseIntegerTag(Tag aTag, FieldKey aKey) {
+			song.setAlbum(aAlbum);
 
-		Integer result = null;
+			song = songService.save(song);
+		}
 
-		try {
-			result = Integer.valueOf(aTag.getFirst(aKey));
-		} catch (NumberFormatException e) {}
-
-		return result;
+		return song;
 	}
 }

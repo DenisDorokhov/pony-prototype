@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.dao.AlbumDao;
-import net.dorokhov.pony.core.entity.Album;
+import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.service.AlbumService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
