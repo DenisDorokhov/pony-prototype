@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,7 +36,14 @@ public class LibraryScannerImpl implements LibraryScanner {
 	private final AtomicReference<Double> progress = new AtomicReference<Double>();
 	private final AtomicReference<List<File>> scanningFiles = new AtomicReference<List<File>>();
 
+	private final AtomicBoolean isDestroyed = new AtomicBoolean();
+
 	private LibraryService libraryService;
+
+	@PreDestroy
+	public void onPreDestroy() {
+		isDestroyed.set(true);
+	}
 
 	@Autowired
 	public void setLibraryService(LibraryService aLibraryService) {
@@ -286,6 +295,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		@Override
 		public SongFile call() throws Exception {
+
+			if (isDestroyed.get()) {
+				return null;
+			}
 
 			SongFile songFile = null;
 
