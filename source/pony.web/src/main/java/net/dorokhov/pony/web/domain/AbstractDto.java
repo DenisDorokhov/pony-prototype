@@ -1,15 +1,10 @@
-package net.dorokhov.pony.core.domain.common;
+package net.dorokhov.pony.web.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
+public abstract class AbstractDto {
 
-@MappedSuperclass
-public class BaseEntityVersioned {
+	private Integer id;
 
 	private Date creationDate;
 
@@ -17,8 +12,14 @@ public class BaseEntityVersioned {
 
 	private Long generation;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "creation_date")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer aId) {
+		id = aId;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -27,8 +28,6 @@ public class BaseEntityVersioned {
 		creationDate = aCreationDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "update_date")
 	public Date getUpdateDate() {
 		return updateDate;
 	}
@@ -37,8 +36,6 @@ public class BaseEntityVersioned {
 		updateDate = aUpdateDate;
 	}
 
-	@Version
-	@Column(name = "generation")
 	public Long getGeneration() {
 		return generation;
 	}
@@ -46,5 +43,4 @@ public class BaseEntityVersioned {
 	public void setGeneration(Long aGeneration) {
 		generation = aGeneration;
 	}
-
 }

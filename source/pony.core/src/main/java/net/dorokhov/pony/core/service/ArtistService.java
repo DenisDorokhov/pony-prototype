@@ -11,7 +11,7 @@ public interface ArtistService {
 
 	public Long getCount();
 
-	public List getAll();
+	public List<Artist> getAll();
 	public Page<Artist> getAll(Pageable aPageable);
 
 	public Artist getById(Integer aId);
