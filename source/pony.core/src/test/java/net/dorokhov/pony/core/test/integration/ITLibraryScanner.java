@@ -37,7 +37,16 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 			@Override
 			public void onScanProgress(double aProgress) {
+
 				log.info("library scanner did progress {}%", progressFormatter.format(aProgress * 100.0));
+
+				LibraryScanner.Status status = service.getStatus();
+
+				if (status.isScanning()) {
+					if (status.getProgress() < aProgress) {
+						log.error("status progress {} is lower than reported progress {}", status.getProgress(), aProgress);
+					}
+				}
 			}
 
 			@Override

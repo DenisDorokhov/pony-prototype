@@ -1,12 +1,10 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "song")
-public class Song extends BaseEntityIdentified {
+public class Song extends AbstractEntityIdentified {
 
 	private SongFile file;
 

@@ -1,14 +1,12 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
-
 import java.io.Serializable;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "installation")
-public class Installation extends BaseEntityIdentified implements Serializable {
+public class Installation extends AbstractEntityIdentified implements Serializable {
 
 	private String version;
 

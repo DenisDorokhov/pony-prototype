@@ -8,7 +8,7 @@ public interface LibraryScanner {
 
 	public void removeDelegate(Delegate aDelegate);
 
-	public boolean isScanning();
+	public Status getStatus();
 
 	public Result scan(Iterable<File> aFiles);
 
@@ -22,6 +22,13 @@ public interface LibraryScanner {
 
 		public long getDuration();
 
+	}
+
+	public static interface Status {
+
+		public boolean isScanning();
+
+		public double getProgress();
 	}
 
 	public static interface Delegate {

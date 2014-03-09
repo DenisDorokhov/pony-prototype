@@ -17,6 +17,8 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.0.0.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-web:4.0.0.RELEASE" />
           <element id="library" level="project" name="Maven: jstl:jstl:1.2" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" />
           <element id="archive" name="pony.core-1.0-SNAPSHOT.jar">
             <element id="module-output" name="pony.core" />
           </element>

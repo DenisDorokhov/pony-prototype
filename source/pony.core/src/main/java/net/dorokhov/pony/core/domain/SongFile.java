@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "song_file")
-public class SongFile extends BaseEntityIdentified {
+public class SongFile extends AbstractEntityIdentified {
 
 	private String path;
 

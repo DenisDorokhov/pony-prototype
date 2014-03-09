@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class AbstractCase {
 
@@ -12,8 +11,7 @@ public class AbstractCase {
 
 	@Before
 	public void baseSetUp() throws Exception {
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
+
 	}
 
 	@After

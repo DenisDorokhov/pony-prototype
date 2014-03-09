@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -8,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "artist")
-public class Artist extends BaseEntityIdentified {
+public class Artist extends AbstractEntityIdentified {
 
     private String name;
 

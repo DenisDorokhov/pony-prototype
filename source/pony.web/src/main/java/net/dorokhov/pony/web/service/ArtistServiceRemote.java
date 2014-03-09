@@ -11,5 +11,7 @@ public interface ArtistServiceRemote {
 	public List<ArtistDto> getAll();
 
 	public ArtistDto getById(Integer aId);
+	public ArtistDto getByName(String aName);
+	public ArtistDto getByIdOrName(String aNameOrId);
 
 }

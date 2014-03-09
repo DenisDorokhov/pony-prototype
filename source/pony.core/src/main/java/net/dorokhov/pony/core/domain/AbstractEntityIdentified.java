@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.domain.common;
+package net.dorokhov.pony.core.domain;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class BaseEntityIdentified extends BaseEntityVersioned {
+public abstract class AbstractEntityIdentified extends AbstractEntityVersioned {
 
 	private Integer id;
 
@@ -36,7 +36,7 @@ public abstract class BaseEntityIdentified extends BaseEntityVersioned {
 
 		if (aObj != null && getId() != null && getClass().equals(aObj.getClass())) {
 			
-			BaseEntityIdentified entity = (BaseEntityIdentified)aObj;
+			AbstractEntityIdentified entity = (AbstractEntityIdentified)aObj;
 			
 			return getId().equals(entity.getId());
 		}

@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.domain.common;
+package net.dorokhov.pony.core.domain;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public class BaseEntityVersioned {
+public abstract class AbstractEntityVersioned {
 
 	private Date creationDate;
 

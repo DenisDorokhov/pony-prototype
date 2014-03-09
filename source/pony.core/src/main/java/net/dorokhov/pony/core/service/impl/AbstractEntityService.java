@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.domain.common.BaseEntityIdentified;
+import net.dorokhov.pony.core.domain.AbstractEntityIdentified;
 import net.dorokhov.pony.core.utility.ValidationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Date;
 
-public abstract class AbstractEntityService<EntityType extends BaseEntityIdentified, RepositoryType extends PagingAndSortingRepository<EntityType, Integer>> {
+public abstract class AbstractEntityService<EntityType extends AbstractEntityIdentified, RepositoryType extends PagingAndSortingRepository<EntityType, Integer>> {
 
 	protected RepositoryType dao;
 

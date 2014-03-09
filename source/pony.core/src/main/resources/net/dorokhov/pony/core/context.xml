@@ -12,6 +12,10 @@
         http://www.springframework.org/schema/data/jpa
     	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+	<bean id="slf4JBridgeHandler" class="org.slf4j.bridge.SLF4JBridgeHandler" init-method="removeHandlersForRootLogger"/>
+
+	<bean class="org.slf4j.bridge.SLF4JBridgeHandler" init-method="install" depends-on="slf4JBridgeHandler" />
+
 	<bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

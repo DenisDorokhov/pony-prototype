@@ -16,8 +16,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class LibraryScannerImpl implements LibraryScanner {
@@ -29,8 +29,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private final List<Delegate> delegates = new ArrayList<Delegate>();
 
-	private final AtomicBoolean isScanning = new AtomicBoolean();
-	private final AtomicBoolean isTrackingProgress = new AtomicBoolean();
+	private final AtomicReference<Double> progress = new AtomicReference<Double>();
 
 	private LibraryService libraryService;
 
@@ -56,23 +55,29 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	public boolean isScanning() {
-		return isScanning.get();
+	public Status getStatus() {
+
+		Double progressValue = progress.get();
+
+		return new LibraryScannerStatus(progressValue != null, progressValue != null ? progressValue : 0.0);
 	}
 
 	@Override
 	public Result scan(Iterable<File> aFiles) {
 
-		if (isScanning()) {
+		if (progress.get() != null) {
 			throw new RuntimeException("Concurrent scan.");
 		}
 
-		isScanning.set(true);
-		isTrackingProgress.set(false);
+		progress.set(0.0);
 
 		synchronized (lock) {
 			for (Delegate next : delegates) {
-				next.onScanStart();
+				try {
+					next.onScanStart();
+				} catch (Exception e) {
+					log.error("exception thrown when delegating onScanStart", e);
+				}
 			}
 		}
 
@@ -80,9 +85,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		long startTime = System.nanoTime();
 
-		LibraryScannerResult result = new LibraryScannerResult();
-
 		log.info("listing files...");
+
+		LibraryScannerResult result = new LibraryScannerResult();
 
 		List<File> filesToProcess = new ArrayList<File>();
 
@@ -93,8 +98,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 				log.error("file [{}] does not exist", file.getAbsolutePath());
 			}
 		}
-
-		isTrackingProgress.set(true);
 
 		log.info("processing files...");
 
@@ -122,12 +125,15 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds", aFiles, result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getDuration() / 1000000000.0);
 
-		isTrackingProgress.set(false);
-		isScanning.set(false);
+		progress.set(null);
 
 		synchronized (lock) {
 			for (Delegate next : delegates) {
-				next.onScanFinish(result);
+				try {
+					next.onScanFinish(result);
+				} catch (Exception e) {
+					log.error("exception thrown when delegating onScanFinish", e);
+				}
 			}
 		}
 
@@ -189,6 +195,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			return scannedFilesCount.get();
 		}
 
+		@Override
 		public long getDuration() {
 			return duration.get();
 		}
@@ -209,8 +216,30 @@ public class LibraryScannerImpl implements LibraryScanner {
 			processedFilesCount.incrementAndGet();
 		}
 
-		public double getProgress() {
+		public double calculateProgress() {
 			return (double) processedFilesCount.get() / scannedFilesCount.get();
+		}
+	}
+
+	private static class LibraryScannerStatus implements Status {
+
+		private boolean scanning;
+
+		private double progress;
+
+		private LibraryScannerStatus(boolean aScanning, double aProgress) {
+			scanning = aScanning;
+			progress = aProgress;
+		}
+
+		@Override
+		public boolean isScanning() {
+			return scanning;
+		}
+
+		@Override
+		public double getProgress() {
+			return progress;
 		}
 	}
 
@@ -236,10 +265,14 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			result.incrementProcessedFilesCount();
 
-			if (isTrackingProgress.get()) {
-				synchronized (lock) {
-					for (Delegate next : delegates) {
-						next.onScanProgress(result.getProgress());
+			progress.set(result.calculateProgress());
+
+			synchronized (lock) {
+				for (Delegate next : delegates) {
+					try {
+						next.onScanProgress(result.calculateProgress());
+					} catch (Exception e) {
+						log.error("exception thrown when delegating onScanProgress", e);
 					}
 				}
 			}
