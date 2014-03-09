@@ -8,6 +8,6 @@ public class IndexController {
 
 	@RequestMapping("/")
 	public String index() {
-		return "redirect:/api/artistList";
+		return "redirect:/api/artists";
 	}
 }

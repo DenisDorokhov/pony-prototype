@@ -33,7 +33,7 @@ public interface LibraryScanner {
 
 		public List<File> getScanningFiles();
 
-		public double getProgress();
+		public Double getProgress();
 	}
 
 	public static interface Delegate {

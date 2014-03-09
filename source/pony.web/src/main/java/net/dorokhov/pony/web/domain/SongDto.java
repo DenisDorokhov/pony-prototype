@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.domain;
 
-public class SongDto extends AbstractDto {
+public class SongDto extends AbstractEntityDto {
 
 	private String path;
 

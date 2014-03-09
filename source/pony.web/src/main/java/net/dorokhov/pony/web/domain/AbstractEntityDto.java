@@ -1,8 +1,9 @@
 package net.dorokhov.pony.web.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class AbstractDto {
+public abstract class AbstractEntityDto implements Serializable {
 
 	private Integer id;
 

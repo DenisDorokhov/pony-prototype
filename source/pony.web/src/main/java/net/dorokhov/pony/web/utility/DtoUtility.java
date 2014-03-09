@@ -4,11 +4,31 @@ import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.domain.SongFile;
+import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.domain.AlbumDto;
 import net.dorokhov.pony.web.domain.ArtistDto;
 import net.dorokhov.pony.web.domain.SongDto;
+import net.dorokhov.pony.web.domain.StatusDto;
+
+import java.io.File;
 
 public class DtoUtility {
+
+	public static StatusDto statusToDto(LibraryScanner.Status aStatus) {
+
+		StatusDto dto = new StatusDto();
+
+		dto.setScanning(aStatus.isScanning());
+		dto.setProgress(aStatus.getProgress());
+
+		if (aStatus.getScanningFiles() != null) {
+			for (File file : aStatus.getScanningFiles()) {
+				dto.getScanningFiles().add(file.getAbsolutePath());
+			}
+		}
+
+		return dto;
+	}
 
 	public static ArtistDto artistToDto(Artist aArtist) {
 

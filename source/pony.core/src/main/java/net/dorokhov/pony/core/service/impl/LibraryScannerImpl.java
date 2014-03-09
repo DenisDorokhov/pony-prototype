@@ -63,7 +63,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			Double progressValue = progress.get();
 
-			return new LibraryScannerStatus(progressValue != null, scanningFiles.get(), progressValue != null ? progressValue : 0.0);
+			return new LibraryScannerStatus(progressValue != null, scanningFiles.get(), progressValue);
 		}
 	}
 
@@ -249,9 +249,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		private final List<File> scanningFiles;
 
-		private final double progress;
+		private final Double progress;
 
-		private LibraryScannerStatus(boolean aScanning, List<File> aScanningFiles, double aProgress) {
+		private LibraryScannerStatus(boolean aScanning, List<File> aScanningFiles, Double aProgress) {
 			scanning = aScanning;
 			scanningFiles = aScanningFiles != null ? new ArrayList<File>(aScanningFiles) : null;
 			progress = aProgress;
@@ -268,7 +268,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 
 		@Override
-		public double getProgress() {
+		public Double getProgress() {
 			return progress;
 		}
 	}

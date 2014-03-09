@@ -3,7 +3,7 @@ package net.dorokhov.pony.web.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumDto extends AbstractDto {
+public class AlbumDto extends AbstractEntityDto {
 
 	private String name;
 
