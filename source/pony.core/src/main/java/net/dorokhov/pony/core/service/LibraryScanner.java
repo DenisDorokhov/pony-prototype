@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.service;
 
 import java.io.File;
+import java.util.List;
 
 public interface LibraryScanner {
 
@@ -10,11 +11,13 @@ public interface LibraryScanner {
 
 	public Status getStatus();
 
-	public Result scan(Iterable<File> aFiles);
+	public Result scan(List<File> aFiles);
 
 	public Result scan(File aFile);
 
 	public static interface Result {
+
+		public List<File> getScanningFiles();
 
 		public long getScannedFoldersCount();
 
@@ -28,6 +31,8 @@ public interface LibraryScanner {
 
 		public boolean isScanning();
 
+		public List<File> getScanningFiles();
+
 		public double getProgress();
 	}
 
@@ -35,7 +40,7 @@ public interface LibraryScanner {
 
 		public void onScanStart();
 
-		public void onScanProgress(double aProgress);
+		public void onScanProgress(Status aStatus);
 
 		public void onScanFinish(Result aResult);
 	}

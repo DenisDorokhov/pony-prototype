@@ -25,11 +25,14 @@ public class LibraryScannerImpl implements LibraryScanner {
 	private final static int NUMBER_OF_THREADS = 10;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final Object lock = new Object();
+
+	private final Object lockDelegates = new Object();
+	private final Object lockStatus = new Object();
 
 	private final List<Delegate> delegates = new ArrayList<Delegate>();
 
 	private final AtomicReference<Double> progress = new AtomicReference<Double>();
+	private final AtomicReference<List<File>> scanningFiles = new AtomicReference<List<File>>();
 
 	private LibraryService libraryService;
 
@@ -40,7 +43,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	@Override
 	public void addDelegate(Delegate aDelegate) {
-		synchronized (lock) {
+		synchronized (lockDelegates) {
 			if (!delegates.contains(aDelegate)) {
 				delegates.add(aDelegate);
 			}
@@ -49,29 +52,34 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	@Override
 	public void removeDelegate(Delegate aDelegate) {
-		synchronized (lock) {
+		synchronized (lockDelegates) {
 			delegates.remove(aDelegate);
 		}
 	}
 
 	@Override
 	public Status getStatus() {
+		synchronized (lockStatus) {
 
-		Double progressValue = progress.get();
+			Double progressValue = progress.get();
 
-		return new LibraryScannerStatus(progressValue != null, progressValue != null ? progressValue : 0.0);
+			return new LibraryScannerStatus(progressValue != null, scanningFiles.get(), progressValue != null ? progressValue : 0.0);
+		}
 	}
 
 	@Override
-	public Result scan(Iterable<File> aFiles) {
+	public Result scan(List<File> aFiles) {
 
 		if (progress.get() != null) {
 			throw new RuntimeException("Concurrent scan.");
 		}
 
-		progress.set(0.0);
+		synchronized (lockStatus) {
+			progress.set(0.0);
+			scanningFiles.set(aFiles);
+		}
 
-		synchronized (lock) {
+		synchronized (lockDelegates) {
 			for (Delegate next : delegates) {
 				try {
 					next.onScanStart();
@@ -87,7 +95,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.info("listing files...");
 
-		LibraryScannerResult result = new LibraryScannerResult();
+		LibraryScannerResult result = new LibraryScannerResult(aFiles);
 
 		List<File> filesToProcess = new ArrayList<File>();
 
@@ -125,9 +133,12 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds", aFiles, result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getDuration() / 1000000000.0);
 
-		progress.set(null);
+		synchronized (lockStatus) {
+			progress.set(null);
+			scanningFiles.set(null);
+		}
 
-		synchronized (lock) {
+		synchronized (lockDelegates) {
 			for (Delegate next : delegates) {
 				try {
 					next.onScanFinish(result);
@@ -180,10 +191,21 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private static class LibraryScannerResult implements Result {
 
-		private AtomicLong scannedFoldersCount = new AtomicLong();
-		private AtomicLong scannedFilesCount = new AtomicLong();
-		private AtomicLong processedFilesCount = new AtomicLong();
-		private AtomicLong duration = new AtomicLong();
+		private final List<File> scannedFiles;
+
+		private final AtomicLong scannedFoldersCount = new AtomicLong();
+		private final AtomicLong scannedFilesCount = new AtomicLong();
+		private final AtomicLong processedFilesCount = new AtomicLong();
+		private final AtomicLong duration = new AtomicLong();
+
+		private LibraryScannerResult(List<File> aScannedFiles) {
+			scannedFiles = new ArrayList<File>(aScannedFiles);
+		}
+
+		@Override
+		public List<File> getScanningFiles() {
+			return scannedFiles;
+		}
 
 		@Override
 		public long getScannedFoldersCount() {
@@ -198,6 +220,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 		@Override
 		public long getDuration() {
 			return duration.get();
+		}
+
+		public long getProcessedFilesCount() {
+			return processedFilesCount.get();
 		}
 
 		public void setDuration(long aDuration) {
@@ -215,26 +241,30 @@ public class LibraryScannerImpl implements LibraryScanner {
 		public void incrementProcessedFilesCount() {
 			processedFilesCount.incrementAndGet();
 		}
-
-		public double calculateProgress() {
-			return (double) processedFilesCount.get() / scannedFilesCount.get();
-		}
 	}
 
 	private static class LibraryScannerStatus implements Status {
 
-		private boolean scanning;
+		private final boolean scanning;
 
-		private double progress;
+		private final List<File> scanningFiles;
 
-		private LibraryScannerStatus(boolean aScanning, double aProgress) {
+		private final double progress;
+
+		private LibraryScannerStatus(boolean aScanning, List<File> aScanningFiles, double aProgress) {
 			scanning = aScanning;
+			scanningFiles = aScanningFiles != null ? new ArrayList<File>(aScanningFiles) : null;
 			progress = aProgress;
 		}
 
 		@Override
 		public boolean isScanning() {
 			return scanning;
+		}
+
+		@Override
+		public List<File> getScanningFiles() {
+			return scanningFiles;
 		}
 
 		@Override
@@ -265,12 +295,14 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			result.incrementProcessedFilesCount();
 
-			progress.set(result.calculateProgress());
+			synchronized (lockStatus) {
+				progress.set((double) result.getProcessedFilesCount() / result.getScannedFilesCount());
+			}
 
-			synchronized (lock) {
+			synchronized (lockDelegates) {
 				for (Delegate next : delegates) {
 					try {
-						next.onScanProgress(result.calculateProgress());
+						next.onScanProgress(getStatus());
 					} catch (Exception e) {
 						log.error("exception thrown when delegating onScanProgress", e);
 					}
