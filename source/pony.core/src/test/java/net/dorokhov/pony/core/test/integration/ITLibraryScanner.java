@@ -9,6 +9,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.Format;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ITLibraryScanner extends AbstractIntegrationCase {
@@ -19,12 +20,14 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 	private boolean didCallStart;
 	private boolean didCallFinish;
+	private boolean didCallFail;
 
 	@Before
 	public void setUp() throws Exception {
 
 		didCallStart = false;
 		didCallFinish = false;
+		didCallFail = false;
 
 		service = context.getBean(LibraryScanner.class);
 
@@ -44,6 +47,11 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 			public void onScanFinish(LibraryScanner.Result aResult) {
 				didCallFinish = true;
 			}
+
+			@Override
+			public void onScanFail(Exception e) {
+				didCallFail = true;
+			}
 		});
 	}
 
@@ -60,6 +68,7 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 			assertTrue(didCallStart);
 			assertTrue(didCallFinish);
+			assertFalse(didCallFail);
 		}
 	}
 

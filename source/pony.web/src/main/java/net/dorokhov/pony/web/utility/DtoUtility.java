@@ -20,10 +20,11 @@ public class DtoUtility {
 
 		dto.setScanning(aStatus.isScanning());
 		dto.setProgress(aStatus.getProgress());
+		dto.setDescription(aStatus.getDescription());
 
-		if (aStatus.getScanningFiles() != null) {
-			for (File file : aStatus.getScanningFiles()) {
-				dto.getScanningFiles().add(file.getAbsolutePath());
+		if (aStatus.getTargetFiles() != null) {
+			for (File file : aStatus.getTargetFiles()) {
+				dto.getTargetFiles().add(file.getAbsolutePath());
 			}
 		}
 

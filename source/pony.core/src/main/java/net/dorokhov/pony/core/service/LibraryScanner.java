@@ -11,17 +11,17 @@ public interface LibraryScanner {
 
 	public Status getStatus();
 
-	public Result scan(List<File> aFiles);
+	public Result scan(List<File> aTargetFiles);
 
-	public Result scan(File aFile);
+	public Result scan(File aTargetFile);
 
 	public static interface Result {
 
-		public List<File> getScanningFiles();
+		public List<File> getTargetFiles();
 
 		public long getScannedFoldersCount();
-
 		public long getScannedFilesCount();
+		public long getImportedFilesCount();
 
 		public long getDuration();
 
@@ -31,9 +31,9 @@ public interface LibraryScanner {
 
 		public boolean isScanning();
 
-		public List<File> getScanningFiles();
-
-		public Double getProgress();
+		public List<File> getTargetFiles();
+		public String getDescription();
+		public double getProgress();
 	}
 
 	public static interface Delegate {
@@ -43,6 +43,8 @@ public interface LibraryScanner {
 		public void onScanProgress(Status aStatus);
 
 		public void onScanFinish(Result aResult);
+
+		public void onScanFail(Exception e);
 	}
 
 }

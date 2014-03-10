@@ -7,9 +7,11 @@ public class StatusDto {
 
 	private boolean scanning;
 
-	private List<String> scanningFiles;
+	private List<String> targetFiles;
 
-	private Double progress;
+	private String description;
+
+	private double progress;
 
 	public boolean isScanning() {
 		return scanning;
@@ -19,24 +21,32 @@ public class StatusDto {
 		scanning = aScanning;
 	}
 
-	public List<String> getScanningFiles() {
+	public List<String> getTargetFiles() {
 
-		if (scanningFiles == null) {
-			scanningFiles = new ArrayList<String>();
+		if (targetFiles == null) {
+			targetFiles = new ArrayList<String>();
 		}
 
-		return scanningFiles;
+		return targetFiles;
 	}
 
-	public void setScanningFiles(List<String> aScanningFiles) {
-		scanningFiles = aScanningFiles;
+	public void setTargetFiles(List<String> aTargetFiles) {
+		targetFiles = aTargetFiles;
 	}
 
-	public Double getProgress() {
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String aDescription) {
+		description = aDescription;
+	}
+
+	public double getProgress() {
 		return progress;
 	}
 
-	public void setProgress(Double aProgress) {
+	public void setProgress(double aProgress) {
 		progress = aProgress;
 	}
 }
