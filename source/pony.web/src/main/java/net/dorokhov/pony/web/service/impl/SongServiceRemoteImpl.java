@@ -7,6 +7,7 @@ import net.dorokhov.pony.web.service.SongServiceRemote;
 import net.dorokhov.pony.web.utility.DtoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,26 +23,31 @@ public class SongServiceRemoteImpl implements SongServiceRemote {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getCountByAlbum(Integer aAlbumId) {
 		return songService.getCountByAlbum(aAlbumId);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getCountByArtist(Integer aArtistId) {
 		return songService.getCountByArtist(aArtistId);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<SongDto> getByAlbum(Integer aAlbumId) {
 		return songListToDto(songService.getByAlbum(aAlbumId));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<SongDto> getByArtist(Integer aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public SongDto getById(Integer aId) {
 
 		Song song = songService.getById(aId);

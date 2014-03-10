@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +43,19 @@ public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getCountByArtist(Integer aArtistId) {
 		return albumService.getCountByArtist(aArtistId);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<AlbumDto> getByArtist(Integer aArtistId) {
 		return albumListToDto(albumService.getByArtist(aArtistId));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<AlbumDto> getByArtistIdOrName(String aIdOrName) {
 
 		Artist artist = null;
@@ -68,6 +72,7 @@ public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public AlbumDto getById(Integer aId) {
 
 		Album album = albumService.getById(aId);

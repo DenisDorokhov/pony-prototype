@@ -14,11 +14,16 @@ import net.dorokhov.pony.web.service.SongServiceRemote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -55,7 +60,7 @@ public class ApiController {
 		songServiceRemote = aSongServiceRemote;
 	}
 
-	@RequestMapping("/artists")
+	@RequestMapping(value = "/artists", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<List<ArtistDto>> getArtistList() {
 
@@ -68,7 +73,7 @@ public class ApiController {
 		return new ResponseWithResult<List<ArtistDto>>();
 	}
 
-	@RequestMapping("/artist/{idOrName}")
+	@RequestMapping(value = "/artist/{idOrName}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<ArtistDto> getArtist(@PathVariable("idOrName") String aIdOrName) {
 
@@ -81,7 +86,7 @@ public class ApiController {
 		return new ResponseWithResult<ArtistDto>();
 	}
 
-	@RequestMapping("/albums/{idOrName}")
+	@RequestMapping(value = "/albums/{idOrName}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<List<AlbumDto>> getAlbumList(@PathVariable("idOrName") String aIdOrName) {
 
@@ -94,7 +99,7 @@ public class ApiController {
 		return new ResponseWithResult<List<AlbumDto>>();
 	}
 
-	@RequestMapping("/album/{albumId}")
+	@RequestMapping(value = "/album/{albumId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<AlbumDto> getAlbum(@PathVariable("albumId") Integer aAlbumId) {
 
@@ -107,7 +112,7 @@ public class ApiController {
 		return new ResponseWithResult<AlbumDto>();
 	}
 
-	@RequestMapping("/song/{songId}")
+	@RequestMapping(value = "/song/{songId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<SongDto> getSong(@PathVariable("songId") Integer aSongId) {
 
@@ -120,7 +125,28 @@ public class ApiController {
 		return new ResponseWithResult<SongDto>();
 	}
 
-	@RequestMapping("/status")
+	@RequestMapping(value = "/songFile/{songId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getFile(@PathVariable("songId") Integer aSongId) {
+
+		try {
+
+			SongDto song = songServiceRemote.getById(aSongId);
+
+			if (song != null) {
+				return new FileSystemResource(new File(song.getPath()));
+			} else {
+				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			log.error("could not get song file", e);
+		}
+
+		return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	@RequestMapping(value = "/status", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<StatusDto> getStatus() {
 
@@ -133,7 +159,7 @@ public class ApiController {
 		return new ResponseWithResult<StatusDto>();
 	}
 
-	@RequestMapping("/scan")
+	@RequestMapping(value = "/startScanning", method = RequestMethod.GET)
 	@ResponseBody
 	public Response scan() {
 
