@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.SongFile;
+import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.core.service.LibraryService;
 import org.slf4j.Logger;
@@ -71,10 +72,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	public Result scan(List<File> aTargetFiles) {
+	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException {
 
 		if (statusReference.get().isScanning()) {
-			throw new RuntimeException("Concurrent scan.");
+			throw new ConcurrentScanException();
 		}
 
 		statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "preparing", 0.0));
@@ -136,7 +137,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	public Result scan(File aTargetFile) {
+	public Result scan(File aTargetFile) throws ConcurrentScanException {
 
 		ArrayList<File> files = new ArrayList<File>();
 

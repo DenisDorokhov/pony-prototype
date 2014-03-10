@@ -1,5 +1,6 @@
 package net.dorokhov.pony.web.controller;
 
+import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.domain.AlbumDto;
 import net.dorokhov.pony.web.domain.ArtistDto;
 import net.dorokhov.pony.web.domain.SongDto;
@@ -142,6 +143,8 @@ public class ApiController {
 
 			return new Response(true);
 
+		} catch (ConcurrentScanException e) {
+			log.error("library is already being scanned");
 		} catch (Exception e) {
 			log.error("could not run scanning", e);
 		}

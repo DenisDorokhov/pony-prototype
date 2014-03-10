@@ -1,5 +1,6 @@
 package net.dorokhov.pony.web.service.impl;
 
+import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.domain.StatusDto;
 import net.dorokhov.pony.web.service.LibraryServiceRemote;
@@ -26,10 +27,10 @@ public class LibraryServiceRemoteImpl implements LibraryServiceRemote {
 	}
 
 	@Override
-	synchronized public void startScanning() {
+	synchronized public void startScanning() throws ConcurrentScanException {
 
 		if (libraryScanner.getStatus().isScanning()) {
-			throw new RuntimeException("Concurrent scan.");
+			throw new ConcurrentScanException();
 		}
 
 		new Thread(new Runnable() {

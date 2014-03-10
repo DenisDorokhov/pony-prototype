@@ -1,5 +1,7 @@
 package net.dorokhov.pony.core.service;
 
+import net.dorokhov.pony.core.exception.ConcurrentScanException;
+
 import java.io.File;
 import java.util.List;
 
@@ -11,9 +13,9 @@ public interface LibraryScanner {
 
 	public Status getStatus();
 
-	public Result scan(List<File> aTargetFiles);
+	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException;
 
-	public Result scan(File aTargetFile);
+	public Result scan(File aTargetFile) throws ConcurrentScanException;
 
 	public static interface Result {
 

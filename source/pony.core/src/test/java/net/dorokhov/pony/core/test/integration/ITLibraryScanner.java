@@ -56,7 +56,7 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 	}
 
 	@Test
-	public void testScan() {
+	public void testScan() throws Exception {
 
 		for (int i = 0; i < 2; i++) {
 
