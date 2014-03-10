@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,16 +32,20 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private final List<Delegate> delegates = new ArrayList<Delegate>();
 
-	private final AtomicReference<Double> progress = new AtomicReference<Double>();
-	private final AtomicReference<List<File>> scanningFiles = new AtomicReference<List<File>>();
-
-	private final AtomicBoolean isDestroyed = new AtomicBoolean();
+	private final AtomicReference<Double> progressReference = new AtomicReference<Double>();
+	private final AtomicReference<List<File>> scanningFilesReference = new AtomicReference<List<File>>();
+	private final AtomicReference<ExecutorService> executorServiceReference = new AtomicReference<ExecutorService>();
 
 	private LibraryService libraryService;
 
 	@PreDestroy
 	public void onPreDestroy() {
-		isDestroyed.set(true);
+
+		ExecutorService executor = executorServiceReference.get();
+
+		if (executor != null) {
+			executor.shutdownNow();
+		}
 	}
 
 	@Autowired
@@ -70,22 +73,22 @@ public class LibraryScannerImpl implements LibraryScanner {
 	public Status getStatus() {
 		synchronized (lockStatus) {
 
-			Double progressValue = progress.get();
+			Double progressValue = progressReference.get();
 
-			return new LibraryScannerStatus(progressValue != null, scanningFiles.get(), progressValue);
+			return new LibraryScannerStatus(progressValue != null, scanningFilesReference.get(), progressValue);
 		}
 	}
 
 	@Override
 	public Result scan(List<File> aFiles) {
 
-		if (progress.get() != null) {
+		if (progressReference.get() != null) {
 			throw new RuntimeException("Concurrent scan.");
 		}
 
 		synchronized (lockStatus) {
-			progress.set(0.0);
-			scanningFiles.set(aFiles);
+			progressReference.set(0.0);
+			scanningFilesReference.set(aFiles);
 		}
 
 		synchronized (lockDelegates) {
@@ -93,67 +96,42 @@ public class LibraryScannerImpl implements LibraryScanner {
 				try {
 					next.onScanStart();
 				} catch (Exception e) {
-					log.error("exception thrown when delegating onScanStart", e);
+					log.error("exception thrown when delegating onScanStart to {}", next, e);
 				}
 			}
 		}
-
-		log.info("scanning library {}...", aFiles);
-
-		long startTime = System.nanoTime();
-
-		log.info("listing files...");
 
 		LibraryScannerResult result = new LibraryScannerResult(aFiles);
 
-		List<File> filesToProcess = new ArrayList<File>();
-
-		for (File file : aFiles) {
-			if (file.exists()) {
-				scanRecursively(file, filesToProcess, result);
-			} else {
-				log.error("file [{}] does not exist", file.getAbsolutePath());
-			}
-		}
-
-		log.info("processing files...");
-
-		ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
-		for (File file : filesToProcess) {
-			executor.submit(new FileProcessor(file, result));
-		}
-
-		executor.shutdown();
-
 		try {
-			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
 
-		log.info("checking files for deletion...");
+			ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-		libraryService.cleanUpSongFiles();
+			executorServiceReference.set(executor);
 
-		long endTime = System.nanoTime();
+			doScan(aFiles, executor, result);
 
-		result.setDuration(endTime - startTime);
-
-		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds", aFiles, result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getDuration() / 1000000000.0);
-
-		synchronized (lockStatus) {
-			progress.set(null);
-			scanningFiles.set(null);
-		}
-
-		synchronized (lockDelegates) {
-			for (Delegate next : delegates) {
-				try {
-					next.onScanFinish(result);
-				} catch (Exception e) {
-					log.error("exception thrown when delegating onScanFinish", e);
+			synchronized (lockDelegates) {
+				for (Delegate next : delegates) {
+					try {
+						next.onScanFinish(result);
+					} catch (Exception e) {
+						log.error("exception thrown when delegating onScanFinish to {}", next, e);
+					}
 				}
+			}
+
+		} catch (Exception e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+
+			executorServiceReference.set(null);
+
+			synchronized (lockStatus) {
+				progressReference.set(null);
+				scanningFilesReference.set(null);
 			}
 		}
 
@@ -168,6 +146,50 @@ public class LibraryScannerImpl implements LibraryScanner {
 		files.add(aFile);
 
 		return scan(files);
+	}
+
+	private void doScan(List<File> aFiles, ExecutorService aExecutor, LibraryScannerResult aResult) {
+
+		log.info("scanning library {}...", aFiles);
+
+		long startTime = System.nanoTime();
+
+		log.info("listing files...");
+
+		List<File> filesToProcess = new ArrayList<File>();
+
+		for (File file : aFiles) {
+			if (file.exists()) {
+				scanRecursively(file, filesToProcess, aResult);
+			} else {
+				log.error("file [{}] does not exist", file.getAbsolutePath());
+			}
+		}
+
+		log.info("processing files...");
+
+		for (File file : filesToProcess) {
+			aExecutor.submit(new FileProcessor(file, aResult));
+		}
+
+		aExecutor.shutdown();
+
+		try {
+			aExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+		log.info("checking files for deletion...");
+
+		libraryService.cleanUpSongFiles();
+
+		long endTime = System.nanoTime();
+
+		aResult.setDuration(endTime - startTime);
+
+		log.info("library {} ({} folders, {} files) scanned successfully in {} seconds",
+				aFiles, aResult.getScannedFoldersCount(), aResult.getScannedFilesCount(), aResult.getDuration() / 1000000000.0);
 	}
 
 	private void scanRecursively(File aFile, List<File> aFilesToProcess, LibraryScannerResult aResult) {
@@ -296,10 +318,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 		@Override
 		public SongFile call() throws Exception {
 
-			if (isDestroyed.get()) {
-				return null;
-			}
-
 			SongFile songFile = null;
 
 			try {
@@ -309,7 +327,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			result.incrementProcessedFilesCount();
 
 			synchronized (lockStatus) {
-				progress.set((double) result.getProcessedFilesCount() / result.getScannedFilesCount());
+				progressReference.set((double) result.getProcessedFilesCount() / result.getScannedFilesCount());
 			}
 
 			synchronized (lockDelegates) {
