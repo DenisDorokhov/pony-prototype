@@ -14,8 +14,10 @@ import net.dorokhov.pony.web.service.SongServiceRemote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 @Controller
@@ -134,7 +137,16 @@ public class ApiController {
 			SongDto song = songServiceRemote.getById(aSongId);
 
 			if (song != null) {
-				return new FileSystemResource(new File(song.getPath()));
+
+				InputStreamResource stream = new InputStreamResource(new FileInputStream(new File(song.getPath())));
+
+				HttpHeaders headers = new HttpHeaders();
+
+				headers.setContentType(MediaType.parseMediaType(song.getMimeType()));
+				headers.setContentLength(song.getSize());
+
+				return new ResponseEntity<InputStreamResource>(stream, headers, HttpStatus.OK);
+
 			} else {
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 			}

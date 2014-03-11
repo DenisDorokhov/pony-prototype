@@ -63,7 +63,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		SongFile songFile = new SongFile();
 
 		songFile.setPath("");
-		songFile.setType(" ");
+		songFile.setFormat(" ");
 
 		boolean isExceptionThrown = false;
 
@@ -84,7 +84,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		SongFile songFile = new SongFile();
 
 		songFile.setPath("path1");
-		songFile.setType("type1");
+		songFile.setFormat("type1");
 		songFile.setSize(1000L);
 
 		songFile.setDuration(100);
@@ -112,7 +112,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertNotNull(aSongFile.getUpdateDate());
 
 		assertEquals(aSongFile.getPath(), "path1");
-		assertEquals(aSongFile.getType(), "type1");
+		assertEquals(aSongFile.getFormat(), "type1");
 		assertEquals((long)aSongFile.getSize(), 1000L);
 
 		assertEquals((int)aSongFile.getDuration(), 100);

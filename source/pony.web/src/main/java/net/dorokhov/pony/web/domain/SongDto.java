@@ -4,7 +4,9 @@ public class SongDto extends AbstractEntityDto {
 
 	private String path;
 
-	private String type;
+	private String format;
+
+	private String mimeType;
 
 	private Long size;
 
@@ -42,12 +44,20 @@ public class SongDto extends AbstractEntityDto {
 		path = aPath;
 	}
 
-	public String getType() {
-		return type;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setType(String aType) {
-		type = aType;
+	public void setFormat(String aFormat) {
+		format = aFormat;
+	}
+
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(String aMimeType) {
+		mimeType = aMimeType;
 	}
 
 	public Long getSize() {

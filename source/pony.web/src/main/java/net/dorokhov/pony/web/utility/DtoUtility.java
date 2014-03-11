@@ -93,7 +93,8 @@ public class DtoUtility {
 		if (file != null) {
 
 			dto.setPath(file.getPath());
-			dto.setType(file.getType());
+			dto.setFormat(file.getFormat());
+			dto.setMimeType(file.getMimeType());
 			dto.setSize(file.getSize());
 			dto.setDuration(file.getDuration());
 			dto.setBitRate(file.getBitRate());

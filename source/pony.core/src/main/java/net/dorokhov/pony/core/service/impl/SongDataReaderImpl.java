@@ -23,10 +23,17 @@ public class SongDataReaderImpl implements SongDataReader {
 		AudioHeader header = audioFile.getAudioHeader();
 		Tag tag = audioFile.getTag();
 
+		String mimeType = getMimeType(header);
+
+		if (mimeType == null) {
+			throw new Exception("Unsupported file format '" + header.getFormat() + "'.");
+		}
+
 		SongData metaData = new SongData();
 
 		metaData.setPath(audioFile.getFile().getAbsolutePath());
-		metaData.setType(header.getFormat());
+		metaData.setFormat(header.getFormat());
+		metaData.setMimeType(mimeType);
 		metaData.setSize(audioFile.getFile().length());
 		metaData.setDuration(header.getTrackLength());
 		metaData.setBitRate(header.getBitRateAsNumber());
@@ -64,5 +71,16 @@ public class SongDataReaderImpl implements SongDataReader {
 		} catch (NumberFormatException e) {}
 
 		return result;
+	}
+
+	private String getMimeType(AudioHeader aHeader) {
+
+		String mimeType = null;
+
+		if (aHeader.getFormat().equals("MPEG-1 Layer 3")) {
+			mimeType = "audio/mpeg";
+		}
+
+		return mimeType;
 	}
 }

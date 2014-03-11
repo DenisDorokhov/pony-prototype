@@ -221,7 +221,9 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		if (songFile.getId() != null) {
-			if (!ObjectUtils.nullSafeEquals(songFile.getSize(), aMetaData.getSize()) ||
+			if (!ObjectUtils.nullSafeEquals(songFile.getFormat(), aMetaData.getFormat()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getMimeType(), aMetaData.getMimeType()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getSize(), aMetaData.getSize()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aMetaData.getDuration()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aMetaData.getBitRate()) ||
 
@@ -242,7 +244,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (shouldSave) {
 
-			songFile.setType(aMetaData.getType());
+			songFile.setFormat(aMetaData.getFormat());
+			songFile.setMimeType(aMetaData.getMimeType());
 			songFile.setSize(aMetaData.getSize());
 			songFile.setDuration(aMetaData.getDuration());
 			songFile.setBitRate(aMetaData.getBitRate());

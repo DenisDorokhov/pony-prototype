@@ -8,7 +8,8 @@ CREATE TABLE song_file (
 	generation BIGINT NOT NULL,
 
 	path VARCHAR(255) NOT NULL,
-	type VARCHAR(255) NOT NULL,
+	format VARCHAR(255) NOT NULL,
+	mime_type VARCHAR(255) NOT NULL,
 	size BIGINT NOT NULL,
 
 	duration INT NOT NULL,

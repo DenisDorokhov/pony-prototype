@@ -13,7 +13,9 @@ public class SongFile extends AbstractEntityIdentified {
 
 	private String path;
 
-	private String type;
+	private String format;
+
+	private String mimeType;
 
 	private Long size;
 
@@ -47,14 +49,24 @@ public class SongFile extends AbstractEntityIdentified {
 		path = aPath;
 	}
 
-	@Column(name = "type")
+	@Column(name = "format")
 	@NotBlank
-	public String getType() {
-		return type;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setType(String aType) {
-		type = aType;
+	public void setFormat(String aType) {
+		format = aType;
+	}
+
+	@Column(name = "mime_type")
+	@NotBlank
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(String aMimeType) {
+		mimeType = aMimeType;
 	}
 
 	@Column(name = "size")

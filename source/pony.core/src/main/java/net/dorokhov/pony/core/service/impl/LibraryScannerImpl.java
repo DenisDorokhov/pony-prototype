@@ -192,7 +192,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.info("checking files for deletion...");
 
-		statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "deleting", 0.0));
+		statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaning", 0.0));
 
 		libraryService.cleanUpSongFiles();
 
