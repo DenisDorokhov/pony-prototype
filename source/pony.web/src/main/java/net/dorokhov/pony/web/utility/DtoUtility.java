@@ -84,7 +84,7 @@ public class DtoUtility {
 
 			if (aSong.getAlbum().getArtist() != null) {
 				dto.setArtistId(aSong.getAlbum().getArtist().getId());
-				dto.setAlbum(aSong.getAlbum().getArtist().getName());
+				dto.setArtist(aSong.getAlbum().getArtist().getName());
 			}
 		}
 
@@ -98,6 +98,8 @@ public class DtoUtility {
 			dto.setSize(file.getSize());
 			dto.setDuration(file.getDuration());
 			dto.setBitRate(file.getBitRate());
+
+			dto.setName(file.getName());
 
 			dto.setDiscNumber(file.getDiscNumber());
 			dto.setDiscCount(file.getDiscCount());

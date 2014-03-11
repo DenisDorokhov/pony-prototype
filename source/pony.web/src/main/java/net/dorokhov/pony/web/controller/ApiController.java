@@ -11,22 +11,23 @@ import net.dorokhov.pony.web.service.AlbumServiceRemote;
 import net.dorokhov.pony.web.service.ArtistServiceRemote;
 import net.dorokhov.pony.web.service.LibraryServiceRemote;
 import net.dorokhov.pony.web.service.SongServiceRemote;
+import net.dorokhov.pony.web.view.StreamingViewRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -138,14 +139,19 @@ public class ApiController {
 
 			if (song != null) {
 
-				InputStreamResource stream = new InputStreamResource(new FileInputStream(new File(song.getPath())));
+				InputStream stream = new FileInputStream(new File(song.getPath()));
 
-				HttpHeaders headers = new HttpHeaders();
+				StreamingViewRenderer renderer = new StreamingViewRenderer();
 
-				headers.setContentType(MediaType.parseMediaType(song.getMimeType()));
-				headers.setContentLength(song.getSize());
+				HashMap<String, Object> model = new HashMap<String, Object>();
 
-				return new ResponseEntity<InputStreamResource>(stream, headers, HttpStatus.OK);
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, song.getSize());
+				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, song.getName());
+				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, song.getUpdateDate());
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, "audio/mpeg3");
+				model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
+
+				return new ModelAndView(renderer, model);
 
 			} else {
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);

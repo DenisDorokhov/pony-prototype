@@ -16,7 +16,7 @@
 			$("#jquery_jplayer_1").jPlayer({
 				ready: function () {
 					$(this).jPlayer("setMedia", {
-						mp3:"http://localhost:8080/api/songFile/1"
+						mp3:"http://localhost:8080/api/songFile/32"
 					});
 				},
 				swfPath: "js",
