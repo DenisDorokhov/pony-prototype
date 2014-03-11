@@ -60,7 +60,6 @@
 		<url-pattern>/img/*</url-pattern>
 		<url-pattern>/js/*</url-pattern>
 		<url-pattern>/css/*</url-pattern>
-		<url-pattern>/skin/*</url-pattern>
 	</servlet-mapping>
 
 	<jsp-config>

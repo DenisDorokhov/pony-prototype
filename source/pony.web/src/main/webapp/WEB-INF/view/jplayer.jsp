@@ -6,9 +6,9 @@
 	<!-- Website Design By: www.happyworm.com -->
 	<title>Demo : jPlayer as an audio player</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<link href="skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+	<link href="js/jplayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
+	<script type="text/javascript" src="js/jplayer/jquery.jplayer.min.js"></script>
 	<script type="text/javascript">
 		//<![CDATA[
 		$(document).ready(function(){
@@ -16,12 +16,13 @@
 			$("#jquery_jplayer_1").jPlayer({
 				ready: function () {
 					$(this).jPlayer("setMedia", {
-						mp3:"http://localhost:8080/api/songFile/32"
+						mp3:"api/songFile/1"
 					});
 				},
-				swfPath: "js",
+				swfPath: "js/jplayer",
 				supplied: "mp3",
 				wmode: "window",
+				//solution: "flash, html",
 				smoothPlayBar: true,
 				keyEnabled: true
 			});

@@ -176,8 +176,7 @@ public class StreamingViewRenderer extends AbstractView {
 		response.setHeader("Content-Disposition", disposition + ";filename=\"" + fileName + "\"");
 		response.setHeader("Accept-Ranges", "bytes");
 		response.setHeader("ETag", fileName);
-		// TODO: last-modified does not work???
-		//response.setDateHeader("Last-Modified", lastModified);
+		response.setDateHeader("Last-Modified", lastModified);
 		response.setDateHeader("Expires", System.currentTimeMillis() + DEFAULT_EXPIRE_TIME);
 
 		// Send requested file (part(s)) to client ------------------------------------------------

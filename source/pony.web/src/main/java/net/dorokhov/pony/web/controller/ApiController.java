@@ -148,7 +148,7 @@ public class ApiController {
 				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, song.getSize());
 				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, song.getName());
 				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, song.getUpdateDate());
-				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, "audio/mpeg3");
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, song.getMimeType());
 				model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
 
 				return new ModelAndView(renderer, model);
