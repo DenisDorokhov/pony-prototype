@@ -73,7 +73,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			assertEquals(e.getConstraintViolations().size(), 5);
+			assertEquals(e.getConstraintViolations().size(), 6);
 		}
 
 		assertTrue(isExceptionThrown);
@@ -85,6 +85,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		songFile.setPath("path1");
 		songFile.setFormat("type1");
+		songFile.setMimeType("audio/mpeg");
 		songFile.setSize(1000L);
 
 		songFile.setDuration(100);
