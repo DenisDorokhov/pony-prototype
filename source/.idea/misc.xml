@@ -4,6 +4,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="gwt" url="file://$PROJECT_DIR$/pony.web" />
     <file type="web" url="file://$PROJECT_DIR$/pony.web" />
   </component>
   <component name="IdProvider" IDEtalkID="2A0FCF76ABF8417EEFC63631532D2C1C" />

@@ -12,7 +12,7 @@
 	<mvc:annotation-driven />
 
 	<mvc:interceptors>
-		<bean class="net.dorokhov.pony.web.interceptor.InstallationInterceptor" />
+		<bean class="net.dorokhov.pony.web.server.interceptor.InstallationInterceptor" />
 	</mvc:interceptors>
 
 	<bean id="web.viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -20,6 +20,6 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<context:component-scan base-package="net.dorokhov.pony.web" />
+	<context:component-scan base-package="net.dorokhov.pony.web.server" />
 
 </beans>
