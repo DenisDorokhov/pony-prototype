@@ -100,6 +100,7 @@
 		<url-pattern>/img/*</url-pattern>
 		<url-pattern>/js/*</url-pattern>
 		<url-pattern>/css/*</url-pattern>
+		<url-pattern>/pony/*</url-pattern>
 	</servlet-mapping>
 
 	<jsp-config>

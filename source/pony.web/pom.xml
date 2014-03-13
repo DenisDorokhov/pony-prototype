@@ -38,7 +38,6 @@
 				</executions>
 				<configuration>
 					<runTarget>/</runTarget>
-					<webappDirectory>${project.build.directory}/${project.build.finalName}/js</webappDirectory>
 				</configuration>
 			</plugin>
 
