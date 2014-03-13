@@ -7,6 +7,6 @@ public class PonyApplication implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 
-		
+
 	}
 }

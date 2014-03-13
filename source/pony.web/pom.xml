@@ -33,13 +33,11 @@
 						<goals>
 							<goal>compile</goal>
 							<goal>test</goal>
-							<goal>i18n</goal>
-							<goal>generateAsync</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<i18nMessagesBundle>net.dorokhov.pony.web.client.Messages</i18nMessagesBundle>
+					<webappDirectory>${project.build.directory}/${project.build.finalName}/js</webappDirectory>
 				</configuration>
 			</plugin>
 
