@@ -49,7 +49,6 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>SpringDispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>
@@ -59,7 +58,6 @@
 		<servlet-name>albumService</servlet-name>
 		<servlet-class>net.dorokhov.pony.web.server.service.impl.rpc.ClientAlbumServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>albumService</servlet-name>
 		<url-pattern>/rpc/albumService</url-pattern>
@@ -69,7 +67,6 @@
 		<servlet-name>artistService</servlet-name>
 		<servlet-class>net.dorokhov.pony.web.server.service.impl.rpc.ClientArtistServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>artistService</servlet-name>
 		<url-pattern>/rpc/artistService</url-pattern>
@@ -79,7 +76,6 @@
 		<servlet-name>libraryService</servlet-name>
 		<servlet-class>net.dorokhov.pony.web.server.service.impl.rpc.ClientLibraryServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>libraryService</servlet-name>
 		<url-pattern>/rpc/libraryService</url-pattern>
@@ -89,10 +85,18 @@
 		<servlet-name>songService</servlet-name>
 		<servlet-class>net.dorokhov.pony.web.server.service.impl.rpc.ClientSongServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>songService</servlet-name>
 		<url-pattern>/rpc/songService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/pony/junithost/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

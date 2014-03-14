@@ -50,7 +50,7 @@
           <element id="library" level="project" name="Maven: com.fasterxml:classmate:1.0.0" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.28" />
           <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
-          <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.6.0" />
+          <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.5.1" />
         </element>
       </element>
       <element id="gwt-compiler-output" facet="pony.web/gwt/GWT" />
