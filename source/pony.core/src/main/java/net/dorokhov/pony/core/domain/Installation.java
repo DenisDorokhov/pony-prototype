@@ -1,12 +1,12 @@
 package net.dorokhov.pony.core.domain;
 
-import java.io.Serializable;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "installation")
-public class Installation extends AbstractEntityIdentified implements Serializable {
+public class Installation extends AbstractEntityIdentified<Integer> {
 
 	private String version;
 

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "song_file")
-public class SongFile extends AbstractEntityIdentified {
+public class SongFile extends AbstractEntityIdentified<Integer> {
 
 	private String path;
 

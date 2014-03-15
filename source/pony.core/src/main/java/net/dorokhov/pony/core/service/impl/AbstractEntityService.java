@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class AbstractEntityService<EntityType extends AbstractEntityIdentified, RepositoryType extends PagingAndSortingRepository<EntityType, Integer>> {
+public abstract class AbstractEntityService<EntityType extends AbstractEntityIdentified<IdType>, IdType extends Serializable, RepositoryType extends PagingAndSortingRepository<EntityType, IdType>> {
 
 	protected RepositoryType dao;
 
@@ -39,11 +40,12 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntityIde
 	}
 
 	@Transactional(readOnly = true)
-	public EntityType getById(Integer aId) {
+	public EntityType getById(IdType aId) {
 		return dao.findOne(aId);
 	}
 
 	@Transactional
+	@SuppressWarnings("unckecked")
 	public EntityType save(EntityType aEntity) throws ConstraintViolationException {
 
 		validate(aEntity);
@@ -71,7 +73,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntityIde
 	}
 
 	@Transactional
-	public void deleteById(Integer aId) {
+	public void deleteById(IdType aId) {
 		dao.delete(aId);
 	}
 

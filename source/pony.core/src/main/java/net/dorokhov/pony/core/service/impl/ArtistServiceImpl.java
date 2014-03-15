@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class ArtistServiceImpl extends AbstractEntityService<Artist, ArtistDao> implements ArtistService {
+public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, ArtistDao> implements ArtistService {
 
 	@Override
 	@Transactional(readOnly = true)

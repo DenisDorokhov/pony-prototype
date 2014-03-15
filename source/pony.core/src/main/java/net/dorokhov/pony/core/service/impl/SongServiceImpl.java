@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class SongServiceImpl extends AbstractEntityService<Song, SongDao> implements SongService {
+public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDao> implements SongService {
 
 	@Override
 	@Transactional(readOnly = true)

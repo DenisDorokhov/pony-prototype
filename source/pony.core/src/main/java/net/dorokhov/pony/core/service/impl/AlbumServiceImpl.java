@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class AlbumServiceImpl extends AbstractEntityService<Album, AlbumDao> implements AlbumService {
+public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, AlbumDao> implements AlbumService {
 
 	@Override
 	@Transactional(readOnly = true)

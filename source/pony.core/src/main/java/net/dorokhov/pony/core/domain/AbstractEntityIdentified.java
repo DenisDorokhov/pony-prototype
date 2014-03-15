@@ -5,20 +5,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 @MappedSuperclass
-public abstract class AbstractEntityIdentified extends AbstractEntityVersioned {
+public abstract class AbstractEntityIdentified<T extends Serializable> extends AbstractEntityVersioned {
 
-	private Integer id;
+	private T id;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	public Integer getId() {
+	public T getId() {
 		return id;
 	}
 
-	public void setId(Integer aId) {
+	public void setId(T aId) {
 		id = aId;
 	}
 	

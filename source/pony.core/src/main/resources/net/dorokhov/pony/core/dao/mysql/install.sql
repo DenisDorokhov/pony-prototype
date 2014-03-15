@@ -1,3 +1,33 @@
+CREATE TABLE installation (
+
+	id INT NOT NULL AUTO_INCREMENT,
+
+	creation_date TIMESTAMP NOT NULL,
+	update_date TIMESTAMP NOT NULL,
+
+	generation BIGINT NOT NULL,
+
+	version VARCHAR(255) NOT NULL,
+
+	PRIMARY KEY (id)
+
+) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE TABLE configuration (
+
+	id VARCHAR(255) NOT NULL,
+
+	creation_date TIMESTAMP NOT NULL,
+	update_date TIMESTAMP NOT NULL,
+
+	generation BIGINT NOT NULL,
+
+	value TEXT,
+
+	PRIMARY KEY (id)
+
+) CHARSET=UTF8 ENGINE=InnoDB;
+
 CREATE TABLE song_file (
 
 	id INT NOT NULL AUTO_INCREMENT,
@@ -88,21 +118,6 @@ CREATE TABLE song (
 
 	FOREIGN KEY (song_file_id) REFERENCES song_file(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (album_id) REFERENCES album(id) ON DELETE CASCADE ON UPDATE CASCADE
-
-) CHARSET=UTF8 ENGINE=InnoDB;
-
-CREATE TABLE installation (
-
-	id INT NOT NULL AUTO_INCREMENT,
-
-	creation_date TIMESTAMP NOT NULL,
-	update_date TIMESTAMP NOT NULL,
-
-	generation BIGINT NOT NULL,
-
-	version VARCHAR(255) NOT NULL,
-
-	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
