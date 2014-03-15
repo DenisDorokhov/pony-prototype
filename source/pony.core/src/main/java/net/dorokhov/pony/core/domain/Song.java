@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "song")
-public class Song extends AbstractEntityIdentified<Integer> {
+public class Song extends AbstractEntity<Integer> {
 
 	private SongFile file;
 

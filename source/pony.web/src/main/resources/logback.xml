@@ -8,7 +8,7 @@
 	</appender>
 
 	<logger name="net.dorokhov.pony" level="DEBUG" />
-	<logger name="org.jaudiotagger" level="WARN" />
+	<logger name="org.jaudiotagger" level="ERROR" />
 	<!-- logger name="org.hibernate.SQL" level="DEBUG" /-->
 	<!-- logger name="org.springframework.web" level="DEBUG" /-->
 

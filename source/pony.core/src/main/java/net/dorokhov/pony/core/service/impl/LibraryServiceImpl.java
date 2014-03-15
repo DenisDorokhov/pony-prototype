@@ -93,7 +93,7 @@ public class LibraryServiceImpl implements LibraryService {
 					@Override
 					public SongFile doInTransaction(TransactionStatus status) {
 
-						SongFile songFile;
+						EntityModification<SongFile> songFile;
 
 						try {
 							songFile = importSongFile(metaData);
@@ -104,15 +104,20 @@ public class LibraryServiceImpl implements LibraryService {
 							throw new RuntimeException(e);
 						}
 
-						if (songFile != null && songFile.getName() != null && songFile.getArtist() != null && songFile.getAlbum() != null) {
+						if (songFile.getEntity() != null &&
+								songFile.getEntity().getName() != null &&
+								songFile.getEntity().getArtist() != null &&
+								songFile.getEntity().getAlbum() != null) {
 
 							try {
 
-								Artist artist = importArtist(songFile);
-								Album album = importAlbum(songFile, artist);
-								Song song = importSong(songFile, album);
+								EntityModification<Artist> artist = importArtist(songFile.getEntity());
+								EntityModification<Album> album = importAlbum(songFile.getEntity(), artist.getEntity());
+								EntityModification<Song> song = importSong(songFile.getEntity(), album.getEntity());
 
-								log.debug("song imported: {}", song);
+								if (songFile.isModified() || song.isModified() || album.isModified() || artist.isModified()) {
+									log.debug("song imported: {}", song.getEntity());
+								}
 
 							} catch (Exception e) {
 
@@ -125,7 +130,7 @@ public class LibraryServiceImpl implements LibraryService {
 							log.warn("could not create song entities for inconsistent song file: {}", songFile);
 						}
 
-						return songFile;
+						return songFile.getEntity();
 					}
 				});
 			}
@@ -143,7 +148,7 @@ public class LibraryServiceImpl implements LibraryService {
 		cleanArtists();
 	}
 
-	private SongFile importSongFile(SongData aMetaData) {
+	private EntityModification<SongFile> importSongFile(SongData aMetaData) {
 
 		SongFile songFile = songFileService.getByPath(aMetaData.getPath());
 
@@ -202,10 +207,10 @@ public class LibraryServiceImpl implements LibraryService {
 			songFile = songFileService.save(songFile);
 		}
 
-		return songFile;
+		return new EntityModification<SongFile>(songFile, shouldSave);
 	}
 
-	private Artist importArtist(SongFile aSongFile) {
+	private EntityModification<Artist> importArtist(SongFile aSongFile) {
 
 		Artist artist = artistService.getByName(aSongFile.getArtist());
 
@@ -218,10 +223,10 @@ public class LibraryServiceImpl implements LibraryService {
 			artist = artistService.save(artist);
 		}
 
-		return artist;
+		return new EntityModification<Artist>(artist, artist == null);
 	}
 
-	private Album importAlbum(SongFile aSongFile, Artist aArtist) {
+	private EntityModification<Album> importAlbum(SongFile aSongFile, Artist aArtist) {
 
 		Album album = albumService.getByArtistAndName(aArtist.getId(), aSongFile.getAlbum());
 
@@ -255,10 +260,10 @@ public class LibraryServiceImpl implements LibraryService {
 			album = albumService.save(album);
 		}
 
-		return album;
+		return new EntityModification<Album>(album, shouldSave);
 	}
 
-	private Song importSong(SongFile aSongFile, Album aAlbum) {
+	private EntityModification<Song> importSong(SongFile aSongFile, Album aAlbum) {
 
 		Song song = songService.getByFile(aSongFile.getId());
 
@@ -285,7 +290,7 @@ public class LibraryServiceImpl implements LibraryService {
 			song = songService.save(song);
 		}
 
-		return song;
+		return new EntityModification<Song>(song, shouldSave);
 	}
 
 	private void cleanSongs() {
@@ -381,6 +386,26 @@ public class LibraryServiceImpl implements LibraryService {
 
 		for (Integer id : artistsToDelete) {
 			artistService.deleteById(id);
+		}
+	}
+
+	private static class EntityModification<T extends AbstractEntity> {
+
+		private T entity;
+
+		private boolean modified;
+
+		private EntityModification(T aEntity, boolean aModified) {
+			entity = aEntity;
+			modified = aModified;
+		}
+
+		public T getEntity() {
+			return entity;
+		}
+
+		public boolean isModified() {
+			return modified;
 		}
 	}
 }

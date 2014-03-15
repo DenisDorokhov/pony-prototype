@@ -7,7 +7,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "configuration")
-public class Configuration extends AbstractEntityIdentified<String> {
+public class Configuration extends AbstractEntity<String> {
 
 	private String value;
 

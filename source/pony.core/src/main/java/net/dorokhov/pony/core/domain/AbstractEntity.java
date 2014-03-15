@@ -1,21 +1,30 @@
 package net.dorokhov.pony.core.domain;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
 @MappedSuperclass
-public abstract class AbstractEntityVersioned {
+public abstract class AbstractEntity<T extends Serializable> {
+
+	private T id;
 
 	private Date creationDate;
 
 	private Date updateDate;
 
 	private Long generation;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public T getId() {
+		return id;
+	}
+
+	public void setId(T aId) {
+		id = aId;
+	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "creation_date")
@@ -46,5 +55,26 @@ public abstract class AbstractEntityVersioned {
 	public void setGeneration(Long aGeneration) {
 		generation = aGeneration;
 	}
+	
+	@Override
+	public int hashCode() {
+		return getId() != null ? getId().hashCode() : super.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object aObj) {
+		
+		if (this == aObj) {
+			return true;
+		}
 
+		if (aObj != null && getId() != null && getClass().equals(aObj.getClass())) {
+			
+			AbstractEntity entity = (AbstractEntity)aObj;
+			
+			return getId().equals(entity.getId());
+		}
+		
+		return false;
+	}
 }

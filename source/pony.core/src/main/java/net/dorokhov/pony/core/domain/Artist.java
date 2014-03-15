@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "artist")
-public class Artist extends AbstractEntityIdentified<Integer> {
+public class Artist extends AbstractEntity<Integer> {
 
     private String name;
 

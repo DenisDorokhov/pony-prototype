@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "installation")
-public class Installation extends AbstractEntityIdentified<Integer> {
+public class Installation extends AbstractEntity<Integer> {
 
 	private String version;
 

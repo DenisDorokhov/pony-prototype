@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.domain.AbstractEntityIdentified;
+import net.dorokhov.pony.core.domain.AbstractEntity;
 import net.dorokhov.pony.core.utility.ValidationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import javax.validation.Validator;
 import java.io.Serializable;
 import java.util.Date;
 
-public abstract class AbstractEntityService<EntityType extends AbstractEntityIdentified<IdType>, IdType extends Serializable, RepositoryType extends PagingAndSortingRepository<EntityType, IdType>> {
+public abstract class AbstractEntityService<EntityType extends AbstractEntity<IdType>, IdType extends Serializable, RepositoryType extends PagingAndSortingRepository<EntityType, IdType>> {
 
 	protected RepositoryType dao;
 
@@ -54,13 +54,13 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntityIde
 
 		if (aEntity.getId() != null) {
 
-			EntityType storedProject = dao.findOne(aEntity.getId());
+			EntityType storedEntity = dao.findOne(aEntity.getId());
 
-			if (storedProject == null) {
+			if (storedEntity == null) {
 				throw new RuntimeException("Entity does not exist.");
 			}
 
-			aEntity.setCreationDate(storedProject.getCreationDate());
+			aEntity.setCreationDate(storedEntity.getCreationDate());
 
 		} else {
 			aEntity.setCreationDate(currentDate);

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
-public class Album extends AbstractEntityIdentified<Integer> {
+public class Album extends AbstractEntity<Integer> {
 
 	private String name;
 
