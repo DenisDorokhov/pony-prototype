@@ -4,6 +4,7 @@ import net.dorokhov.pony.core.dao.ArtistDao;
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.service.ArtistService;
 import org.apache.commons.collections4.IteratorUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,7 @@ public class ArtistServiceImpl extends AbstractEntityService<Artist, ArtistDao> 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Artist> getAll() {
-		return IteratorUtils.toList(dao.findAll().iterator());
+		return IteratorUtils.toList(dao.findAll(new Sort("name")).iterator());
 	}
 
 	@Override

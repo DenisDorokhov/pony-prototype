@@ -5,7 +5,7 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.List;
 
-public interface ClientSongServiceAsync {
+public interface SongServiceAsync {
 
 	public void getCountByAlbum(Integer aAlbumId, AsyncCallback<Long> aCallback);
 	public void getCountByArtist(Integer aArtistId, AsyncCallback<Long> aCallback);

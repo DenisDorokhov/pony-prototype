@@ -1,28 +1,19 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import net.dorokhov.pony.web.client.service.ClientSongService;
+import net.dorokhov.pony.web.client.service.SongService;
 import net.dorokhov.pony.web.server.service.SongServiceRemote;
 import net.dorokhov.pony.web.shared.SongDto;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import java.util.List;
 
-public class ClientSongServiceImpl extends RemoteServiceServlet implements ClientSongService {
+public class SongServiceServlet extends AbstractServiceServlet implements SongService {
 
 	private SongServiceRemote songService;
 
 	@Override
-	public void init(ServletConfig aConfig) throws ServletException {
-
-		super.init(aConfig);
-
-		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(aConfig.getServletContext());
-
-		songService = context.getBean(SongServiceRemote.class);
+	protected void initWithApplicationContext(WebApplicationContext aContext) {
+		songService = aContext.getBean(SongServiceRemote.class);
 	}
 
 	@Override

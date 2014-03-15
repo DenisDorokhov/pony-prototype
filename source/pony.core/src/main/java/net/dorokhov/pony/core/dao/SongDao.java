@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.dao;
 
 import net.dorokhov.pony.core.domain.Song;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -14,9 +15,9 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 
 	public long countByAlbumArtistId(Integer aArtistId);
 
-	public List<Song> findByAlbumId(Integer aAlbumId);
+	public List<Song> findByAlbumId(Integer aAlbumId, Sort aSort);
 
-	public List<Song> findByAlbumArtistId(Integer aArtistId);
+	public List<Song> findByAlbumArtistId(Integer aArtistId, Sort aSort);
 
 	public Song findByFileId(Integer aSongFileId);
 

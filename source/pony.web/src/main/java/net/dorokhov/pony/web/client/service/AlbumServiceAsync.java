@@ -5,7 +5,7 @@ import net.dorokhov.pony.web.shared.AlbumDto;
 
 import java.util.List;
 
-public interface ClientAlbumServiceAsync {
+public interface AlbumServiceAsync {
 
 	public void getCountByArtist(Integer aArtistId, AsyncCallback<Long> aCallback);
 

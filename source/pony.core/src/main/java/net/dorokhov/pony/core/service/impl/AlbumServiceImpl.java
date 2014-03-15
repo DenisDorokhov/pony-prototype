@@ -3,6 +3,7 @@ package net.dorokhov.pony.core.service.impl;
 import net.dorokhov.pony.core.dao.AlbumDao;
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.service.AlbumService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, AlbumDao> imp
 	@Override
 	@Transactional(readOnly = true)
 	public List<Album> getByArtist(Integer aArtistId) {
-		return dao.findByArtistId(aArtistId);
+		return dao.findByArtistId(aArtistId, new Sort("year", "name"));
 	}
 
 	@Override

@@ -1,17 +1,17 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
-import net.dorokhov.pony.web.client.service.ClientLibraryService;
+import net.dorokhov.pony.web.client.service.LibraryService;
 import net.dorokhov.pony.web.server.service.LibraryServiceRemote;
 import net.dorokhov.pony.web.shared.StatusDto;
-import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
-public class ClientLibraryServiceImpl extends AbstractClientService implements ClientLibraryService {
+public class LibraryServiceServlet extends AbstractServiceServlet implements LibraryService {
 
 	private LibraryServiceRemote libraryService;
 
 	@Override
-	protected void initWithApplicationContext(ApplicationContext aContext) {
+	protected void initWithApplicationContext(WebApplicationContext aContext) {
 		libraryService = aContext.getBean(LibraryServiceRemote.class);
 	}
 

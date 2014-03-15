@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import net.dorokhov.pony.web.shared.StatusDto;
 
 @RemoteServiceRelativePath("rpc/libraryService")
-public interface ClientLibraryService extends RemoteService {
+public interface LibraryService extends RemoteService {
 
 	public boolean startScanning();
 

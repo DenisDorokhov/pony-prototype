@@ -7,8 +7,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import net.dorokhov.pony.web.client.service.ClientArtistService;
-import net.dorokhov.pony.web.client.service.ClientArtistServiceAsync;
+import net.dorokhov.pony.web.client.service.ArtistService;
+import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class MainView extends Composite {
 
 	private final HTMLPanel root;
 
-	private final ClientArtistServiceAsync artistService = GWT.create(ClientArtistService.class);
+	private final ArtistServiceAsync artistService = GWT.create(ArtistService.class);
 
 	public MainView() {
 
