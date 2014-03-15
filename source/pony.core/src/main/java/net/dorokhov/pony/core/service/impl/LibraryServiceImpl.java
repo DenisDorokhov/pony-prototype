@@ -253,8 +253,8 @@ public class LibraryServiceImpl implements LibraryService {
 			songFile.setDiscNumber(aMetaData.getDiscNumber());
 			songFile.setDiscCount(aMetaData.getDiscCount());
 
-			songFile.setDiscNumber(aMetaData.getTrackNumber());
-			songFile.setDiscCount(aMetaData.getTrackCount());
+			songFile.setTrackNumber(aMetaData.getTrackNumber());
+			songFile.setTrackCount(aMetaData.getTrackCount());
 
 			songFile.setName(aMetaData.getName());
 			songFile.setArtist(aMetaData.getArtist());
