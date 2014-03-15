@@ -20,6 +20,6 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<context:component-scan base-package="net.dorokhov.pony.web.server" />
+	<context:component-scan base-package="net.dorokhov.pony.web.server.controller" />
 
 </beans>

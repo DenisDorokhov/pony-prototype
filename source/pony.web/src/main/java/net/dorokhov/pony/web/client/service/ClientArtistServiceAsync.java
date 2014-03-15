@@ -11,8 +11,8 @@ public interface ClientArtistServiceAsync {
 
 	public void getAll(AsyncCallback<List<ArtistDto>> aCallback);
 
-	public void getById(AsyncCallback<ArtistDto> aCallback);
-	public void getByName(AsyncCallback<ArtistDto> aCallback);
-	public void getByIdOrName(AsyncCallback<ArtistDto> aCallback);
+	public void getById(Integer aId, AsyncCallback<ArtistDto> aCallback);
+	public void getByName(String aName, AsyncCallback<ArtistDto> aCallback);
+	public void getByIdOrName(String aNameOrId, AsyncCallback<ArtistDto> aCallback);
 
 }

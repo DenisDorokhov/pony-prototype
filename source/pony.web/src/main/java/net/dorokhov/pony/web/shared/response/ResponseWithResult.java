@@ -1,6 +1,8 @@
 package net.dorokhov.pony.web.shared.response;
 
-public class ResponseWithResult<T> extends Response {
+import java.io.Serializable;
+
+public class ResponseWithResult<T> extends Response implements Serializable {
 
 	private final T result;
 

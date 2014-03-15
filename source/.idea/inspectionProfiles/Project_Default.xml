@@ -12,6 +12,7 @@
       <option name="m_ignoreTestCases" value="true" />
       <option name="m_ignoreIgnoreParameter" value="true" />
     </inspection_tool>
+    <inspection_tool class="GwtToHtmlReferences" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JpaDataSourceORMDomInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JpaDataSourceORMInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SimplifiableIfStatement" enabled="false" level="WARNING" enabled_by_default="false" />

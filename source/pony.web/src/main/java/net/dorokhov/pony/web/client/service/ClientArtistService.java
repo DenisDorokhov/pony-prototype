@@ -1,12 +1,13 @@
 package net.dorokhov.pony.web.client.service;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.List;
 
 @RemoteServiceRelativePath("rpc/artistService")
-public interface ClientArtistService {
+public interface ClientArtistService extends RemoteService {
 
 	public Long getCount();
 

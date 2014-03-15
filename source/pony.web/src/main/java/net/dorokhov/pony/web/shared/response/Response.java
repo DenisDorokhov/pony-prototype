@@ -1,14 +1,22 @@
 package net.dorokhov.pony.web.shared.response;
 
-public class Response {
+import java.io.Serializable;
 
-	private final boolean successful;
+public class Response implements Serializable {
 
-	public Response(boolean aSuccessful) {
-		successful = aSuccessful;
-	}
+	private boolean successful;
 
 	public boolean isSuccessful() {
 		return successful;
+	}
+
+	public void setSuccessful(boolean aSuccessful) {
+		successful = aSuccessful;
+	}
+
+	public Response() {}
+
+	public Response(boolean aSuccessful) {
+		successful = aSuccessful;
 	}
 }

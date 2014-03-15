@@ -1,9 +1,10 @@
 package net.dorokhov.pony.web.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumDto extends AbstractEntityDto {
+public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	private String name;
 

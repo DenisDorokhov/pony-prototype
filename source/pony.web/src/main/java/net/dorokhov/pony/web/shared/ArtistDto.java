@@ -1,6 +1,8 @@
 package net.dorokhov.pony.web.shared;
 
-public class ArtistDto extends AbstractEntityDto {
+import java.io.Serializable;
+
+public class ArtistDto extends AbstractEntityDto implements Serializable {
 
 	private String name;
 

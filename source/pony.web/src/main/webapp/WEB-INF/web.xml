@@ -60,7 +60,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>albumService</servlet-name>
-		<url-pattern>/rpc/albumService</url-pattern>
+		<url-pattern>/pony/rpc/albumService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -69,7 +69,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>artistService</servlet-name>
-		<url-pattern>/rpc/artistService</url-pattern>
+		<url-pattern>/pony/rpc/artistService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -78,7 +78,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>libraryService</servlet-name>
-		<url-pattern>/rpc/libraryService</url-pattern>
+		<url-pattern>/pony/rpc/libraryService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -87,7 +87,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>songService</servlet-name>
-		<url-pattern>/rpc/songService</url-pattern>
+		<url-pattern>/pony/rpc/songService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
