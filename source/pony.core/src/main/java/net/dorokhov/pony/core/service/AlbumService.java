@@ -1,6 +1,8 @@
 package net.dorokhov.pony.core.service;
 
 import net.dorokhov.pony.core.domain.Album;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -9,6 +11,7 @@ public interface AlbumService {
 
 	public Long getCountByArtist(Integer aArtistId);
 
+	public Page<Album> getAll(Pageable aPageable);
 	public List<Album> getByArtist(Integer aArtistId);
 
 	public Album getById(Integer aId);

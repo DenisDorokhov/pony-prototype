@@ -18,15 +18,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
-	private static final int SONG_FILE_BUFFER_SIZE = 300;
+	private static final int CLEANING_BUFFER_SIZE = 300;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -138,71 +136,11 @@ public class LibraryServiceImpl implements LibraryService {
 
 	@Override
 	@Transactional
-	public void cleanUpSongFiles() {
+	public void clean() {
 
-		List<Integer> songFileIds = new ArrayList<Integer>();
-		Set<Integer> albumIds = new HashSet<Integer>();
-
-		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, SONG_FILE_BUFFER_SIZE, Sort.Direction.ASC, "path"));
-
-		do {
-
-			for (SongFile songFile : songFiles.getContent()) {
-
-				File file = new File(songFile.getPath());
-
-				if (!file.exists()) {
-
-					songFileIds.add(songFile.getId());
-
-					log.debug("song file deleted: {}", songFile);
-
-					Song song = songService.getByFile(songFile.getId());
-
-					if (song != null) {
-
-						albumIds.add(song.getAlbum().getId());
-
-						songService.deleteById(song.getId());
-
-						log.debug("song deleted: {}", song);
-					}
-				}
-			}
-
-			Pageable nextPageable = songFiles.nextPageable();
-
-			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
-
-		} while (songFiles != null);
-
-		for (Integer id : songFileIds) {
-			songFileService.deleteById(id);
-		}
-
-		for (Integer id : albumIds) {
-
-			Album album = albumService.getById(id);
-
-			if (album != null) {
-
-				Artist artist = album.getArtist();
-
-				if (songService.getCountByAlbum(id) == 0) {
-
-					albumService.deleteById(id);
-
-					log.debug("album deleted: {}", album);
-				}
-
-				if (artist != null && songService.getCountByArtist(artist.getId()) == 0) {
-
-					artistService.deleteById(artist.getId());
-
-					log.debug("artist deleted: {}", album);
-				}
-			}
-		}
+		cleanSongs();
+		cleanAlbums();
+		cleanArtists();
 	}
 
 	private SongFile importSongFile(SongData aMetaData) {
@@ -348,5 +286,101 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		return song;
+	}
+
+	private void cleanSongs() {
+
+		Set<Integer> songFilesToDelete = new HashSet<Integer>();
+
+		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "path"));
+
+		do {
+
+			for (SongFile songFile : songFiles.getContent()) {
+
+				File file = new File(songFile.getPath());
+
+				if (!file.exists()) {
+
+					songFilesToDelete.add(songFile.getId());
+
+					log.debug("song file deleted: {}", songFile);
+
+					Song song = songService.getByFile(songFile.getId());
+
+					if (song != null) {
+
+						songService.deleteById(song.getId());
+
+						log.debug("song deleted: {}", song);
+					}
+				}
+			}
+
+			Pageable nextPageable = songFiles.nextPageable();
+
+			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
+
+		} while (songFiles != null);
+
+		for (Integer id : songFilesToDelete) {
+			songFileService.deleteById(id);
+		}
+	}
+
+	private void cleanAlbums() {
+
+		Set<Integer> albumsToDelete = new HashSet<Integer>();
+
+		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "name"));
+
+		do {
+
+			for (Album album : albums.getContent()) {
+				if (songService.getCountByAlbum(album.getId()) == 0) {
+
+					albumsToDelete.add(album.getId());
+
+					log.debug("album deleted: {}", album);
+				}
+			}
+
+			Pageable nextPageable = albums.nextPageable();
+
+			albums = nextPageable != null ? albumService.getAll(nextPageable) : null;
+
+		} while (albums != null);
+
+		for (Integer id : albumsToDelete) {
+			albumService.deleteById(id);
+		}
+	}
+
+	private void cleanArtists() {
+
+		Set<Integer> artistsToDelete = new HashSet<Integer>();
+
+		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "name"));
+
+		do {
+
+			for (Artist artist : artists.getContent()) {
+				if (albumService.getCountByArtist(artist.getId()) == 0) {
+
+					artistsToDelete.add(artist.getId());
+
+					log.debug("artist deleted: {}", artist);
+				}
+			}
+
+			Pageable nextPageable = artists.nextPageable();
+
+			artists = nextPageable != null ? artistService.getAll(nextPageable) : null;
+
+		} while (artists != null);
+
+		for (Integer id : artistsToDelete) {
+			artistService.deleteById(id);
+		}
 	}
 }

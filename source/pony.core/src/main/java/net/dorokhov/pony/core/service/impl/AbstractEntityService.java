@@ -45,7 +45,6 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntityIde
 	}
 
 	@Transactional
-	@SuppressWarnings("unckecked")
 	public EntityType save(EntityType aEntity) throws ConstraintViolationException {
 
 		validate(aEntity);

@@ -15,7 +15,7 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 	@Override
 	@Transactional(readOnly = true)
 	public Long getCountByAlbum(Integer aAlbumId) {
-		return dao.countByAlbumArtistId(aAlbumId);
+		return dao.countByAlbumId(aAlbumId);
 	}
 
 	@Override

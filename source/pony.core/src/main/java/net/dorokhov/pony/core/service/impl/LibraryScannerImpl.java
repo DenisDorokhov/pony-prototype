@@ -190,11 +190,11 @@ public class LibraryScannerImpl implements LibraryScanner {
 			throw new RuntimeException(e);
 		}
 
-		log.info("checking files for deletion...");
+		log.info("cleaning...");
 
 		statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaning", 0.0));
 
-		libraryService.cleanUpSongFiles();
+		libraryService.clean();
 
 		long endTime = System.nanoTime();
 
