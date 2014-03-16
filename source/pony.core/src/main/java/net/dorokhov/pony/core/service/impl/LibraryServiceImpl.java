@@ -171,40 +171,6 @@ public class LibraryServiceImpl implements LibraryService {
 
 		boolean shouldSave = false;
 
-		SongFile songFile = songFileService.getByPath(aSongData.getPath());
-
-		if (songFile == null) {
-
-			songFile = new SongFile();
-
-			songFile.setPath(aSongData.getPath());
-
-			shouldSave = true;
-		}
-
-		if (songFile.getId() != null) {
-
-			if (!ObjectUtils.nullSafeEquals(songFile.getFormat(), aSongData.getFormat()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getMimeType(), aSongData.getMimeType()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getSize(), aSongData.getSize()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aSongData.getDuration()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aSongData.getBitRate()) ||
-
-				!ObjectUtils.nullSafeEquals(songFile.getDiscNumber(), aSongData.getDiscNumber()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getDiscCount(), aSongData.getDiscCount()) ||
-
-				!ObjectUtils.nullSafeEquals(songFile.getTrackNumber(), aSongData.getTrackNumber()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getTrackCount(), aSongData.getTrackCount()) ||
-
-				!ObjectUtils.nullSafeEquals(songFile.getName(), aSongData.getName()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aSongData.getArtist()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aSongData.getAlbum()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getYear(), aSongData.getYear())) {
-
-				shouldSave = true;
-			}
-		}
-
 		String checksum = null;
 		if (aSongData.getArtwork() != null) {
 			checksum = DigestUtils.md5Hex(aSongData.getArtwork().getBinaryData());
@@ -235,6 +201,41 @@ public class LibraryServiceImpl implements LibraryService {
 				} catch (Exception e) {
 					log.warn("could not store artwork", e);
 				}
+
+				shouldSave = true;
+			}
+		}
+
+		SongFile songFile = songFileService.getByPath(aSongData.getPath());
+
+		if (songFile == null) {
+
+			songFile = new SongFile();
+
+			songFile.setPath(aSongData.getPath());
+
+			shouldSave = true;
+		}
+
+		if (songFile.getId() != null) {
+
+			if (!ObjectUtils.nullSafeEquals(songFile.getFormat(), aSongData.getFormat()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getMimeType(), aSongData.getMimeType()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getSize(), aSongData.getSize()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aSongData.getDuration()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aSongData.getBitRate()) ||
+
+				!ObjectUtils.nullSafeEquals(songFile.getDiscNumber(), aSongData.getDiscNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDiscCount(), aSongData.getDiscCount()) ||
+
+				!ObjectUtils.nullSafeEquals(songFile.getTrackNumber(), aSongData.getTrackNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getTrackCount(), aSongData.getTrackCount()) ||
+
+				!ObjectUtils.nullSafeEquals(songFile.getName(), aSongData.getName()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aSongData.getArtist()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aSongData.getAlbum()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getYear(), aSongData.getYear()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getArtwork(), storedFile)) {
 
 				shouldSave = true;
 			}
@@ -394,19 +395,22 @@ public class LibraryServiceImpl implements LibraryService {
 
 		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
 
-		Page<StoredFile> storedFiles = storedFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		Page<StoredFile> storedFiles = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
 			for (StoredFile storedFile : storedFiles.getContent()) {
-				if (songFileService.getCountByArtwork(storedFile.getId()) == null) {
+				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
+
 					storedFilesToDelete.add(storedFile.getId());
+
+					log.debug("file deleted: {}", storedFile);
 				}
 			}
 
 			Pageable nextPageable = storedFiles.nextPageable();
 
-			storedFiles = nextPageable != null ? storedFileService.getAll(nextPageable) : null;
+			storedFiles = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
 
 		} while (storedFiles != null);
 

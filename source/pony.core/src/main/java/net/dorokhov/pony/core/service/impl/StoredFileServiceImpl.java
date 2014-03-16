@@ -9,12 +9,15 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 @Service
 public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Integer, StoredFileDao> implements StoredFileService {
@@ -42,7 +45,13 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 	@Override
 	@Transactional(readOnly = true)
-	public StoredFile getByChecksum(String aChecksum) {
+	public Page<StoredFile> getByTag(String aTag, Pageable aPageable) {
+		return dao.findByTag(aTag, aPageable);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<StoredFile> getByChecksum(String aChecksum) {
 		return dao.findByChecksum(aChecksum);
 	}
 

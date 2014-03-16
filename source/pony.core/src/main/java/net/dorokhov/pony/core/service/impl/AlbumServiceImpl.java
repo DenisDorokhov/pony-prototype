@@ -14,7 +14,7 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
-	public Long getCountByArtist(Integer aArtistId) {
+	public long getCountByArtist(Integer aArtistId) {
 		return dao.countByArtistId(aArtistId);
 	}
 

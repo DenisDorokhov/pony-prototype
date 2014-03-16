@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AlbumService {
 
-	public Long getCountByArtist(Integer aArtistId);
+	public long getCountByArtist(Integer aArtistId);
 
 	public Page<Album> getAll(Pageable aPageable);
 	public List<Album> getByArtist(Integer aArtistId);

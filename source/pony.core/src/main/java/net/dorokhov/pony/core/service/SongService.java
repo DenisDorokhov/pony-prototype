@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface SongService {
 
-	public Long getCountByAlbum(Integer aAlbumId);
-	public Long getCountByArtist(Integer aArtistId);
+	public long getCountByAlbum(Integer aAlbumId);
+	public long getCountByArtist(Integer aArtistId);
 
 	public List<Song> getByAlbum(Integer aAlbumId);
 	public List<Song> getByArtist(Integer aArtistId);

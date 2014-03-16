@@ -7,16 +7,18 @@ import org.springframework.data.domain.Pageable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 public interface StoredFileService {
 
-	public Long getCount();
+	public long getCount();
 
 	public Page<StoredFile> getAll(Pageable aPageable);
+	public Page<StoredFile> getByTag(String aTag, Pageable aPageable);
+	public List<StoredFile> getByChecksum(String aChecksum);
 
 	public StoredFile getById(Integer aId);
 	public StoredFile getByTagAndChecksum(String aTag, String aChecksum);
-	public StoredFile getByChecksum(String aChecksum);
 
 	public File load(Integer aId) throws FileNotFoundException;
 	public File load(StoredFile aStoredFile) throws FileNotFoundException;

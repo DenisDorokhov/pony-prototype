@@ -50,6 +50,7 @@ CREATE TABLE stored_file (
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
 CREATE INDEX index_stored_file_checksum ON stored_file(checksum);
+CREATE INDEX index_stored_file_tag ON stored_file(tag);
 CREATE INDEX index_stored_file_tag_checksum ON stored_file(tag, checksum);
 
 CREATE TABLE song_file (

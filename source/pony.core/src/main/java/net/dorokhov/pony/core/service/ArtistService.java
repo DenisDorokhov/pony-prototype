@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ArtistService {
 
-	public Long getCount();
+	public long getCount();
 
 	public List<Artist> getAll();
 	public Page<Artist> getAll(Pageable aPageable);

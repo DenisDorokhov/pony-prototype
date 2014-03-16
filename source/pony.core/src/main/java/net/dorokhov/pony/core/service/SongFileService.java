@@ -8,8 +8,8 @@ import javax.validation.ConstraintViolationException;
 
 public interface SongFileService {
 
-	public Long getCount();
-	public Long getCountByArtwork(Integer aStoredFileId);
+	public long getCount();
+	public long getCountByArtwork(Integer aStoredFileId);
 
 	public Page<SongFile> getAll(Pageable aPageable);
 

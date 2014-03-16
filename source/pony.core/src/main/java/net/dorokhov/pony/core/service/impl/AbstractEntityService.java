@@ -30,7 +30,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 	}
 
 	@Transactional(readOnly = true)
-	public Long getCount() {
+	public long getCount() {
 		return dao.count();
 	}
 
