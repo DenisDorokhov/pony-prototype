@@ -11,6 +11,12 @@ public class SongFileServiceImpl extends AbstractEntityService<SongFile, Integer
 
 	@Override
 	@Transactional(readOnly = true)
+	public Long getCountByArtwork(Integer aStoredFileId) {
+		return dao.countByArtworkId(aStoredFileId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public SongFile getByPath(String aPath) {
 		return dao.findByPath(aPath);
 	}

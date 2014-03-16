@@ -20,8 +20,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
@@ -156,6 +156,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 		log.debug("cleaning songs...");
 		cleanSongs();
+
+		log.debug("cleaning stored files...");
+		cleanFiles();
 
 		log.debug("cleaning albums...");
 		cleanAlbums();
@@ -349,9 +352,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 	private void cleanSongs() {
 
-		Set<Integer> songFilesToDelete = new HashSet<Integer>();
+		List<Integer> songFilesToDelete = new ArrayList<Integer>();
 
-		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "path"));
+		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
@@ -387,11 +390,36 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
+	private void cleanFiles() {
+
+		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
+
+		Page<StoredFile> storedFiles = storedFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		do {
+
+			for (StoredFile storedFile : storedFiles.getContent()) {
+				if (songFileService.getCountByArtwork(storedFile.getId()) == null) {
+					storedFilesToDelete.add(storedFile.getId());
+				}
+			}
+
+			Pageable nextPageable = storedFiles.nextPageable();
+
+			storedFiles = nextPageable != null ? storedFileService.getAll(nextPageable) : null;
+
+		} while (storedFiles != null);
+
+		for (Integer id : storedFilesToDelete) {
+			storedFileService.deleteById(id);
+		}
+	}
+
 	private void cleanAlbums() {
 
-		Set<Integer> albumsToDelete = new HashSet<Integer>();
+		List<Integer> albumsToDelete = new ArrayList<Integer>();
 
-		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "name"));
+		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
@@ -417,9 +445,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 	private void cleanArtists() {
 
-		Set<Integer> artistsToDelete = new HashSet<Integer>();
+		List<Integer> artistsToDelete = new ArrayList<Integer>();
 
-		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "name"));
+		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
