@@ -1,6 +1,10 @@
 package net.dorokhov.pony.core.domain;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 public class StorageTask {
 
@@ -8,7 +12,9 @@ public class StorageTask {
 		COPY, MOVE
 	}
 
-	private Type type;
+	private final Type type;
+
+	private final File file;
 
 	private String mimeType;
 
@@ -16,14 +22,17 @@ public class StorageTask {
 
 	private String tag;
 
-	private File file;
+	public StorageTask(Type aType, File aFile) {
+		type = aType;
+		file = aFile;
+	}
 
 	public Type getType() {
 		return type;
 	}
 
-	public void setType(Type aType) {
-		type = aType;
+	public File getFile() {
+		return file;
 	}
 
 	public String getMimeType() {
@@ -50,12 +59,13 @@ public class StorageTask {
 		tag = aTag;
 	}
 
-	public File getFile() {
-		return file;
-	}
+	public static StorageTask createWithTemporaryFile(byte[] aContents) throws IOException {
 
-	public void setFile(File aFile) {
-		file = aFile;
+		File createdFile = new File(FileUtils.getTempDirectory(), "StorageTask-" + UUID.randomUUID());
+
+		FileUtils.writeByteArrayToFile(createdFile, aContents);
+
+		return new StorageTask(Type.MOVE, createdFile);
 	}
 
 	@Override

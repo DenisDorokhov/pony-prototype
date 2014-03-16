@@ -108,16 +108,18 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 			storedFile.setName(aTask.getFile().getName());
 			storedFile.setMimeType(aTask.getMimeType());
 			storedFile.setChecksum(aTask.getChecksum());
+			storedFile.setTag(aTask.getTag());
 			storedFile.setPath(relativePath);
 
 			return save(storedFile);
 
 		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
+
 			if (targetFile != null) {
 				targetFile.delete();
 			}
+
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -140,11 +142,11 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 			StringBuilder buf = new StringBuilder();
 
-			for (int i = 0; i < pathHash.length(); i++) {
-				buf.append(pathHash.charAt(i)).append("/");
-			}
-
-			buf.append(aTask.getFile().getName());
+			buf.append(pathHash.substring(0, 7)).append("/")
+					.append(pathHash.substring(8, 15)).append("/")
+					.append(pathHash.substring(16, 23)).append("/")
+					.append(pathHash.substring(24, 31)).append("/")
+					.append(aTask.getFile().getName());
 
 			file = new File(buf.toString());
 

@@ -2,6 +2,7 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.Set;
 public class LibraryServiceImpl implements LibraryService {
 
 	private static final int CLEANING_BUFFER_SIZE = 300;
+	private static final String FILE_TAG_ARTWORK = "artwork";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -162,38 +164,72 @@ public class LibraryServiceImpl implements LibraryService {
 		cleanArtists();
 	}
 
-	private EntityModification<SongFile> importSongFile(SongData aMetaData) {
-
-		SongFile songFile = songFileService.getByPath(aMetaData.getPath());
+	private EntityModification<SongFile> importSongFile(SongData aSongData) {
 
 		boolean shouldSave = false;
+
+		SongFile songFile = songFileService.getByPath(aSongData.getPath());
 
 		if (songFile == null) {
 
 			songFile = new SongFile();
 
-			songFile.setPath(aMetaData.getPath());
+			songFile.setPath(aSongData.getPath());
 
 			shouldSave = true;
 		}
 
 		if (songFile.getId() != null) {
-			if (!ObjectUtils.nullSafeEquals(songFile.getFormat(), aMetaData.getFormat()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getMimeType(), aMetaData.getMimeType()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getSize(), aMetaData.getSize()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aMetaData.getDuration()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aMetaData.getBitRate()) ||
 
-				!ObjectUtils.nullSafeEquals(songFile.getDiscNumber(), aMetaData.getDiscNumber()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getDiscCount(), aMetaData.getDiscCount()) ||
+			if (!ObjectUtils.nullSafeEquals(songFile.getFormat(), aSongData.getFormat()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getMimeType(), aSongData.getMimeType()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getSize(), aSongData.getSize()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDuration(), aSongData.getDuration()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getBitRate(), aSongData.getBitRate()) ||
 
-				!ObjectUtils.nullSafeEquals(songFile.getTrackNumber(), aMetaData.getTrackNumber()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getTrackCount(), aMetaData.getTrackCount()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDiscNumber(), aSongData.getDiscNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getDiscCount(), aSongData.getDiscCount()) ||
 
-				!ObjectUtils.nullSafeEquals(songFile.getName(), aMetaData.getName()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aMetaData.getArtist()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aMetaData.getAlbum()) ||
-				!ObjectUtils.nullSafeEquals(songFile.getYear(), aMetaData.getYear())) {
+				!ObjectUtils.nullSafeEquals(songFile.getTrackNumber(), aSongData.getTrackNumber()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getTrackCount(), aSongData.getTrackCount()) ||
+
+				!ObjectUtils.nullSafeEquals(songFile.getName(), aSongData.getName()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aSongData.getArtist()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aSongData.getAlbum()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getYear(), aSongData.getYear())) {
+
+				shouldSave = true;
+			}
+		}
+
+		String checksum = null;
+		if (aSongData.getArtwork() != null) {
+			checksum = DigestUtils.md5Hex(aSongData.getArtwork().getBinaryData());
+		}
+
+		StoredFile storedFile = null;
+
+		if (checksum != null) {
+
+			storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK, checksum);
+
+			if (storedFile == null) {
+
+				try {
+
+					StorageTask storageTask = StorageTask.createWithTemporaryFile(aSongData.getArtwork().getBinaryData());
+
+					storageTask.setMimeType(aSongData.getArtwork().getMimeType());
+					storageTask.setChecksum(checksum);
+					storageTask.setTag(FILE_TAG_ARTWORK);
+
+					storedFile = storedFileService.save(storageTask);
+
+					log.debug("stored not-existing artwork {}", storedFile);
+
+				} catch (Exception e) {
+					log.warn("could not store artwork", e);
+				}
 
 				shouldSave = true;
 			}
@@ -201,22 +237,24 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (shouldSave) {
 
-			songFile.setFormat(aMetaData.getFormat());
-			songFile.setMimeType(aMetaData.getMimeType());
-			songFile.setSize(aMetaData.getSize());
-			songFile.setDuration(aMetaData.getDuration());
-			songFile.setBitRate(aMetaData.getBitRate());
+			songFile.setFormat(aSongData.getFormat());
+			songFile.setMimeType(aSongData.getMimeType());
+			songFile.setSize(aSongData.getSize());
+			songFile.setDuration(aSongData.getDuration());
+			songFile.setBitRate(aSongData.getBitRate());
 
-			songFile.setDiscNumber(aMetaData.getDiscNumber());
-			songFile.setDiscCount(aMetaData.getDiscCount());
+			songFile.setDiscNumber(aSongData.getDiscNumber());
+			songFile.setDiscCount(aSongData.getDiscCount());
 
-			songFile.setTrackNumber(aMetaData.getTrackNumber());
-			songFile.setTrackCount(aMetaData.getTrackCount());
+			songFile.setTrackNumber(aSongData.getTrackNumber());
+			songFile.setTrackCount(aSongData.getTrackCount());
 
-			songFile.setName(aMetaData.getName());
-			songFile.setArtist(aMetaData.getArtist());
-			songFile.setAlbum(aMetaData.getAlbum());
-			songFile.setYear(aMetaData.getYear());
+			songFile.setName(aSongData.getName());
+			songFile.setArtist(aSongData.getArtist());
+			songFile.setAlbum(aSongData.getAlbum());
+			songFile.setYear(aSongData.getYear());
+
+			songFile.setArtwork(storedFile);
 
 			songFile = songFileService.save(songFile);
 		}

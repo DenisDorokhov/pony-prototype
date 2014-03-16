@@ -68,4 +68,15 @@ public class StoredFile extends AbstractEntity<Integer> {
 	public void setPath(String aPath) {
 		path = aPath;
 	}
+
+	@Override
+	public String toString() {
+		return "StoredFile{" +
+				"name='" + name + '\'' +
+				", mimeType='" + mimeType + '\'' +
+				", path='" + path + '\'' +
+				", tag='" + tag + '\'' +
+				", checksum='" + checksum + '\'' +
+				'}';
+	}
 }
