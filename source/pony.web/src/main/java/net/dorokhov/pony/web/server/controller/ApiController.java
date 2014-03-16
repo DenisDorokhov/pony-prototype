@@ -1,6 +1,10 @@
 package net.dorokhov.pony.web.server.controller;
 
+import net.dorokhov.pony.core.domain.Song;
+import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
+import net.dorokhov.pony.core.service.SongService;
+import net.dorokhov.pony.core.service.StoredFileService;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -44,6 +48,10 @@ public class ApiController {
 
 	private SongServiceRemote songServiceRemote;
 
+	private SongService songService;
+
+	private StoredFileService storedFileService;
+
 	@Autowired
 	public void setLibraryServiceRemote(LibraryServiceRemote aLibraryServiceRemote) {
 		libraryServiceRemote = aLibraryServiceRemote;
@@ -62,6 +70,16 @@ public class ApiController {
 	@Autowired
 	public void setSongServiceRemote(SongServiceRemote aSongServiceRemote) {
 		songServiceRemote = aSongServiceRemote;
+	}
+
+	@Autowired
+	public void setSongService(SongService aSongService) {
+		songService = aSongService;
+	}
+
+	@Autowired
+	public void setStoredFileService(StoredFileService aStoredFileService) {
+		storedFileService = aStoredFileService;
 	}
 
 	@RequestMapping(value = "/artists", method = RequestMethod.GET)
@@ -129,41 +147,6 @@ public class ApiController {
 		return new ResponseWithResult<SongDto>();
 	}
 
-	@RequestMapping(value = "/songFile/{songId}", method = RequestMethod.GET)
-	@ResponseBody
-	public Object getFile(@PathVariable("songId") Integer aSongId) {
-
-		try {
-
-			SongDto song = songServiceRemote.getById(aSongId);
-
-			if (song != null) {
-
-				InputStream stream = new FileInputStream(new File(song.getPath()));
-
-				StreamingViewRenderer renderer = new StreamingViewRenderer();
-
-				HashMap<String, Object> model = new HashMap<String, Object>();
-
-				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, song.getSize());
-				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, song.getName());
-				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, song.getUpdateDate());
-				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, song.getMimeType());
-				model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
-
-				return new ModelAndView(renderer, model);
-
-			} else {
-				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-			}
-
-		} catch (Exception e) {
-			log.error("could not get song file", e);
-		}
-
-		return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE);
-	}
-
 	@RequestMapping(value = "/status", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<StatusDto> getStatus() {
@@ -194,5 +177,78 @@ public class ApiController {
 		}
 
 		return new Response(false);
+	}
+
+	@RequestMapping(value = "/songFile/{songId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getSongFile(@PathVariable("songId") Integer aSongId) {
+
+		try {
+
+			Song song = songService.getById(aSongId);
+
+			if (song != null) {
+
+				InputStream stream = new FileInputStream(new File(song.getFile().getPath()));
+
+				StreamingViewRenderer renderer = new StreamingViewRenderer();
+
+				HashMap<String, Object> model = new HashMap<String, Object>();
+
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, song.getFile().getSize());
+				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, song.getFile().getName());
+				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, song.getFile().getUpdateDate());
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, song.getFile().getMimeType());
+				model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
+
+				return new ModelAndView(renderer, model);
+			}
+
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+
+		} catch (Exception e) {
+			log.error("could not get song file", e);
+		}
+
+		return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	@RequestMapping(value = "/storedFile/{storedFileId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getStoredFile(@PathVariable("storedFileId") Integer aStoredFileId) {
+
+		try {
+
+			StoredFile storedFile = storedFileService.getById(aStoredFileId);
+
+			if (storedFile != null) {
+
+				File file = storedFileService.load(storedFile);
+
+				if (file != null) {
+
+					InputStream stream = new FileInputStream(file);
+
+					StreamingViewRenderer renderer = new StreamingViewRenderer();
+
+					HashMap<String, Object> model = new HashMap<String, Object>();
+
+					model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, file.length());
+					model.put(StreamingViewRenderer.DownloadConstants.FILENAME, file.getName());
+					model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, storedFile.getUpdateDate());
+					model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, storedFile.getMimeType());
+					model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
+
+					return new ModelAndView(renderer, model);
+				}
+			}
+
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+
+		} catch (Exception e) {
+			log.error("could not get stored file", e);
+		}
+
+		return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE);
 	}
 }

@@ -106,6 +106,8 @@ public class DtoUtility {
 
 			dto.setTrackNumber(file.getTrackNumber());
 			dto.setTrackCount(file.getTrackCount());
+
+			dto.setArtwork(file.getArtwork() != null ? file.getArtwork().getId() : null);
 		}
 
 		return dto;

@@ -132,13 +132,13 @@ public class LibraryServiceImpl implements LibraryService {
 
 							} catch (Exception e) {
 
-								log.error("could not create song entities for song file: {}", songFile, e);
+								log.error("could not create song entities for song file: {}", songFile.getEntity(), e);
 
 								throw new RuntimeException(e);
 							}
 
 						} else {
-							log.warn("could not create song entities for inconsistent song file: {}", songFile);
+							log.warn("could not create song entities for inconsistent song file: {}", songFile.getEntity());
 						}
 
 						return songFile.getEntity();
