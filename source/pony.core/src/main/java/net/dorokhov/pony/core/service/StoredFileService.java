@@ -1,10 +1,12 @@
 package net.dorokhov.pony.core.service;
 
+import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public interface StoredFileService {
 
@@ -15,10 +17,11 @@ public interface StoredFileService {
 	public StoredFile getById(Integer aId);
 	public StoredFile getByPath(String aPath);
 
-	public StoredFile save(StoredFile aStoredFile) throws ConstraintViolationException;
+	public File load(Integer aId) throws FileNotFoundException;
+	public File load(StoredFile aStoredFile) throws FileNotFoundException;
+
+	public StoredFile save(StorageTask aTask) throws FileNotFoundException;
 
 	public void deleteById(Integer aId);
-
-	public void validate(StoredFile aStored1File) throws ConstraintViolationException;
 
 }
