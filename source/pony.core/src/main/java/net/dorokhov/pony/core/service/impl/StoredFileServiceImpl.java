@@ -6,8 +6,12 @@ import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.StoredFileService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,23 +19,19 @@ import java.io.FileNotFoundException;
 @Service
 public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Integer, StoredFileDao> implements StoredFileService {
 
-	private static final String STORAGE_RELATIVE_PATH = ".pony/stored_file";
-
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
 
-	private final File storageFolder;
+	private String storageFolder;
 
-	public StoredFileServiceImpl() {
+	private File filesFolder;
 
-		File userHome = FileUtils.getUserDirectory();
+	@Value("${storage.folder}")
+	public void setStorageFolder(String aStorageFolder) {
 
-		storageFolder = new File(userHome, STORAGE_RELATIVE_PATH);
+		storageFolder = aStorageFolder;
 
-		if (!storageFolder.exists()) {
-			if (!storageFolder.mkdirs()) {
-				throw new RuntimeException("Could not create directory [" + storageFolder.getAbsolutePath() + "] for storing files.");
-			}
-		}
+		createFilesFolder();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 	@Transactional(readOnly = true)
 	public File load(StoredFile aStoredFile) throws FileNotFoundException {
 
-		File file = new File(storageFolder, aStoredFile.getPath());
+		File file = new File(filesFolder, aStoredFile.getPath());
 
 		if (!file.exists()) {
 			throw new FileNotFoundException("File [" + file.getAbsolutePath() + "] not found.");
@@ -86,7 +86,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 				relativePath = taskToPath(aTask);
 
-				targetFile = new File(storageFolder, relativePath);
+				targetFile = new File(filesFolder, relativePath);
 
 				switch (aTask.getType()) {
 
@@ -124,9 +124,53 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 	}
 
 	@Override
+	@Transactional
+	public void deleteById(Integer aId) {
+
+		StoredFile storedFile = getById(aId);
+
+		if (storedFile != null) {
+
+			File file = new File(filesFolder, storedFile.getPath());
+
+			super.deleteById(storedFile.getId());
+
+			if (!file.delete()) {
+				log.warn("could not delete file [{}] from file system", file.getAbsolutePath());
+			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteAll() {
+
+		dao.deleteAll();
+
+		try {
+			FileUtils.cleanDirectory(filesFolder);
+		} catch (Exception e) {
+			log.warn("could not clean storage folder", e);
+		}
+	}
+
+	@Override
 	protected void normalize(StoredFile aStoredFile) {
 		if (aStoredFile.getName() != null) {
 			aStoredFile.setName(aStoredFile.getName().trim());
+		}
+	}
+
+	private void createFilesFolder() {
+
+		File userHome = FileUtils.getUserDirectory();
+
+		filesFolder = new File(userHome, storageFolder + "/files");
+
+		if (!filesFolder.exists()) {
+			if (!filesFolder.mkdirs()) {
+				throw new RuntimeException("Could not create directory [" + filesFolder.getAbsolutePath() + "] for storing files.");
+			}
 		}
 	}
 
@@ -140,7 +184,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 			String pathHash = DigestUtils.md5Hex(aTask.getFile().getAbsolutePath() + attempt);
 
-			StringBuilder buf = new StringBuilder();
+			StringBuilder buf = new StringBuilder(StringUtils.hasText(aTask.getTag()) ? aTask.getTag().trim() + "/" : "");
 
 			buf.append(pathHash.substring(0, 7)).append("/")
 					.append(pathHash.substring(8, 15)).append("/")

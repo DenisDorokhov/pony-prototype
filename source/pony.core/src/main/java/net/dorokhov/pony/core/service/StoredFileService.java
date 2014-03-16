@@ -24,5 +24,6 @@ public interface StoredFileService {
 	public StoredFile save(StorageTask aTask) throws FileNotFoundException;
 
 	public void deleteById(Integer aId);
+	public void deleteAll();
 
 }

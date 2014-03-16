@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.test;
 
 import net.dorokhov.pony.core.service.InstallationService;
+import net.dorokhov.pony.core.service.StoredFileService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,6 +11,8 @@ public class AbstractIntegrationCase extends AbstractCase {
 
 	protected InstallationService installationService;
 
+	protected StoredFileService storedFileService;
+
 	public void baseSetUp() throws Exception {
 
 		super.baseSetUp();
@@ -17,8 +20,10 @@ public class AbstractIntegrationCase extends AbstractCase {
 		context = new ClassPathXmlApplicationContext("context.xml");
 
 		installationService = context.getBean(InstallationService.class);
+		storedFileService = context.getBean(StoredFileService.class);
 
 		if (installationService.getInstallation() != null) {
+			storedFileService.deleteAll();
 			installationService.uninstall();
 		}
 
@@ -30,6 +35,7 @@ public class AbstractIntegrationCase extends AbstractCase {
 		super.baseTearDown();
 
 		if (installationService.getInstallation() != null) {
+			storedFileService.deleteAll();
 			installationService.uninstall();
 		}
 	}
