@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.service.impl;
 
-import net.dorokhov.pony.core.domain.SongArtwork;
 import net.dorokhov.pony.core.domain.SongData;
 import net.dorokhov.pony.core.service.SongDataReader;
 import org.apache.commons.lang3.StringUtils;
@@ -55,25 +54,15 @@ public class SongDataReaderImpl implements SongDataReader {
 			String albumArtist = parseStringTag(tag, FieldKey.ALBUM_ARTIST);
 
 			metaData.setArtist(albumArtist != null ? albumArtist : parseStringTag(tag, FieldKey.ARTIST));
+
+			Artwork artwork = tag.getFirstArtwork();
+
+			if (artwork != null) {
+				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), artwork.getMimeType()));
+			}
 		}
 
 		return metaData;
-	}
-
-	@Override
-	public SongArtwork readSongArtwork(File aFile) throws Exception {
-
-		AudioFile audioFile = AudioFileIO.read(aFile);
-
-		Tag tag = audioFile.getTag();
-
-		Artwork tagArtwork = tag.getFirstArtwork();
-
-		if (tagArtwork != null) {
-			return new SongArtwork(tagArtwork.getBinaryData(), tagArtwork.getMimeType());
-		}
-
-		return null;
 	}
 
 	private String parseStringTag(Tag aTag, FieldKey aKey) {

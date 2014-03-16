@@ -30,6 +30,8 @@ public class SongData {
 
 	private Integer year;
 
+	private Artwork artwork;
+
 	public String getPath() {
 		return path;
 	}
@@ -141,4 +143,43 @@ public class SongData {
 	public void setYear(Integer aYear) {
 		year = aYear;
 	}
+
+	public Artwork getArtwork() {
+		return artwork;
+	}
+
+	public void setArtwork(Artwork aArtwork) {
+		artwork = aArtwork;
+	}
+
+	public static class Artwork {
+
+		private byte[] binaryData;
+
+		private String mimeType;
+
+		public Artwork() {}
+
+		public Artwork(byte[] aBinaryData, String aMimeType) {
+			binaryData = aBinaryData;
+			mimeType = aMimeType;
+		}
+
+		public byte[] getBinaryData() {
+			return binaryData;
+		}
+
+		public void setBinaryData(byte[] aBinaryData) {
+			binaryData = aBinaryData;
+		}
+
+		public String getMimeType() {
+			return mimeType;
+		}
+
+		public void setMimeType(String aMimeType) {
+			mimeType = aMimeType;
+		}
+	}
+
 }

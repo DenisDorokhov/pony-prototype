@@ -40,6 +40,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 	private SongService songService;
 
+	private StoredFileService storedFileService;
+
 	private SongDataReader songDataReader;
 
 	@Autowired
@@ -65,6 +67,11 @@ public class LibraryServiceImpl implements LibraryService {
 	@Autowired
 	public void setSongService(SongService aSongService) {
 		songService = aSongService;
+	}
+
+	@Autowired
+	public void setStoredFileService(StoredFileService aStoredFileService) {
+		storedFileService = aStoredFileService;
 	}
 
 	@Autowired
@@ -139,11 +146,6 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		return songFile;
-	}
-
-	@Override
-	public boolean importArtwork(SongFile aSongFile) {
-		return false;
 	}
 
 	@Override

@@ -8,8 +8,6 @@ public interface LibraryService {
 
 	public SongFile importSongFile(File aFile);
 
-	public boolean importArtwork(SongFile aSongFile);
-
 	public void clean();
 
 }
