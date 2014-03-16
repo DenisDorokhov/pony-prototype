@@ -17,8 +17,6 @@ public class Album extends AbstractEntity<Integer> {
 
 	private Integer trackCount;
 
-	private StoredFile artwork;
-
 	private List<Song> songs;
 
 	private Artist artist;
@@ -58,16 +56,6 @@ public class Album extends AbstractEntity<Integer> {
 
 	public void setTrackCount(Integer aTrackCount) {
 		trackCount = aTrackCount;
-	}
-
-	@OneToOne
-	@JoinColumn(name = "artwork_stored_file_id")
-	public StoredFile getArtwork() {
-		return artwork;
-	}
-
-	public void setArtwork(StoredFile aArtwork) {
-		artwork = aArtwork;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "album")

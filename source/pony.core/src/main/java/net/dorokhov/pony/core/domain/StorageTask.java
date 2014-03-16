@@ -14,6 +14,8 @@ public class StorageTask {
 
 	private String checksum;
 
+	private String tag;
+
 	private File file;
 
 	public Type getType() {
@@ -38,6 +40,14 @@ public class StorageTask {
 
 	public void setChecksum(String aChecksum) {
 		checksum = aChecksum;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String aTag) {
+		tag = aTag;
 	}
 
 	public File getFile() {

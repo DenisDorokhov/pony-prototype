@@ -36,8 +36,14 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 	@Override
 	@Transactional(readOnly = true)
-	public StoredFile getByPath(String aPath) {
-		return dao.findByPath(aPath);
+	public StoredFile getByTagAndChecksum(String aTag, String aChecksum) {
+		return dao.findByTagAndChecksum(aTag, aChecksum);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public StoredFile getByChecksum(String aChecksum) {
+		return dao.findByChecksum(aChecksum);
 	}
 
 	@Override

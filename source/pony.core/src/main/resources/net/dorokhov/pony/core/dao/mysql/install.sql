@@ -40,12 +40,17 @@ CREATE TABLE stored_file (
 	name VARCHAR(255) NOT NULL,
 	mime_type VARCHAR(255) NOT NULL,
 	checksum VARCHAR(255) NOT NULL,
+	tag VARCHAR(255),
 	relative_path VARCHAR(255) NOT NULL,
 
 	UNIQUE (relative_path),
+	UNIQUE (tag, checksum),
 	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE INDEX index_stored_file_checksum ON stored_file(checksum);
+CREATE INDEX index_stored_file_tag_checksum ON stored_file(tag, checksum);
 
 CREATE TABLE song_file (
 
@@ -76,10 +81,16 @@ CREATE TABLE song_file (
 
 	year INT,
 
+	artwork_stored_file_id INT,
+
+	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
+
 	UNIQUE (path),
 	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE INDEX index_song_file_track_number_name ON song_file(track_number, name);
 
 CREATE TABLE artist (
 
@@ -111,16 +122,18 @@ CREATE TABLE album (
 	track_count INT,
 	year INT,
 
-	artwork_stored_file_id INT,
 	artist_id INT NOT NULL,
 
 	UNIQUE (name, artist_id),
 	PRIMARY KEY (id),
 
-	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE INDEX index_album_artist_id ON album(artist_id);
+CREATE INDEX index_album_artist_id_name ON album(artist_id, name);
+CREATE INDEX index_album_artist_id_year_name ON album(artist_id, year, name);
 
 CREATE TABLE song (
 
@@ -141,5 +154,7 @@ CREATE TABLE song (
 	FOREIGN KEY (album_id) REFERENCES album(id) ON DELETE CASCADE ON UPDATE CASCADE
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE INDEX index_song_album_id ON song(album_id);
 
 INSERT INTO installation (creation_date, update_date, generation, version) VALUES (NOW(), NOW(), '0', '1.0');

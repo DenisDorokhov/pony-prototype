@@ -2,9 +2,7 @@ package net.dorokhov.pony.core.domain;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -38,6 +36,8 @@ public class SongFile extends AbstractEntity<Integer> {
 	private String album;
 
 	private Integer year;
+
+	private StoredFile artwork;
 
 	@Column(name = "path", unique = true)
 	@NotBlank
@@ -169,6 +169,16 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	public void setYear(Integer aYear) {
 		year = aYear;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "artwork_stored_file_id")
+	public StoredFile getArtwork() {
+		return artwork;
+	}
+
+	public void setArtwork(StoredFile aArtwork) {
+		artwork = aArtwork;
 	}
 
 	@Override

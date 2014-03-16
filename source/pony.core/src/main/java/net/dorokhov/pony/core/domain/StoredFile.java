@@ -16,6 +16,8 @@ public class StoredFile extends AbstractEntity<Integer> {
 
 	private String checksum;
 
+	private String tag;
+
 	private String path;
 
 	@Column(name = "name")
@@ -46,6 +48,15 @@ public class StoredFile extends AbstractEntity<Integer> {
 
 	public void setChecksum(String aChecksum) {
 		checksum = aChecksum;
+	}
+
+	@Column(name = "tag")
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String aTag) {
+		tag = aTag;
 	}
 
 	@Column(name = "relative_path", unique = true)

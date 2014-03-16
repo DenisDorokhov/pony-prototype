@@ -15,7 +15,8 @@ public interface StoredFileService {
 	public Page<StoredFile> getAll(Pageable aPageable);
 
 	public StoredFile getById(Integer aId);
-	public StoredFile getByPath(String aPath);
+	public StoredFile getByTagAndChecksum(String aTag, String aChecksum);
+	public StoredFile getByChecksum(String aChecksum);
 
 	public File load(Integer aId) throws FileNotFoundException;
 	public File load(StoredFile aStoredFile) throws FileNotFoundException;

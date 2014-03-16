@@ -5,6 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface StoredFileDao extends PagingAndSortingRepository<StoredFile, Integer> {
 
-	public StoredFile findByPath(String aPath);
+	public StoredFile findByChecksum(String aChecksum);
+	public StoredFile findByTagAndChecksum(String aTag, String aChecksum);
 
 }

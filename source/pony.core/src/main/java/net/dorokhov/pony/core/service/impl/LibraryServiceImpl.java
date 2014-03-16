@@ -152,8 +152,13 @@ public class LibraryServiceImpl implements LibraryService {
 	@Transactional
 	public void clean() {
 
+		log.debug("cleaning songs...");
 		cleanSongs();
+
+		log.debug("cleaning albums...");
 		cleanAlbums();
+
+		log.debug("cleaning artists...");
 		cleanArtists();
 	}
 
