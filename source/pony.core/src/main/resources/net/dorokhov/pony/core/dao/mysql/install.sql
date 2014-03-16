@@ -111,7 +111,7 @@ CREATE TABLE album (
 	track_count INT,
 	year INT,
 
-	artwork_stored_file_id INT NOT NULL,
+	artwork_stored_file_id INT,
 	artist_id INT NOT NULL,
 
 	UNIQUE (name, artist_id),

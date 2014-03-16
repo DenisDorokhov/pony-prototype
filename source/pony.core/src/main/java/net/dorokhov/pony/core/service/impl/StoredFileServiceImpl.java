@@ -27,8 +27,10 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 		storageFolder = new File(userHome, STORAGE_RELATIVE_PATH);
 
-		if (!storageFolder.mkdirs()) {
-			throw new RuntimeException("Could not create directory [" + storageFolder.getAbsolutePath() + "] for storing files.");
+		if (!storageFolder.exists()) {
+			if (!storageFolder.mkdirs()) {
+				throw new RuntimeException("Could not create directory [" + storageFolder.getAbsolutePath() + "] for storing files.");
+			}
 		}
 	}
 

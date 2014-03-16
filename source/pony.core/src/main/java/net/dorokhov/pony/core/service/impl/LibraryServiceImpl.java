@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -72,6 +73,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public SongFile importSongFile(File aFile) {
 
 		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
@@ -137,6 +139,11 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		return songFile;
+	}
+
+	@Override
+	public boolean importArtwork(SongFile aSongFile) {
+		return false;
 	}
 
 	@Override
