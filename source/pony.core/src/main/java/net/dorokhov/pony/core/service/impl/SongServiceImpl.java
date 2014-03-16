@@ -27,7 +27,7 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 	@Override
 	@Transactional(readOnly = true)
 	public List<Song> getByAlbum(Integer aAlbumId) {
-		return dao.findByAlbumId(aAlbumId, new Sort("file.trackNumber", "file.name"));
+		return dao.findByAlbumId(aAlbumId, new Sort("file.discNumber", "file.trackNumber", "file.name"));
 	}
 
 	@Override

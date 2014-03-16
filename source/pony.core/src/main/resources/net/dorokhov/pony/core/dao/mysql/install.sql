@@ -91,7 +91,7 @@ CREATE TABLE song_file (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-CREATE INDEX index_song_file_track_number_name ON song_file(track_number, name);
+CREATE INDEX index_song_file_track_number_name ON song_file(disc_number, track_number, name);
 
 CREATE TABLE artist (
 

@@ -167,6 +167,134 @@ public class LibraryServiceImpl implements LibraryService {
 		cleanArtists();
 	}
 
+	@Transactional
+	public void cleanSongs() {
+
+		List<Integer> songFilesToDelete = new ArrayList<Integer>();
+
+		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		do {
+
+			for (SongFile songFile : songFiles.getContent()) {
+
+				File file = new File(songFile.getPath());
+
+				if (!file.exists()) {
+
+					songFilesToDelete.add(songFile.getId());
+
+					log.debug("song file deleted: {}", songFile);
+
+					Song song = songService.getByFile(songFile.getId());
+
+					if (song != null) {
+
+						songService.deleteById(song.getId());
+
+						log.debug("song deleted: {}", song);
+					}
+				}
+			}
+
+			Pageable nextPageable = songFiles.nextPageable();
+
+			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
+
+		} while (songFiles != null);
+
+		for (Integer id : songFilesToDelete) {
+			songFileService.deleteById(id);
+		}
+	}
+
+	@Transactional
+	public void cleanFiles() {
+
+		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
+
+		Page<StoredFile> storedFiles = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		do {
+
+			for (StoredFile storedFile : storedFiles.getContent()) {
+				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
+
+					storedFilesToDelete.add(storedFile.getId());
+
+					log.debug("file deleted: {}", storedFile);
+				}
+			}
+
+			Pageable nextPageable = storedFiles.nextPageable();
+
+			storedFiles = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
+
+		} while (storedFiles != null);
+
+		for (Integer id : storedFilesToDelete) {
+			storedFileService.deleteById(id);
+		}
+	}
+
+	@Transactional
+	public void cleanAlbums() {
+
+		List<Integer> albumsToDelete = new ArrayList<Integer>();
+
+		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		do {
+
+			for (Album album : albums.getContent()) {
+				if (songService.getCountByAlbum(album.getId()) == 0) {
+
+					albumsToDelete.add(album.getId());
+
+					log.debug("album deleted: {}", album);
+				}
+			}
+
+			Pageable nextPageable = albums.nextPageable();
+
+			albums = nextPageable != null ? albumService.getAll(nextPageable) : null;
+
+		} while (albums != null);
+
+		for (Integer id : albumsToDelete) {
+			albumService.deleteById(id);
+		}
+	}
+
+	@Transactional
+	public void cleanArtists() {
+
+		List<Integer> artistsToDelete = new ArrayList<Integer>();
+
+		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		do {
+
+			for (Artist artist : artists.getContent()) {
+				if (albumService.getCountByArtist(artist.getId()) == 0) {
+
+					artistsToDelete.add(artist.getId());
+
+					log.debug("artist deleted: {}", artist);
+				}
+			}
+
+			Pageable nextPageable = artists.nextPageable();
+
+			artists = nextPageable != null ? artistService.getAll(nextPageable) : null;
+
+		} while (artists != null);
+
+		for (Integer id : artistsToDelete) {
+			artistService.deleteById(id);
+		}
+	}
+
 	private EntityModification<SongFile> importSongFile(SongData aSongData) {
 
 		boolean shouldSave = false;
@@ -349,130 +477,6 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		return new EntityModification<Song>(song, shouldSave);
-	}
-
-	private void cleanSongs() {
-
-		List<Integer> songFilesToDelete = new ArrayList<Integer>();
-
-		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
-
-		do {
-
-			for (SongFile songFile : songFiles.getContent()) {
-
-				File file = new File(songFile.getPath());
-
-				if (!file.exists()) {
-
-					songFilesToDelete.add(songFile.getId());
-
-					log.debug("song file deleted: {}", songFile);
-
-					Song song = songService.getByFile(songFile.getId());
-
-					if (song != null) {
-
-						songService.deleteById(song.getId());
-
-						log.debug("song deleted: {}", song);
-					}
-				}
-			}
-
-			Pageable nextPageable = songFiles.nextPageable();
-
-			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
-
-		} while (songFiles != null);
-
-		for (Integer id : songFilesToDelete) {
-			songFileService.deleteById(id);
-		}
-	}
-
-	private void cleanFiles() {
-
-		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
-
-		Page<StoredFile> storedFiles = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
-
-		do {
-
-			for (StoredFile storedFile : storedFiles.getContent()) {
-				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
-
-					storedFilesToDelete.add(storedFile.getId());
-
-					log.debug("file deleted: {}", storedFile);
-				}
-			}
-
-			Pageable nextPageable = storedFiles.nextPageable();
-
-			storedFiles = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
-
-		} while (storedFiles != null);
-
-		for (Integer id : storedFilesToDelete) {
-			storedFileService.deleteById(id);
-		}
-	}
-
-	private void cleanAlbums() {
-
-		List<Integer> albumsToDelete = new ArrayList<Integer>();
-
-		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
-
-		do {
-
-			for (Album album : albums.getContent()) {
-				if (songService.getCountByAlbum(album.getId()) == 0) {
-
-					albumsToDelete.add(album.getId());
-
-					log.debug("album deleted: {}", album);
-				}
-			}
-
-			Pageable nextPageable = albums.nextPageable();
-
-			albums = nextPageable != null ? albumService.getAll(nextPageable) : null;
-
-		} while (albums != null);
-
-		for (Integer id : albumsToDelete) {
-			albumService.deleteById(id);
-		}
-	}
-
-	private void cleanArtists() {
-
-		List<Integer> artistsToDelete = new ArrayList<Integer>();
-
-		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
-
-		do {
-
-			for (Artist artist : artists.getContent()) {
-				if (albumService.getCountByArtist(artist.getId()) == 0) {
-
-					artistsToDelete.add(artist.getId());
-
-					log.debug("artist deleted: {}", artist);
-				}
-			}
-
-			Pageable nextPageable = artists.nextPageable();
-
-			artists = nextPageable != null ? artistService.getAll(nextPageable) : null;
-
-		} while (artists != null);
-
-		for (Integer id : artistsToDelete) {
-			artistService.deleteById(id);
-		}
 	}
 
 	private static class EntityModification<T extends AbstractEntity> {
