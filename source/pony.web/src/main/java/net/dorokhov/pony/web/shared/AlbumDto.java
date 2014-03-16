@@ -52,17 +52,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 		trackCount = aTrackCount;
 	}
 
-	public Integer getArtwork() {
-
-		for (SongDto song : getSongs()) {
-			if (song.getArtwork() != null) {
-				return song.getArtwork();
-			}
-		}
-
-		return null;
-	}
-
 	public String getArtist() {
 		return artist;
 	}
