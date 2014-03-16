@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.service.impl;
 
+import net.dorokhov.pony.core.domain.SongArtwork;
 import net.dorokhov.pony.core.domain.SongData;
 import net.dorokhov.pony.core.service.SongDataReader;
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +9,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.datatype.Artwork;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -56,6 +58,22 @@ public class SongDataReaderImpl implements SongDataReader {
 		}
 
 		return metaData;
+	}
+
+	@Override
+	public SongArtwork readSongArtwork(File aFile) throws Exception {
+
+		AudioFile audioFile = AudioFileIO.read(aFile);
+
+		Tag tag = audioFile.getTag();
+
+		Artwork tagArtwork = tag.getFirstArtwork();
+
+		if (tagArtwork != null) {
+			return new SongArtwork(tagArtwork.getBinaryData(), tagArtwork.getMimeType());
+		}
+
+		return null;
 	}
 
 	private String parseStringTag(Tag aTag, FieldKey aKey) {

@@ -28,6 +28,25 @@ CREATE TABLE configuration (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
+CREATE TABLE stored_file (
+
+	id INT NOT NULL AUTO_INCREMENT,
+
+	creation_date TIMESTAMP NOT NULL,
+	update_date TIMESTAMP NOT NULL,
+
+	generation BIGINT NOT NULL,
+
+	name VARCHAR(255) NOT NULL,
+	mime_type VARCHAR(255) NOT NULL,
+	checksum VARCHAR(255) NOT NULL,
+	relative_path VARCHAR(255) NOT NULL,
+
+	UNIQUE (relative_path),
+	PRIMARY KEY (id)
+
+) CHARSET=UTF8 ENGINE=InnoDB;
+
 CREATE TABLE song_file (
 
 	id INT NOT NULL AUTO_INCREMENT,
@@ -92,11 +111,13 @@ CREATE TABLE album (
 	track_count INT,
 	year INT,
 
+	artwork_stored_file_id INT NOT NULL,
 	artist_id INT NOT NULL,
 
 	UNIQUE (name, artist_id),
 	PRIMARY KEY (id),
 
+	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE
 
 ) CHARSET=UTF8 ENGINE=InnoDB;

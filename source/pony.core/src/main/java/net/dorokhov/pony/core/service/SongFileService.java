@@ -13,7 +13,6 @@ public interface SongFileService {
 	public Page<SongFile> getAll(Pageable aPageable);
 
 	public SongFile getById(Integer aId);
-
 	public SongFile getByPath(String aPath);
 
 	public SongFile save(SongFile aSongFile) throws ConstraintViolationException;
