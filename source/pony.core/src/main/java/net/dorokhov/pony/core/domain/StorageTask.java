@@ -60,8 +60,25 @@ public class StorageTask {
 	}
 
 	public static StorageTask createWithTemporaryFile(byte[] aContents) throws IOException {
+		return createWithTemporaryFile(aContents, null);
+	}
 
-		File createdFile = new File(FileUtils.getTempDirectory(), "StorageTask-" + UUID.randomUUID());
+	public static StorageTask createWithTemporaryFile(byte[] aContents, String aName) throws IOException {
+
+		String fileName;
+
+		if (aName != null) {
+
+			aName = aName.replaceAll("[^a-zA-Z0-9\\s]", "");
+			aName = aName.replaceAll("\\s+", "-");
+
+			fileName = aName + "-" + UUID.randomUUID();
+
+		} else {
+			fileName = UUID.randomUUID().toString();
+		}
+
+		File createdFile = new File(FileUtils.getTempDirectory(), fileName);
 
 		FileUtils.writeByteArrayToFile(createdFile, aContents);
 

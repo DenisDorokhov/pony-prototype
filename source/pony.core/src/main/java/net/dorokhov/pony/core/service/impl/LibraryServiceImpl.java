@@ -217,7 +217,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 				try {
 
-					StorageTask storageTask = StorageTask.createWithTemporaryFile(aSongData.getArtwork().getBinaryData());
+					String contentName = aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName();
+
+					StorageTask storageTask = StorageTask.createWithTemporaryFile(aSongData.getArtwork().getBinaryData(), contentName);
 
 					storageTask.setMimeType(aSongData.getArtwork().getMimeType());
 					storageTask.setChecksum(checksum);
