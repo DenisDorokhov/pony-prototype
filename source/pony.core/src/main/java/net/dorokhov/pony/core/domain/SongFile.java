@@ -171,7 +171,7 @@ public class SongFile extends AbstractEntity<Integer> {
 		year = aYear;
 	}
 
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "artwork_stored_file_id")
 	public StoredFile getArtwork() {
 		return artwork;
