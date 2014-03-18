@@ -186,15 +186,6 @@ public class LibraryServiceImpl implements LibraryService {
 					itemsToDelete.add(songFile.getId());
 
 					log.debug("song file deleted: {}", songFile);
-
-					Song song = songService.getByFile(songFile.getId());
-
-					if (song != null) {
-
-						songService.deleteById(song.getId());
-
-						log.debug("song deleted: {}", song);
-					}
 				}
 
 				if (aHandler != null) {

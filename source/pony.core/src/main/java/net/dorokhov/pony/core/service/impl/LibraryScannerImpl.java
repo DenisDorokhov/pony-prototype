@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PreDestroy;
 import java.io.File;
@@ -70,6 +72,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException {
 
 		if (statusReference.get().isScanning()) {
@@ -135,6 +138,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Result scan(File aTargetFile) throws ConcurrentScanException {
 
 		ArrayList<File> files = new ArrayList<File>();

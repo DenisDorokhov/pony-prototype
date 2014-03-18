@@ -39,6 +39,8 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	private StoredFile artwork;
 
+	private Song song;
+
 	@Column(name = "path", unique = true)
 	@NotBlank
 	public String getPath() {
@@ -179,6 +181,15 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	public void setArtwork(StoredFile aArtwork) {
 		artwork = aArtwork;
+	}
+
+	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "file")
+	public Song getSong() {
+		return song;
+	}
+
+	public void setSong(Song aSong) {
+		song = aSong;
 	}
 
 	@Override
