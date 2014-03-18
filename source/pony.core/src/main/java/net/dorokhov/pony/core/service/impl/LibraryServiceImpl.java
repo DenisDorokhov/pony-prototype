@@ -153,9 +153,9 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanDeletedSongs(ProgressHandler aHandler) {
+	public void cleanSongs(List<File> aTargetFiles, ProgressHandler aHandler) {
 
-		List<Integer> songFilesToDelete = new ArrayList<Integer>();
+		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
 
@@ -167,9 +167,23 @@ public class LibraryServiceImpl implements LibraryService {
 
 				File file = new File(songFile.getPath());
 
-				if (!file.exists()) {
+				boolean shouldDelete = !file.exists();
 
-					songFilesToDelete.add(songFile.getId());
+				if (!shouldDelete) {
+
+					shouldDelete = true;
+
+					for (File targetFile : aTargetFiles) {
+						if (file.getAbsolutePath().startsWith(targetFile.getAbsolutePath())) {
+							shouldDelete = false;
+							break;
+						}
+					}
+				}
+
+				if (shouldDelete) {
+
+					itemsToDelete.add(songFile.getId());
 
 					log.debug("song file deleted: {}", songFile);
 
@@ -196,15 +210,19 @@ public class LibraryServiceImpl implements LibraryService {
 
 		} while (page != null);
 
-		for (Integer id : songFilesToDelete) {
+		for (Integer id : itemsToDelete) {
 			songFileService.deleteById(id);
+		}
+
+		if (itemsToDelete.size() > 0) {
+			log.info("deleted {} songs", itemsToDelete.size());
 		}
 	}
 
 	@Transactional
-	public void cleanNotUsedFiles(ProgressHandler aHandler) {
+	public void cleanStoredFiles(ProgressHandler aHandler) {
 
-		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
+		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
 
@@ -216,9 +234,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
 
-					storedFilesToDelete.add(storedFile.getId());
+					itemsToDelete.add(storedFile.getId());
 
-					log.debug("file deleted: {}", storedFile);
+					log.debug("stored file deleted: {}", storedFile);
 				}
 
 				if (aHandler != null) {
@@ -234,15 +252,19 @@ public class LibraryServiceImpl implements LibraryService {
 
 		} while (page != null);
 
-		for (Integer id : storedFilesToDelete) {
+		for (Integer id : itemsToDelete) {
 			storedFileService.deleteById(id);
+		}
+
+		if (itemsToDelete.size() > 0) {
+			log.info("deleted {} stored files", itemsToDelete.size());
 		}
 	}
 
 	@Transactional
-	public void cleanNotUsedAlbums(ProgressHandler aHandler) {
+	public void cleanAlbums(ProgressHandler aHandler) {
 
-		List<Integer> albumsToDelete = new ArrayList<Integer>();
+		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
 
@@ -254,7 +276,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 				if (songService.getCountByAlbum(album.getId()) == 0) {
 
-					albumsToDelete.add(album.getId());
+					itemsToDelete.add(album.getId());
 
 					log.debug("album deleted: {}", album);
 				}
@@ -272,15 +294,19 @@ public class LibraryServiceImpl implements LibraryService {
 
 		} while (page != null);
 
-		for (Integer id : albumsToDelete) {
+		for (Integer id : itemsToDelete) {
 			albumService.deleteById(id);
+		}
+
+		if (itemsToDelete.size() > 0) {
+			log.info("deleted {} albums", itemsToDelete.size());
 		}
 	}
 
 	@Transactional
-	public void cleanNotUsedArtists(ProgressHandler aHandler) {
+	public void cleanArtists(ProgressHandler aHandler) {
 
-		List<Integer> artistsToDelete = new ArrayList<Integer>();
+		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
 
@@ -292,7 +318,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 				if (albumService.getCountByArtist(artist.getId()) == 0) {
 
-					artistsToDelete.add(artist.getId());
+					itemsToDelete.add(artist.getId());
 
 					log.debug("artist deleted: {}", artist);
 				}
@@ -310,8 +336,12 @@ public class LibraryServiceImpl implements LibraryService {
 
 		} while (page != null);
 
-		for (Integer id : artistsToDelete) {
+		for (Integer id : itemsToDelete) {
 			artistService.deleteById(id);
+		}
+
+		if (itemsToDelete.size() > 0) {
+			log.info("deleted {} artists", itemsToDelete.size());
 		}
 	}
 

@@ -188,32 +188,32 @@ public class LibraryScannerImpl implements LibraryScanner {
 			throw new RuntimeException(e);
 		}
 
-		log.debug("cleaning songs...");
-		libraryService.cleanDeletedSongs(new LibraryService.ProgressHandler() {
+		log.info("cleaning songs...");
+		libraryService.cleanSongs(aTargetFiles, new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningSongs", aProgress, 3));
 			}
 		});
 
-		log.debug("cleaning stored files...");
-		libraryService.cleanNotUsedFiles(new LibraryService.ProgressHandler() {
+		log.info("cleaning stored files...");
+		libraryService.cleanStoredFiles(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningFiles", aProgress, 4));
 			}
 		});
 
-		log.debug("cleaning albums...");
-		libraryService.cleanNotUsedAlbums(new LibraryService.ProgressHandler() {
+		log.info("cleaning albums...");
+		libraryService.cleanAlbums(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningAlbums", aProgress, 5));
 			}
 		});
 
-		log.debug("cleaning artists...");
-		libraryService.cleanNotUsedArtists(new LibraryService.ProgressHandler() {
+		log.info("cleaning artists...");
+		libraryService.cleanArtists(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningArtists", aProgress, 6));
