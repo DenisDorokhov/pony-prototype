@@ -85,7 +85,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 	@Override
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public SongFile importSongFile(File aFile) {
+	public SongFile importSong(File aFile) {
 
 		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
 
@@ -152,33 +152,18 @@ public class LibraryServiceImpl implements LibraryService {
 		return songFile;
 	}
 
-	@Override
 	@Transactional
-	public void clean() {
-
-		log.debug("cleaning songs...");
-		cleanSongs();
-
-		log.debug("cleaning stored files...");
-		cleanFiles();
-
-		log.debug("cleaning albums...");
-		cleanAlbums();
-
-		log.debug("cleaning artists...");
-		cleanArtists();
-	}
-
-	@Transactional
-	public void cleanSongs() {
+	public void cleanDeletedSongs(ProgressHandler aHandler) {
 
 		List<Integer> songFilesToDelete = new ArrayList<Integer>();
 
-		Page<SongFile> songFiles = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		long processedItems = 0;
+
+		Page<SongFile> page = songFileService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
-			for (SongFile songFile : songFiles.getContent()) {
+			for (SongFile songFile : page.getContent()) {
 
 				File file = new File(songFile.getPath());
 
@@ -197,13 +182,19 @@ public class LibraryServiceImpl implements LibraryService {
 						log.debug("song deleted: {}", song);
 					}
 				}
+
+				if (aHandler != null) {
+					aHandler.handleProgress((double) processedItems / page.getTotalElements());
+				}
+
+				processedItems++;
 			}
 
-			Pageable nextPageable = songFiles.nextPageable();
+			Pageable nextPageable = page.nextPageable();
 
-			songFiles = nextPageable != null ? songFileService.getAll(nextPageable) : null;
+			page = nextPageable != null ? songFileService.getAll(nextPageable) : null;
 
-		} while (songFiles != null);
+		} while (page != null);
 
 		for (Integer id : songFilesToDelete) {
 			songFileService.deleteById(id);
@@ -211,28 +202,37 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanFiles() {
+	public void cleanNotUsedFiles(ProgressHandler aHandler) {
 
 		List<Integer> storedFilesToDelete = new ArrayList<Integer>();
 
-		Page<StoredFile> storedFiles = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		long processedItems = 0;
+
+		Page<StoredFile> page = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
-			for (StoredFile storedFile : storedFiles.getContent()) {
+			for (StoredFile storedFile : page.getContent()) {
+
 				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
 
 					storedFilesToDelete.add(storedFile.getId());
 
 					log.debug("file deleted: {}", storedFile);
 				}
+
+				if (aHandler != null) {
+					aHandler.handleProgress((double) processedItems / page.getTotalElements());
+				}
+
+				processedItems++;
 			}
 
-			Pageable nextPageable = storedFiles.nextPageable();
+			Pageable nextPageable = page.nextPageable();
 
-			storedFiles = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
+			page = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
 
-		} while (storedFiles != null);
+		} while (page != null);
 
 		for (Integer id : storedFilesToDelete) {
 			storedFileService.deleteById(id);
@@ -240,28 +240,37 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanAlbums() {
+	public void cleanNotUsedAlbums(ProgressHandler aHandler) {
 
 		List<Integer> albumsToDelete = new ArrayList<Integer>();
 
-		Page<Album> albums = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		long processedItems = 0;
+
+		Page<Album> page = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
-			for (Album album : albums.getContent()) {
+			for (Album album : page.getContent()) {
+
 				if (songService.getCountByAlbum(album.getId()) == 0) {
 
 					albumsToDelete.add(album.getId());
 
 					log.debug("album deleted: {}", album);
 				}
+
+				if (aHandler != null) {
+					aHandler.handleProgress((double) processedItems / page.getTotalElements());
+				}
+
+				processedItems++;
 			}
 
-			Pageable nextPageable = albums.nextPageable();
+			Pageable nextPageable = page.nextPageable();
 
-			albums = nextPageable != null ? albumService.getAll(nextPageable) : null;
+			page = nextPageable != null ? albumService.getAll(nextPageable) : null;
 
-		} while (albums != null);
+		} while (page != null);
 
 		for (Integer id : albumsToDelete) {
 			albumService.deleteById(id);
@@ -269,28 +278,37 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanArtists() {
+	public void cleanNotUsedArtists(ProgressHandler aHandler) {
 
 		List<Integer> artistsToDelete = new ArrayList<Integer>();
 
-		Page<Artist> artists = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		long processedItems = 0;
+
+		Page<Artist> page = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
 		do {
 
-			for (Artist artist : artists.getContent()) {
+			for (Artist artist : page.getContent()) {
+
 				if (albumService.getCountByArtist(artist.getId()) == 0) {
 
 					artistsToDelete.add(artist.getId());
 
 					log.debug("artist deleted: {}", artist);
 				}
+
+				if (aHandler != null) {
+					aHandler.handleProgress((double) processedItems / page.getTotalElements());
+				}
+
+				processedItems++;
 			}
 
-			Pageable nextPageable = artists.nextPageable();
+			Pageable nextPageable = page.nextPageable();
 
-			artists = nextPageable != null ? artistService.getAll(nextPageable) : null;
+			page = nextPageable != null ? artistService.getAll(nextPageable) : null;
 
-		} while (artists != null);
+		} while (page != null);
 
 		for (Integer id : artistsToDelete) {
 			artistService.deleteById(id);

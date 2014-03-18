@@ -34,8 +34,12 @@ public interface LibraryScanner {
 		public boolean isScanning();
 
 		public List<File> getTargetFiles();
+
 		public String getDescription();
+
 		public double getProgress();
+		public int getStep();
+		public int getTotalSteps();
 	}
 
 	public static interface Delegate {

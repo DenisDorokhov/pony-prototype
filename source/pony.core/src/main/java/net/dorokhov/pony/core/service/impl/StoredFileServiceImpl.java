@@ -114,7 +114,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 			StoredFile storedFile = new StoredFile();
 
-			storedFile.setName(aTask.getFile().getName());
+			storedFile.setName(targetFile.getName());
 			storedFile.setMimeType(aTask.getMimeType());
 			storedFile.setChecksum(aTask.getChecksum());
 			storedFile.setTag(aTask.getTag());

@@ -14,6 +14,10 @@ public class StatusDto implements Serializable {
 
 	private double progress;
 
+	private int step;
+
+	private int totalSteps;
+
 	public boolean isScanning() {
 		return scanning;
 	}
@@ -49,5 +53,21 @@ public class StatusDto implements Serializable {
 
 	public void setProgress(double aProgress) {
 		progress = aProgress;
+	}
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int aStep) {
+		step = aStep;
+	}
+
+	public int getTotalSteps() {
+		return totalSteps;
+	}
+
+	public void setTotalSteps(int aTotalSteps) {
+		totalSteps = aTotalSteps;
 	}
 }

@@ -6,8 +6,15 @@ import java.io.File;
 
 public interface LibraryService {
 
-	public SongFile importSongFile(File aFile);
+	public SongFile importSong(File aFile);
 
-	public void clean();
+	public void cleanDeletedSongs(ProgressHandler aHandler);
+	public void cleanNotUsedFiles(ProgressHandler aHandler);
+	public void cleanNotUsedAlbums(ProgressHandler aHandler);
+	public void cleanNotUsedArtists(ProgressHandler aHandler);
+
+	public interface ProgressHandler {
+		public void handleProgress(double aProgress);
+	}
 
 }

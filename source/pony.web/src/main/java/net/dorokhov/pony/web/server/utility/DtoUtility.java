@@ -21,6 +21,8 @@ public class DtoUtility {
 		dto.setScanning(aStatus.isScanning());
 		dto.setProgress(aStatus.getProgress());
 		dto.setDescription(aStatus.getDescription());
+		dto.setStep(aStatus.getStep());
+		dto.setTotalSteps(aStatus.getTotalSteps());
 
 		if (aStatus.getTargetFiles() != null) {
 			for (File file : aStatus.getTargetFiles()) {
