@@ -158,10 +158,11 @@ public class SongData {
 
 		private String mimeType;
 
-		public Artwork() {}
+		private String checksum;
 
-		public Artwork(byte[] aBinaryData, String aMimeType) {
+		public Artwork(byte[] aBinaryData, String aChecksum, String aMimeType) {
 			binaryData = aBinaryData;
+			checksum = aChecksum;
 			mimeType = aMimeType;
 		}
 
@@ -169,16 +170,12 @@ public class SongData {
 			return binaryData;
 		}
 
-		public void setBinaryData(byte[] aBinaryData) {
-			binaryData = aBinaryData;
-		}
-
 		public String getMimeType() {
 			return mimeType;
 		}
 
-		public void setMimeType(String aMimeType) {
-			mimeType = aMimeType;
+		public String getChecksum() {
+			return checksum;
 		}
 	}
 

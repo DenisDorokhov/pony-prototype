@@ -1,10 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 public class StorageTask {
 
@@ -15,6 +11,8 @@ public class StorageTask {
 	private final Type type;
 
 	private final File file;
+
+	private String name;
 
 	private String mimeType;
 
@@ -33,6 +31,14 @@ public class StorageTask {
 
 	public File getFile() {
 		return file;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String aName) {
+		name = aName;
 	}
 
 	public String getMimeType() {
@@ -57,32 +63,6 @@ public class StorageTask {
 
 	public void setTag(String aTag) {
 		tag = aTag;
-	}
-
-	public static StorageTask createWithTemporaryFile(byte[] aContents) throws IOException {
-		return createWithTemporaryFile(aContents, null);
-	}
-
-	public static StorageTask createWithTemporaryFile(byte[] aContents, String aName) throws IOException {
-
-		String fileName;
-
-		if (aName != null) {
-
-			aName = aName.replaceAll("[^a-zA-Z0-9\\s]", "");
-			aName = aName.replaceAll("\\s+", "-");
-
-			fileName = aName + "-" + UUID.randomUUID();
-
-		} else {
-			fileName = UUID.randomUUID().toString();
-		}
-
-		File createdFile = new File(FileUtils.getTempDirectory(), fileName);
-
-		FileUtils.writeByteArrayToFile(createdFile, aContents);
-
-		return new StorageTask(Type.MOVE, createdFile);
 	}
 
 	@Override

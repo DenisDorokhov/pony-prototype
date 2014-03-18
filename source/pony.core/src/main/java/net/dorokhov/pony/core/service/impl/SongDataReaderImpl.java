@@ -2,6 +2,7 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.SongData;
 import net.dorokhov.pony.core.service.SongDataReader;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -58,7 +59,7 @@ public class SongDataReaderImpl implements SongDataReader {
 			Artwork artwork = tag.getFirstArtwork();
 
 			if (artwork != null) {
-				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), artwork.getMimeType()));
+				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), DigestUtils.md5Hex(artwork.getBinaryData()), artwork.getMimeType()));
 			}
 		}
 

@@ -2,7 +2,7 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
@@ -299,32 +301,21 @@ public class LibraryServiceImpl implements LibraryService {
 
 		boolean shouldSave = false;
 
-		String checksum = null;
-		if (aSongData.getArtwork() != null) {
-			checksum = DigestUtils.md5Hex(aSongData.getArtwork().getBinaryData());
-		}
-
 		StoredFile storedFile = null;
 
-		if (checksum != null) {
+		if (aSongData.getArtwork() != null && aSongData.getArtwork().getChecksum() != null) {
 
-			storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK, checksum);
+			storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK, aSongData.getArtwork().getChecksum());
 
 			if (storedFile == null) {
 
 				try {
 
-					String contentName = aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName();
-
-					StorageTask storageTask = StorageTask.createWithTemporaryFile(aSongData.getArtwork().getBinaryData(), contentName);
-
-					storageTask.setMimeType(aSongData.getArtwork().getMimeType());
-					storageTask.setChecksum(checksum);
-					storageTask.setTag(FILE_TAG_ARTWORK);
+					StorageTask storageTask = songDataToArtworkStorageTask(aSongData);
 
 					storedFile = storedFileService.save(storageTask);
 
-					log.debug("stored not-existing artwork {}", storedFile);
+					log.debug("artwork stored {}", storedFile);
 
 				} catch (Exception e) {
 					log.warn("could not store artwork", e);
@@ -477,6 +468,22 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		return new EntityModification<Song>(song, shouldSave);
+	}
+
+	private StorageTask songDataToArtworkStorageTask(SongData aSongData) throws IOException {
+
+		File createdFile = new File(FileUtils.getTempDirectory(), "pony.artwork." + UUID.randomUUID() + ".tmp");
+
+		FileUtils.writeByteArrayToFile(createdFile, aSongData.getArtwork().getBinaryData());
+
+		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, createdFile);
+
+		storageTask.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
+		storageTask.setMimeType(aSongData.getArtwork().getMimeType());
+		storageTask.setChecksum(aSongData.getArtwork().getChecksum());
+		storageTask.setTag(FILE_TAG_ARTWORK);
+
+		return storageTask;
 	}
 
 	private static class EntityModification<T extends AbstractEntity> {

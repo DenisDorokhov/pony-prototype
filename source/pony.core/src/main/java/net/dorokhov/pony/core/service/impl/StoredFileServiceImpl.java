@@ -191,15 +191,40 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 		do {
 
-			String pathHash = DigestUtils.md5Hex(aTask.getFile().getAbsolutePath() + attempt);
-
 			StringBuilder buf = new StringBuilder(StringUtils.hasText(aTask.getTag()) ? aTask.getTag().trim() + "/" : "");
 
+			String pathHash = DigestUtils.md5Hex(aTask.getFile().getAbsolutePath() + attempt);
+
+			// Don't put too many files into one folder
 			buf.append(pathHash.substring(0, 7)).append("/")
 					.append(pathHash.substring(8, 15)).append("/")
 					.append(pathHash.substring(16, 23)).append("/")
-					.append(pathHash.substring(24, 31)).append("/")
-					.append(aTask.getFile().getName());
+					.append(pathHash.substring(24, 31)).append("/");
+
+			// Append task name or file name
+			if (aTask.getName() != null) {
+
+				String name = aTask.getName();
+
+				name = name.replaceAll("[^a-zA-Z0-9\\s]", "");
+				name = name.replaceAll("\\s+", "-");
+
+				buf.append(name);
+
+			} else {
+				buf.append(aTask.getFile().getName());
+			}
+
+			// Append attempt number (to guarantee file name to be unique)
+			if (attempt > 0) {
+				buf.append(attempt);
+			}
+
+			// Append type extension
+			String[] mimeTypeParts = aTask.getMimeType().split("/");
+			if (mimeTypeParts.length > 1) {
+				buf.append(".").append(mimeTypeParts[1]);
+			}
 
 			file = new File(buf.toString());
 
