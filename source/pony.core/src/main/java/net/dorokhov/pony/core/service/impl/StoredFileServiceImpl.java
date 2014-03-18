@@ -4,8 +4,8 @@ import net.dorokhov.pony.core.dao.StoredFileDao;
 import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.StoredFileService;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -193,13 +193,9 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 			StringBuilder buf = new StringBuilder(StringUtils.hasText(aTask.getTag()) ? aTask.getTag().trim() + "/" : "");
 
-			String pathHash = DigestUtils.md5Hex(aTask.getFile().getAbsolutePath() + attempt);
-
 			// Don't put too many files into one folder
-			buf.append(pathHash.substring(0, 7)).append("/")
-					.append(pathHash.substring(8, 15)).append("/")
-					.append(pathHash.substring(16, 23)).append("/")
-					.append(pathHash.substring(24, 31)).append("/");
+			buf.append(RandomStringUtils.random(2, false, true)).append("/")
+					.append(RandomStringUtils.random(2, false, true)).append("/");
 
 			// Append task name or file name
 			if (aTask.getName() != null) {
