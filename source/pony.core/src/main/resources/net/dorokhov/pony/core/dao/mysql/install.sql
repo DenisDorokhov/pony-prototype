@@ -132,7 +132,6 @@ CREATE TABLE album (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-CREATE INDEX index_album_artist_id ON album(artist_id);
 CREATE INDEX index_album_artist_id_name ON album(artist_id, name);
 CREATE INDEX index_album_artist_id_year_name ON album(artist_id, year, name);
 
@@ -155,7 +154,5 @@ CREATE TABLE song (
 	FOREIGN KEY (album_id) REFERENCES album(id) ON DELETE CASCADE ON UPDATE CASCADE
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
-
-CREATE INDEX index_song_album_id ON song(album_id);
 
 INSERT INTO installation (creation_date, update_date, generation, version) VALUES (NOW(), NOW(), '0', '1.0');
