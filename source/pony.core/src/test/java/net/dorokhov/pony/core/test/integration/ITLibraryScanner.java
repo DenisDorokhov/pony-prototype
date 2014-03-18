@@ -60,6 +60,8 @@ public class ITLibraryScanner extends AbstractIntegrationCase {
 
 		for (int i = 0; i < 2; i++) {
 
+			// TODO: change path to test MP3 files stored in VCS
+
 			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/Slayer"));
 
 			assertTrue(result.getScannedFoldersCount() > 0);

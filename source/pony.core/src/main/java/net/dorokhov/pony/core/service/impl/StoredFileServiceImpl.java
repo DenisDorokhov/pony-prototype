@@ -29,7 +29,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 	private File filesFolder;
 
-	@Value("${storage.folder}")
+	@Value("${storedFile.path}")
 	public void setStorageFolder(String aStorageFolder) {
 
 		storageFolder = aStorageFolder;
@@ -174,7 +174,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 		File userHome = FileUtils.getUserDirectory();
 
-		filesFolder = new File(userHome, storageFolder + "/files");
+		filesFolder = new File(userHome, storageFolder);
 
 		if (!filesFolder.exists()) {
 			if (!filesFolder.mkdirs()) {
