@@ -6,8 +6,6 @@ import java.util.List;
 
 public class StatusDto implements Serializable {
 
-	private boolean scanning;
-
 	private List<String> targetFiles;
 
 	private String description;
@@ -17,14 +15,6 @@ public class StatusDto implements Serializable {
 	private int step;
 
 	private int totalSteps;
-
-	public boolean isScanning() {
-		return scanning;
-	}
-
-	public void setScanning(boolean aScanning) {
-		scanning = aScanning;
-	}
 
 	public List<String> getTargetFiles() {
 

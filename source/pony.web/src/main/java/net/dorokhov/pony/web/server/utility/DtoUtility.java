@@ -18,7 +18,6 @@ public class DtoUtility {
 
 		StatusDto dto = new StatusDto();
 
-		dto.setScanning(aStatus.isScanning());
 		dto.setProgress(aStatus.getProgress());
 		dto.setDescription(aStatus.getDescription());
 		dto.setStep(aStatus.getStep());

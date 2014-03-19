@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PreDestroy;
@@ -41,10 +40,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private LibraryService libraryService;
 
-	public LibraryScannerImpl() {
-		statusReference.set(new LibraryScannerStatus(false, null, null, 0.0, 0));
-	}
-
 	@Autowired
 	public void setLibraryService(LibraryService aLibraryService) {
 		libraryService = aLibraryService;
@@ -68,18 +63,21 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	@Override
 	public Status getStatus() {
-		return new LibraryScannerStatus(statusReference.get());
+
+		Status status = statusReference.get();
+
+		return new LibraryScannerStatus(status);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional
 	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException {
 
-		if (statusReference.get().isScanning()) {
+		if (statusReference.get() != null) {
 			throw new ConcurrentScanException();
 		}
 
-		statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "preparing", 0.0, 1));
+		statusReference.set(new LibraryScannerStatus(aTargetFiles, "preparing", 0.0, 1));
 
 		synchronized (lockDelegates) {
 			for (Delegate next : delegates) {
@@ -127,7 +125,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		} finally {
 
 			executorServiceReference.set(null);
-			statusReference.set(new LibraryScannerStatus(false, null, null, 0.0, 0));
+			statusReference.set(null);
 			processedFilesCountReference.set(0);
 		}
 
@@ -138,7 +136,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional
 	public Result scan(File aTargetFile) throws ConcurrentScanException {
 
 		ArrayList<File> files = new ArrayList<File>();
@@ -196,7 +194,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		libraryService.cleanSongs(aTargetFiles, new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningSongs", aProgress, 3));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningSongs", aProgress, 3));
 			}
 		});
 
@@ -204,7 +202,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		libraryService.cleanStoredFiles(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningFiles", aProgress, 4));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningFiles", aProgress, 4));
 			}
 		});
 
@@ -212,7 +210,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		libraryService.cleanAlbums(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningAlbums", aProgress, 5));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningAlbums", aProgress, 5));
 			}
 		});
 
@@ -220,7 +218,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		libraryService.cleanArtists(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(true, aTargetFiles, "cleaningArtists", aProgress, 6));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningArtists", aProgress, 6));
 			}
 		});
 
@@ -314,14 +312,12 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private static class LibraryScannerStatus implements Status {
 
-		private final boolean scanning;
 		private final List<File> targetFiles;
 		private final String description;
 		private final double progress;
 		private final int step;
 
-		public LibraryScannerStatus(boolean aScanning, List<File> aTargetFiles, String aDescription, double aProgress, int aStep) {
-			scanning = aScanning;
+		public LibraryScannerStatus(List<File> aTargetFiles, String aDescription, double aProgress, int aStep) {
 			targetFiles = aTargetFiles != null ? new ArrayList<File>(aTargetFiles) : null;
 			description = aDescription;
 			progress = aProgress;
@@ -329,12 +325,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 
 		public LibraryScannerStatus(Status aStatus) {
-			this(aStatus.isScanning(), aStatus.getTargetFiles(), aStatus.getDescription(), aStatus.getProgress(), aStatus.getStep());
-		}
-
-		@Override
-		public boolean isScanning() {
-			return scanning;
+			this(aStatus.getTargetFiles(), aStatus.getDescription(), aStatus.getProgress(), aStatus.getStep());
 		}
 
 		@Override
@@ -391,7 +382,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			double progress = (double) processedFilesCount / result.getScannedFilesCount();
 
-			statusReference.set(new LibraryScannerStatus(true, result.getTargetFiles(), "processing", progress, 2));
+			statusReference.set(new LibraryScannerStatus(result.getTargetFiles(), "processing", progress, 2));
 
 			synchronized (lockDelegates) {
 				for (Delegate next : delegates) {

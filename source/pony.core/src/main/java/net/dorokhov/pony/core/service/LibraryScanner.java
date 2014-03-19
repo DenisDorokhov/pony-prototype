@@ -31,8 +31,6 @@ public interface LibraryScanner {
 
 	public static interface Status {
 
-		public boolean isScanning();
-
 		public List<File> getTargetFiles();
 
 		public String getDescription();

@@ -35,7 +35,7 @@ public class LibraryServiceRemoteImpl implements LibraryServiceRemote {
 	@Override
 	synchronized public void startScanning() throws ConcurrentScanException {
 
-		if (libraryScanner.getStatus().isScanning()) {
+		if (libraryScanner.getStatus() != null) {
 			throw new ConcurrentScanException();
 		}
 
@@ -53,6 +53,9 @@ public class LibraryServiceRemoteImpl implements LibraryServiceRemote {
 
 	@Override
 	public StatusDto getStatus() {
-		return DtoUtility.statusToDto(libraryScanner.getStatus());
+
+		LibraryScanner.Status status = libraryScanner.getStatus();
+
+		return status != null ? DtoUtility.statusToDto(status) : null;
 	}
 }
