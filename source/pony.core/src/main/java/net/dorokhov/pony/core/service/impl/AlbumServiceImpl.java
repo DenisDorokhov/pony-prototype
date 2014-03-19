@@ -3,8 +3,6 @@ package net.dorokhov.pony.core.service.impl;
 import net.dorokhov.pony.core.dao.AlbumDao;
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.service.AlbumService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +20,8 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<Album> getByArtwork(Integer aStoredFileId, Pageable aPageable) {
-		return dao.findByArtworkId(aStoredFileId, aPageable);
+	public List<Album> getByArtwork(Integer aStoredFileId) {
+		return dao.findByArtworkId(aStoredFileId, new Sort("artist", "year", "name"));
 	}
 
 	@Override

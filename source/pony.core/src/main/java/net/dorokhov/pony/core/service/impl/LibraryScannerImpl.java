@@ -162,7 +162,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		long startTime = System.nanoTime();
 
-		log.info("listing files...");
+		log.info("preparing...");
 
 		List<File> filesToProcess = new ArrayList<File>();
 
@@ -174,7 +174,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			}
 		}
 
-		log.info("processing files...");
+		log.info("importing songs...");
 
 		ExecutorService executor = executorServiceReference.get();
 
@@ -190,35 +190,35 @@ public class LibraryScannerImpl implements LibraryScanner {
 			throw new RuntimeException(e);
 		}
 
-		log.info("cleaning songs...");
-		libraryService.cleanSongs(aTargetFiles, new LibraryService.ProgressHandler() {
+		log.info("normalizing songs...");
+		libraryService.normalizeSongs(aTargetFiles, new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningSongs", aProgress, 3));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingSongs", aProgress, 3));
 			}
 		});
 
-		log.info("cleaning stored files...");
-		libraryService.cleanStoredFiles(new LibraryService.ProgressHandler() {
+		log.info("normalizing stored files...");
+		libraryService.normalizeStoredFiles(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningFiles", aProgress, 4));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingStoredFiles", aProgress, 4));
 			}
 		});
 
-		log.info("cleaning albums...");
-		libraryService.cleanAlbums(new LibraryService.ProgressHandler() {
+		log.info("normalizing albums...");
+		libraryService.normalizeAlbums(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningAlbums", aProgress, 5));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingAlbums", aProgress, 5));
 			}
 		});
 
-		log.info("cleaning artists...");
-		libraryService.cleanArtists(new LibraryService.ProgressHandler() {
+		log.info("normalizing artists...");
+		libraryService.normalizeArtists(new LibraryService.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
-				statusReference.set(new LibraryScannerStatus(aTargetFiles, "cleaningArtists", aProgress, 6));
+				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingArtists", aProgress, 6));
 			}
 		});
 
@@ -382,7 +382,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			double progress = (double) processedFilesCount / result.getScannedFilesCount();
 
-			statusReference.set(new LibraryScannerStatus(result.getTargetFiles(), "processing", progress, 2));
+			statusReference.set(new LibraryScannerStatus(result.getTargetFiles(), "importingSongs", progress, 2));
 
 			synchronized (lockDelegates) {
 				for (Delegate next : delegates) {

@@ -153,7 +153,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanSongs(List<File> aTargetFiles, ProgressHandler aHandler) {
+	public void normalizeSongs(List<File> aTargetFiles, ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
@@ -211,7 +211,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanStoredFiles(ProgressHandler aHandler) {
+	public void normalizeStoredFiles(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
@@ -244,6 +244,20 @@ public class LibraryServiceImpl implements LibraryService {
 		} while (page != null);
 
 		for (Integer id : itemsToDelete) {
+
+			for (Album album : albumService.getByArtwork(id)) {
+
+				album.setArtwork(null);
+
+				albumService.save(album);
+			}
+			for (Artist artist : artistService.getByArtwork(id)) {
+
+				artist.setArtwork(null);
+
+				artistService.save(artist);
+			}
+
 			storedFileService.deleteById(id);
 		}
 
@@ -253,11 +267,12 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Transactional
-	public void cleanAlbums(ProgressHandler aHandler) {
+	public void normalizeAlbums(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
+		long updatedArtworks = 0;
 
 		Page<Album> page = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
@@ -270,6 +285,22 @@ public class LibraryServiceImpl implements LibraryService {
 					itemsToDelete.add(album.getId());
 
 					log.debug("album deleted: {}", album);
+
+				} else if (album.getArtwork() == null) {
+
+					for (Song song : album.getSongs()) {
+
+						if (song.getFile() != null && song.getFile().getArtwork() != null) {
+
+							album.setArtwork(song.getFile().getArtwork());
+
+							albumService.save(album);
+
+							updatedArtworks++;
+
+							break;
+						}
+					}
 				}
 
 				if (aHandler != null) {
@@ -292,14 +323,18 @@ public class LibraryServiceImpl implements LibraryService {
 		if (itemsToDelete.size() > 0) {
 			log.info("deleted {} albums", itemsToDelete.size());
 		}
+		if (updatedArtworks > 0) {
+			log.info("updated artworks of {} albums", updatedArtworks);
+		}
 	}
 
 	@Transactional
-	public void cleanArtists(ProgressHandler aHandler) {
+	public void normalizeArtists(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
 
 		long processedItems = 0;
+		long updatedArtworks = 0;
 
 		Page<Artist> page = artistService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
@@ -312,6 +347,27 @@ public class LibraryServiceImpl implements LibraryService {
 					itemsToDelete.add(artist.getId());
 
 					log.debug("artist deleted: {}", artist);
+
+				} else if (artist.getArtwork() == null) {
+
+					List<Album> albumsWithArtwork = new ArrayList<Album>();
+
+					for (Album album : artist.getAlbums()) {
+						if (album.getArtwork() != null) {
+							albumsWithArtwork.add(album);
+						}
+					}
+
+					if (albumsWithArtwork.size() > 0) {
+
+						Album album = albumsWithArtwork.get((int)Math.floor(albumsWithArtwork.size() / 2.0));
+
+						artist.setArtwork(album.getArtwork());
+
+						artistService.save(artist);
+
+						updatedArtworks++;
+					}
 				}
 
 				if (aHandler != null) {
@@ -333,6 +389,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (itemsToDelete.size() > 0) {
 			log.info("deleted {} artists", itemsToDelete.size());
+		}
+		if (updatedArtworks > 0) {
+			log.info("updated artworks of {} artists", updatedArtworks);
 		}
 	}
 

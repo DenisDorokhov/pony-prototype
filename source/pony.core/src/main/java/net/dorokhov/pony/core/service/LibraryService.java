@@ -9,11 +9,11 @@ public interface LibraryService {
 
 	public SongFile importSong(File aFile);
 
-	public void cleanSongs(List<File> aTargetFiles, ProgressHandler aHandler);
+	public void normalizeSongs(List<File> aTargetFiles, ProgressHandler aHandler);
 
-	public void cleanStoredFiles(ProgressHandler aHandler);
-	public void cleanAlbums(ProgressHandler aHandler);
-	public void cleanArtists(ProgressHandler aHandler);
+	public void normalizeStoredFiles(ProgressHandler aHandler);
+	public void normalizeAlbums(ProgressHandler aHandler);
+	public void normalizeArtists(ProgressHandler aHandler);
 
 	public interface ProgressHandler {
 		public void handleProgress(double aProgress);

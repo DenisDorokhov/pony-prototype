@@ -12,9 +12,9 @@ public interface ArtistService {
 	public long getCount();
 
 	public List<Artist> getAll();
+	public List<Artist> getByArtwork(Integer aStoredFileId);
 
 	public Page<Artist> getAll(Pageable aPageable);
-	public Page<Artist> getByArtwork(Integer aStoredFileId, Pageable aPageable);
 
 	public Artist getById(Integer aId);
 	public Artist getByName(String aName);
