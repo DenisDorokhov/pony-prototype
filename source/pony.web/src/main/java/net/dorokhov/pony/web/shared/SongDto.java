@@ -28,7 +28,11 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private String artist;
 
+	private Integer artistArtwork;
+
 	private String album;
+
+	private Integer albumArtwork;
 
 	private Integer year;
 
@@ -134,12 +138,28 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		artist = aArtist;
 	}
 
+	public Integer getArtistArtwork() {
+		return artistArtwork;
+	}
+
+	public void setArtistArtwork(Integer aArtistArtwork) {
+		artistArtwork = aArtistArtwork;
+	}
+
 	public String getAlbum() {
 		return album;
 	}
 
 	public void setAlbum(String aAlbum) {
 		album = aAlbum;
+	}
+
+	public Integer getAlbumArtwork() {
+		return albumArtwork;
+	}
+
+	public void setAlbumArtwork(Integer aAlbumArtwork) {
+		albumArtwork = aAlbumArtwork;
 	}
 
 	public Integer getYear() {

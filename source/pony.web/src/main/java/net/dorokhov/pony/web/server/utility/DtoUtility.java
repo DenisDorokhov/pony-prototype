@@ -62,9 +62,12 @@ public class DtoUtility {
 		dto.setTrackCount(aAlbum.getTrackCount());
 		dto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
 
-		if (aAlbum.getArtist() != null) {
-			dto.setArtistId(aAlbum.getArtist().getId());
-			dto.setArtist(aAlbum.getArtist().getName());
+		Artist artist = aAlbum.getArtist();
+
+		if (artist != null) {
+			dto.setArtistId(artist.getId());
+			dto.setArtist(artist.getName());
+			dto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
 		}
 
 		return dto;
@@ -79,15 +82,21 @@ public class DtoUtility {
 		dto.setUpdateDate(aSong.getUpdateDate());
 		dto.setGeneration(aSong.getGeneration());
 
-		if (aSong.getAlbum() != null) {
+		Album album = aSong.getAlbum();
 
-			dto.setAlbumId(aSong.getAlbum().getId());
-			dto.setAlbum(aSong.getAlbum().getName());
-			dto.setYear(aSong.getAlbum().getYear());
+		if (album != null) {
 
-			if (aSong.getAlbum().getArtist() != null) {
-				dto.setArtistId(aSong.getAlbum().getArtist().getId());
-				dto.setArtist(aSong.getAlbum().getArtist().getName());
+			dto.setAlbumId(album.getId());
+			dto.setAlbum(album.getName());
+			dto.setAlbumArtwork(album.getArtwork() != null ? album.getArtwork().getId() : null);
+			dto.setYear(album.getYear());
+
+			Artist artist = album.getArtist();
+
+			if (artist != null) {
+				dto.setArtistId(artist.getId());
+				dto.setArtist(artist.getName());
+				dto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
 			}
 		}
 

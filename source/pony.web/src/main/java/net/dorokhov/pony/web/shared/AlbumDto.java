@@ -18,6 +18,8 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	private String artist;
 
+	private Integer artistArtwork;
+
 	private List<SongDto> songs;
 
 	private Integer artistId;
@@ -68,6 +70,14 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	public void setArtist(String aArtist) {
 		artist = aArtist;
+	}
+
+	public Integer getArtistArtwork() {
+		return artistArtwork;
+	}
+
+	public void setArtistArtwork(Integer aArtistArtwork) {
+		artistArtwork = aArtistArtwork;
 	}
 
 	public List<SongDto> getSongs() {
