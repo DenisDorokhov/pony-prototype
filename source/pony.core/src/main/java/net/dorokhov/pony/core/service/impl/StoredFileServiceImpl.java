@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -120,7 +122,20 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 			storedFile.setTag(aTask.getTag());
 			storedFile.setPath(relativePath);
 
-			return save(storedFile);
+			storedFile = save(storedFile);
+
+			final File fileToDeleteOnRollback = targetFile;
+
+			TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+				@Override
+				public void afterCompletion(int aStatus) {
+					if (aStatus != STATUS_COMMITTED) {
+						fileToDeleteOnRollback.delete();
+					}
+				}
+			});
+
+			return storedFile;
 
 		} catch (Exception e) {
 
@@ -140,13 +155,18 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 		if (storedFile != null) {
 
-			File file = new File(filesFolder, storedFile.getPath());
+			final File file = new File(filesFolder, storedFile.getPath());
 
 			super.deleteById(storedFile.getId());
 
-			if (!file.delete()) {
-				log.warn("could not delete file [{}] from file system", file.getAbsolutePath());
-			}
+			TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+				@Override
+				public void afterCommit() {
+					if (!file.delete()) {
+						log.warn("could not delete file [{}] from file system", file.getAbsolutePath());
+					}
+				}
+			});
 		}
 	}
 
@@ -156,11 +176,16 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 		dao.deleteAll();
 
-		try {
-			FileUtils.cleanDirectory(filesFolder);
-		} catch (Exception e) {
-			log.warn("could not clean storage folder", e);
-		}
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+			@Override
+			public void afterCommit() {
+				try {
+					FileUtils.cleanDirectory(filesFolder);
+				} catch (Exception e) {
+					log.warn("could not clean storage folder", e);
+				}
+			}
+		});
 	}
 
 	@Override
