@@ -66,7 +66,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		Status status = statusReference.get();
 
-		return new LibraryScannerStatus(status);
+		return status != null ? new LibraryScannerStatus(status) : null;
 	}
 
 	@Override
