@@ -42,6 +42,7 @@ public class DtoUtility {
 		dto.setGeneration(aArtist.getGeneration());
 
 		dto.setName(aArtist.getName());
+		dto.setArtwork(aArtist.getArtwork() != null ? aArtist.getArtwork().getId() : null);
 
 		return dto;
 	}
@@ -59,6 +60,7 @@ public class DtoUtility {
 		dto.setYear(aAlbum.getYear());
 		dto.setDiscCount(aAlbum.getDiscCount());
 		dto.setTrackCount(aAlbum.getTrackCount());
+		dto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
 
 		if (aAlbum.getArtist() != null) {
 			dto.setArtistId(aAlbum.getArtist().getId());

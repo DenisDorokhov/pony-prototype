@@ -103,6 +103,9 @@ CREATE TABLE artist (
 	generation BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
+	artwork_stored_file_id INT,
+
+	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
 	UNIQUE (name),
 	PRIMARY KEY (id)
@@ -122,13 +125,15 @@ CREATE TABLE album (
 	disc_count INT,
 	track_count INT,
 	year INT,
+	artwork_stored_file_id INT,
 
 	artist_id INT NOT NULL,
 
-	UNIQUE (name, artist_id),
-	PRIMARY KEY (id),
+	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
-	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE
+	UNIQUE (name, artist_id),
+	PRIMARY KEY (id)
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 

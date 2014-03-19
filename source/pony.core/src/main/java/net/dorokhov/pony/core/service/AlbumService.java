@@ -12,6 +12,7 @@ public interface AlbumService {
 	public long getCountByArtist(Integer aArtistId);
 
 	public Page<Album> getAll(Pageable aPageable);
+	public Page<Album> getByArtwork(Integer aStoredFileId, Pageable aPageable);
 	public List<Album> getByArtist(Integer aArtistId);
 
 	public Album getById(Integer aId);

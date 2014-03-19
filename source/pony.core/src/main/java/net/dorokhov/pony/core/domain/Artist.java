@@ -11,6 +11,8 @@ public class Artist extends AbstractEntity<Integer> {
 
     private String name;
 
+	private StoredFile artwork;
+
     private List<Album> albums;
 
 	@Column(name = "name", unique = true)
@@ -21,6 +23,16 @@ public class Artist extends AbstractEntity<Integer> {
 
 	public void setName(String aName) {
 		name = aName;
+	}
+
+	@OneToOne(optional = true)
+	@JoinColumn(name = "artwork_stored_file_id")
+	public StoredFile getArtwork() {
+		return artwork;
+	}
+
+	public void setArtwork(StoredFile aArtwork) {
+		artwork = aArtwork;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "artist")

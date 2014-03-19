@@ -25,8 +25,6 @@ public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
 
 	private AlbumService albumService;
 
-	private SongService songService;
-
 	@Autowired
 	public void setArtistService(ArtistService aArtistService) {
 		artistService = aArtistService;
@@ -35,11 +33,6 @@ public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
 	@Autowired
 	public void setAlbumService(AlbumService aAlbumService) {
 		albumService = aAlbumService;
-	}
-
-	@Autowired
-	public void setSongService(SongService aSongService) {
-		songService = aSongService;
 	}
 
 	@Override
@@ -95,7 +88,7 @@ public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
 
 		AlbumDto dto = DtoUtility.albumToDto(aAlbum);
 
-		for (Song song : songService.getByAlbum(aAlbum.getId())) {
+		for (Song song : aAlbum.getSongs()) {
 			dto.getSongs().add(DtoUtility.songToDto(song));
 		}
 

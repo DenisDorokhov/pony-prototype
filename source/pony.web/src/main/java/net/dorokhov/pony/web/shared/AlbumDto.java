@@ -14,6 +14,8 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	private Integer trackCount;
 
+	private Integer artwork;
+
 	private String artist;
 
 	private List<SongDto> songs;
@@ -50,6 +52,14 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	public void setTrackCount(Integer aTrackCount) {
 		trackCount = aTrackCount;
+	}
+
+	public Integer getArtwork() {
+		return artwork;
+	}
+
+	public void setArtwork(Integer aArtwork) {
+		artwork = aArtwork;
 	}
 
 	public String getArtist() {
