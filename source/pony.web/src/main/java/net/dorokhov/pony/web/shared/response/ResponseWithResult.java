@@ -7,12 +7,15 @@ public class ResponseWithResult<T> extends Response implements Serializable {
 	private final T result;
 
 	public ResponseWithResult() {
-		this(null);
+
+		super(false);
+
+		result = null;
 	}
 
 	public ResponseWithResult(T aResult) {
 
-		super(aResult != null);
+		super(true);
 
 		result = aResult;
 	}
