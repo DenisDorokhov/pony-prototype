@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
+public interface SongDao extends PagingAndSortingRepository<Song, Integer>, SongDaoCustom {
 
 	public long countByAlbumId(Integer aAlbumId);
 

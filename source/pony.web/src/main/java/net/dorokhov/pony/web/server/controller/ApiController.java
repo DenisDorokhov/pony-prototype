@@ -147,6 +147,19 @@ public class ApiController {
 		return new ResponseWithResult<SongDto>();
 	}
 
+	@RequestMapping(value = "/search/{text}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseWithResult<List<SongDto>> search(@PathVariable("text") String aText) {
+
+		try {
+			return new ResponseWithResult<List<SongDto>>(songServiceFacade.search(aText));
+		} catch (Exception e) {
+			log.error("could not execute search query [{}]", aText, e);
+		}
+
+		return new ResponseWithResult<List<SongDto>>();
+	}
+
 	@RequestMapping(value = "/status", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseWithResult<StatusDto> getStatus() {

@@ -3,8 +3,8 @@ package net.dorokhov.pony.web.server.service.impl;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.web.server.service.SongServiceFacade;
-import net.dorokhov.pony.web.shared.SongDto;
 import net.dorokhov.pony.web.server.utility.DtoUtility;
+import net.dorokhov.pony.web.shared.SongDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +44,12 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 	@Transactional(readOnly = true)
 	public List<SongDto> getByArtist(Integer aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<SongDto> search(String aText) {
+		return songListToDto(songService.search(aText));
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import java.util.List;
 @Service
 public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDao> implements SongService {
 
+	private static final int MAX_SEARCH_RESULTS = 20;
+
 	@Override
 	@Transactional(readOnly = true)
 	public long getCountByAlbum(Integer aAlbumId) {
@@ -34,6 +36,12 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 	@Transactional(readOnly = true)
 	public List<Song> getByArtist(Integer aArtistId) {
 		return dao.findByAlbumArtistId(aArtistId, new Sort("album", "file.trackNumber", "file.name"));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Song> search(String aText) {
+		return dao.search(aText, MAX_SEARCH_RESULTS);
 	}
 
 	@Override

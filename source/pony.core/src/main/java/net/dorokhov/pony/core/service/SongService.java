@@ -13,6 +13,8 @@ public interface SongService {
 	public List<Song> getByAlbum(Integer aAlbumId);
 	public List<Song> getByArtist(Integer aArtistId);
 
+	public List<Song> search(String aText);
+
 	public Song getById(Integer aId);
 	public Song getByFile(Integer aSongFileId);
 
