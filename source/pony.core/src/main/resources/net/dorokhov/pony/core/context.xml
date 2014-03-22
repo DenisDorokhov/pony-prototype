@@ -34,21 +34,8 @@
 		<property name="jpaPropertyMap">
 			<map>
 				<entry key="javax.persistence.validation.factory" value-ref="validatorFactory" />
-				<entry key="hibernate.search.worker.batch_size" value="200"/>
 				<entry key="hibernate.search.default.directory_provider" value="filesystem"/>
 				<entry key="hibernate.search.default.indexBase" value="${user.home}/${indexBase.path}"/>
-				<entry key="hibernate.search.default.transaction.merge_factor" value="200"/>
-				<entry key="hibernate.search.default.transaction.max_merge_docs" value="200"/>
-				<entry key="hibernate.search.default.transaction.max_buffered_docs" value="200"/>
-
-				<!--
-
-				<property name="hibernate.search.worker.batch_size">200</property>
-<property name="hibernate.search.default.transaction.merge_factor">200</property>
-<property name="hibernate.search.default.transaction.max_merge_docs">20000</property>
-<property name="hibernate.search.default.transaction.max_buffered_docs">200</property>
-
-				-->
 			</map>
 		</property>
 	</bean>
