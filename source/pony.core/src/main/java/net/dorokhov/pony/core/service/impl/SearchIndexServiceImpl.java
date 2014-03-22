@@ -2,9 +2,8 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SearchIndexService;
-import org.hibernate.Session;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +23,7 @@ public class SearchIndexServiceImpl implements SearchIndexService {
 	@Override
 	public void createIndex() {
 
-		Session session = (Session)entityManager.getDelegate();
-
-		FullTextSession fullTextSession = Search.getFullTextSession(session);
+		FullTextEntityManager fullTextSession = Search.getFullTextEntityManager(entityManager);
 
 		try {
 			fullTextSession.createIndexer().startAndWait();
@@ -39,9 +36,7 @@ public class SearchIndexServiceImpl implements SearchIndexService {
 	@Transactional
 	public void clearIndex() {
 
-		Session session = (Session)entityManager.getDelegate();
-
-		FullTextSession fullTextSession = Search.getFullTextSession(session);
+		FullTextEntityManager fullTextSession = Search.getFullTextEntityManager(entityManager);
 
 		fullTextSession.purgeAll(Song.class);
 		fullTextSession.getSearchFactory().optimize(Song.class);
