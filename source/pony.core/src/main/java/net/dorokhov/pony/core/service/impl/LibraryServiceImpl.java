@@ -87,7 +87,16 @@ public class LibraryServiceImpl implements LibraryService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public SongFile importSong(File aFile) {
 
-		SongFile songFile = songFileService.getByPath(aFile.getAbsolutePath());
+		SongFile songFile;
+
+		try {
+			songFile = songFileService.getByPath(aFile.getAbsolutePath());
+		} catch (Exception e) {
+
+			log.error("could not get song file {}", aFile.getAbsolutePath(), e);
+
+			throw new RuntimeException(e);
+		}
 
 		if (songFile == null || songFile.getUpdateDate().getTime() < aFile.lastModified()) {
 

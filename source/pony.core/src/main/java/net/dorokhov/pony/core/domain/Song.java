@@ -1,9 +1,13 @@
 package net.dorokhov.pony.core.domain;
 
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "song")
+@Indexed
 public class Song extends AbstractEntity<Integer> {
 
 	private SongFile file;
@@ -12,6 +16,7 @@ public class Song extends AbstractEntity<Integer> {
 
 	@OneToOne(optional = false)
 	@JoinColumn(name = "song_file_id", unique = true)
+	@IndexedEmbedded
 	public SongFile getFile() {
 		return file;
 	}

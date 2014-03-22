@@ -1,5 +1,7 @@
 package net.dorokhov.pony.core.domain;
 
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -138,6 +140,7 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@Column(name = "name")
+	@Field
 	public String getName() {
 		return name;
 	}
@@ -147,6 +150,7 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@Column(name = "artist")
+	@Field
 	public String getArtist() {
 		return artist;
 	}
@@ -156,6 +160,7 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@Column(name = "album")
+	@Field
 	public String getAlbum() {
 		return album;
 	}
@@ -184,6 +189,7 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "file")
+	@ContainedIn
 	public Song getSong() {
 		return song;
 	}
