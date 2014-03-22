@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class InstallationController {
 	
@@ -21,14 +23,19 @@ public class InstallationController {
 	}
 
 	@RequestMapping("/install")
-	synchronized public String install() {
+	synchronized public String install(HttpServletRequest aRequest) {
 		
 		if (installationService.getInstallation() == null) {
 			installationService.install();
 		} else {
 			log.warn("Already installed.");
 		}
+
+		String redirectPath = "/";
+		if (aRequest.getQueryString().length() > 0) {
+			redirectPath += "?" + aRequest.getQueryString();
+		}
 		
-		return "redirect:/";
+		return "redirect:" + redirectPath;
 	}
 }

@@ -34,8 +34,13 @@ public class InstallationInterceptor extends HandlerInterceptorAdapter {
 				if (installationService.getInstallation() == null) {
 					
 					log.info("Redirecting to installation...");
-					
-					aResponse.sendRedirect(aRequest.getContextPath() + "/install");
+
+					String redirectPath = aRequest.getContextPath() + "/install";
+					if (aRequest.getQueryString().length() > 0) {
+						redirectPath += "?" + aRequest.getQueryString();
+					}
+
+					aResponse.sendRedirect(redirectPath);
 					
 					return false;
 				}
