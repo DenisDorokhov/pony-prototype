@@ -65,6 +65,12 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
+	public List<AlbumDto> search(String aQuery) {
+		return albumListToDto(albumService.search(aQuery));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public AlbumDto getById(Integer aId) {
 
 		Album album = albumService.getById(aId);

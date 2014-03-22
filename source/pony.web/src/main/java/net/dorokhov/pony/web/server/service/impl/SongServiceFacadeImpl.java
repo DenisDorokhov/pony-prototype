@@ -48,8 +48,8 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SongDto> search(String aText) {
-		return songListToDto(songService.search(aText));
+	public List<SongDto> search(String aQuery) {
+		return songListToDto(songService.search(aQuery));
 	}
 
 	@Override

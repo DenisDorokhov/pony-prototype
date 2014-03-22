@@ -13,8 +13,6 @@ public interface SongServiceAsync {
 	public void getByAlbum(Integer aAlbumId, AsyncCallback<List<SongDto>> aCallback);
 	public void getByArtist(Integer aArtistId, AsyncCallback<List<SongDto>> aCallback);
 
-	public void search(String aText, AsyncCallback<List<SongDto>> aCallback);
-
 	public void getById(Integer aId, AsyncCallback<SongDto> aCallback);
 
 }

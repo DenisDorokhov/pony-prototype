@@ -150,7 +150,6 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@Column(name = "artist")
-	@Field
 	public String getArtist() {
 		return artist;
 	}
@@ -160,7 +159,6 @@ public class SongFile extends AbstractEntity<Integer> {
 	}
 
 	@Column(name = "album")
-	@Field
 	public String getAlbum() {
 		return album;
 	}

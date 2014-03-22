@@ -1,5 +1,7 @@
 package net.dorokhov.pony.core.domain;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "artist")
+@Indexed
 public class Artist extends AbstractEntity<Integer> {
 
     private String name;
@@ -17,6 +20,7 @@ public class Artist extends AbstractEntity<Integer> {
 
 	@Column(name = "name", unique = true)
 	@NotBlank
+	@Field
 	public String getName() {
 		return name;
 	}

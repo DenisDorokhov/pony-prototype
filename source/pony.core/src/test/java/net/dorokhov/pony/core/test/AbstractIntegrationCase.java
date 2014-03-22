@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.test;
 
 import net.dorokhov.pony.core.service.InstallationService;
-import net.dorokhov.pony.core.service.SearchIndexService;
+import net.dorokhov.pony.core.service.SearchService;
 import net.dorokhov.pony.core.service.StoredFileService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -14,7 +14,7 @@ public class AbstractIntegrationCase extends AbstractCase {
 
 	protected StoredFileService storedFileService;
 
-	protected SearchIndexService searchIndexService;
+	protected SearchService searchService;
 
 	public void baseSetUp() throws Exception {
 
@@ -24,12 +24,12 @@ public class AbstractIntegrationCase extends AbstractCase {
 
 		installationService = context.getBean(InstallationService.class);
 		storedFileService = context.getBean(StoredFileService.class);
-		searchIndexService = context.getBean(SearchIndexService.class);
+		searchService = context.getBean(SearchService.class);
 
 		if (installationService.getInstallation() != null) {
 			storedFileService.deleteAll();
 			installationService.uninstall();
-			searchIndexService.clearIndex();
+			searchService.clearIndex();
 		}
 
 		installationService.install();
@@ -42,7 +42,7 @@ public class AbstractIntegrationCase extends AbstractCase {
 		if (installationService.getInstallation() != null) {
 			storedFileService.deleteAll();
 			installationService.uninstall();
-			searchIndexService.clearIndex();
+			searchService.clearIndex();
 		}
 	}
 }

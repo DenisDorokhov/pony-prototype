@@ -2,8 +2,9 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.dao.SongDao;
 import net.dorokhov.pony.core.domain.Song;
+import net.dorokhov.pony.core.service.SearchService;
 import net.dorokhov.pony.core.service.SongService;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,14 @@ import java.util.List;
 @Service
 public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDao> implements SongService {
 
-	private static final int MAX_SEARCH_RESULTS = 20;
+	private static final int MAX_SEARCH_RESULTS = 10;
+
+	private SearchService searchService;
+
+	@Autowired
+	public void setSearchService(SearchService aSearchService) {
+		searchService = aSearchService;
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -41,8 +49,8 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Song> search(String aText) {
-		return dao.search(aText, new PageRequest(0, MAX_SEARCH_RESULTS));
+	public List<Song> search(String aQuery) {
+		return searchService.searchSongs(aQuery, MAX_SEARCH_RESULTS);
 	}
 
 	@Override

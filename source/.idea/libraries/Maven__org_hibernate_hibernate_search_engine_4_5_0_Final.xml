@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-search-engine/4.5.0.Final/hibernate-search-engine-4.5.0.Final-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ideaLibSources/hibernate-search-engine-4.5.0.Final-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

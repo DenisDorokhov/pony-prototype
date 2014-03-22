@@ -10,6 +10,8 @@ public interface ArtistServiceFacade {
 
 	public List<ArtistDto> getAll();
 
+	public List<ArtistDto> search(String aQuery);
+
 	public ArtistDto getById(Integer aId);
 	public ArtistDto getByName(String aName);
 	public ArtistDto getByIdOrName(String aNameOrId);

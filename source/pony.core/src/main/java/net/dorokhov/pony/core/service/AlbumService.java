@@ -16,6 +16,8 @@ public interface AlbumService {
 	public List<Album> getByArtwork(Integer aStoredFileId);
 	public List<Album> getByArtist(Integer aArtistId);
 
+	public List<Album> search(String aQuery);
+
 	public Album getById(Integer aId);
 	public Album getByArtistAndName(Integer aArtistId, String aName);
 

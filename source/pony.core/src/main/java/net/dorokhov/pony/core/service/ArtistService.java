@@ -16,6 +16,8 @@ public interface ArtistService {
 
 	public Page<Artist> getAll(Pageable aPageable);
 
+	public List<Artist> search(String aQuery);
+
 	public Artist getById(Integer aId);
 	public Artist getByName(String aName);
 

@@ -3,6 +3,8 @@ package net.dorokhov.pony.core.service.impl;
 import net.dorokhov.pony.core.dao.AlbumDao;
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.service.AlbumService;
+import net.dorokhov.pony.core.service.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,15 @@ import java.util.List;
 
 @Service
 public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, AlbumDao> implements AlbumService {
+
+	private static final int MAX_SEARCH_RESULTS = 10;
+
+	private SearchService searchService;
+
+	@Autowired
+	public void setSearchService(SearchService aSearchService) {
+		searchService = aSearchService;
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -28,6 +39,11 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 	@Transactional(readOnly = true)
 	public List<Album> getByArtist(Integer aArtistId) {
 		return dao.findByArtistId(aArtistId, new Sort("year", "name"));
+	}
+
+	@Override
+	public List<Album> search(String aQuery) {
+		return searchService.searchAlbums(aQuery, MAX_SEARCH_RESULTS);
 	}
 
 	@Override

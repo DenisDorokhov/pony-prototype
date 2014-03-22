@@ -9,10 +9,7 @@ import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
 import net.dorokhov.pony.web.server.service.SongServiceFacade;
-import net.dorokhov.pony.web.shared.AlbumDto;
-import net.dorokhov.pony.web.shared.ArtistDto;
-import net.dorokhov.pony.web.shared.SongDto;
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.*;
 import net.dorokhov.pony.web.shared.response.Response;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
 import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
@@ -147,17 +144,25 @@ public class ApiController {
 		return new ResponseWithResult<SongDto>();
 	}
 
-	@RequestMapping(value = "/search/{text}", method = RequestMethod.GET)
+	@RequestMapping(value = "/search/{query}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseWithResult<List<SongDto>> search(@PathVariable("text") String aText) {
+	public ResponseWithResult<SearchDto> search(@PathVariable("query") String aQuery) {
 
 		try {
-			return new ResponseWithResult<List<SongDto>>(songServiceFacade.search(aText));
+
+			SearchDto dto = new SearchDto();
+
+			dto.setArtists(artistServiceFacade.search(aQuery));
+			dto.setAlbums(albumServiceFacade.search(aQuery));
+			dto.setSongs(songServiceFacade.search(aQuery));
+
+			return new ResponseWithResult<SearchDto>(dto);
+
 		} catch (Exception e) {
-			log.error("could not execute search query [{}]", aText, e);
+			log.error("could not execute search query [{}]", aQuery, e);
 		}
 
-		return new ResponseWithResult<List<SongDto>>();
+		return new ResponseWithResult<SearchDto>();
 	}
 
 	@RequestMapping(value = "/status", method = RequestMethod.GET)
