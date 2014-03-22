@@ -5,8 +5,7 @@ import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.AlbumService;
 import net.dorokhov.pony.core.service.ArtistService;
-import net.dorokhov.pony.core.service.SongService;
-import net.dorokhov.pony.web.server.service.AlbumServiceRemote;
+import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.server.utility.DtoUtility;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AlbumServiceRemoteImpl implements AlbumServiceRemote {
+public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	private ArtistService artistService;
 

@@ -5,16 +5,16 @@ import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.core.service.StoredFileService;
+import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
+import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
+import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
+import net.dorokhov.pony.web.server.service.SongServiceFacade;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 import net.dorokhov.pony.web.shared.StatusDto;
 import net.dorokhov.pony.web.shared.response.Response;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
-import net.dorokhov.pony.web.server.service.AlbumServiceRemote;
-import net.dorokhov.pony.web.server.service.ArtistServiceRemote;
-import net.dorokhov.pony.web.server.service.LibraryServiceRemote;
-import net.dorokhov.pony.web.server.service.SongServiceRemote;
 import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,36 +40,36 @@ public class ApiController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private LibraryServiceRemote libraryServiceRemote;
+	private LibraryServiceFacade libraryServiceFacade;
 
-	private ArtistServiceRemote artistServiceRemote;
+	private ArtistServiceFacade artistServiceFacade;
 
-	private AlbumServiceRemote albumServiceRemote;
+	private AlbumServiceFacade albumServiceFacade;
 
-	private SongServiceRemote songServiceRemote;
+	private SongServiceFacade songServiceFacade;
 
 	private SongService songService;
 
 	private StoredFileService storedFileService;
 
 	@Autowired
-	public void setLibraryServiceRemote(LibraryServiceRemote aLibraryServiceRemote) {
-		libraryServiceRemote = aLibraryServiceRemote;
+	public void setLibraryServiceFacade(LibraryServiceFacade aLibraryServiceFacade) {
+		libraryServiceFacade = aLibraryServiceFacade;
 	}
 
 	@Autowired
-	public void setArtistServiceRemote(ArtistServiceRemote aArtistServiceRemote) {
-		artistServiceRemote = aArtistServiceRemote;
+	public void setArtistServiceFacade(ArtistServiceFacade aArtistServiceFacade) {
+		artistServiceFacade = aArtistServiceFacade;
 	}
 
 	@Autowired
-	public void setAlbumServiceRemote(AlbumServiceRemote aAlbumServiceRemote) {
-		albumServiceRemote = aAlbumServiceRemote;
+	public void setAlbumServiceFacade(AlbumServiceFacade aAlbumServiceFacade) {
+		albumServiceFacade = aAlbumServiceFacade;
 	}
 
 	@Autowired
-	public void setSongServiceRemote(SongServiceRemote aSongServiceRemote) {
-		songServiceRemote = aSongServiceRemote;
+	public void setSongServiceFacade(SongServiceFacade aSongServiceFacade) {
+		songServiceFacade = aSongServiceFacade;
 	}
 
 	@Autowired
@@ -87,7 +87,7 @@ public class ApiController {
 	public ResponseWithResult<List<ArtistDto>> getArtistList() {
 
 		try {
-			return new ResponseWithResult<List<ArtistDto>>(artistServiceRemote.getAll());
+			return new ResponseWithResult<List<ArtistDto>>(artistServiceFacade.getAll());
 		} catch (Exception e) {
 			log.error("could not get artist list", e);
 		}
@@ -100,7 +100,7 @@ public class ApiController {
 	public ResponseWithResult<ArtistDto> getArtist(@PathVariable("idOrName") String aIdOrName) {
 
 		try {
-			return new ResponseWithResult<ArtistDto>(artistServiceRemote.getByIdOrName(aIdOrName));
+			return new ResponseWithResult<ArtistDto>(artistServiceFacade.getByIdOrName(aIdOrName));
 		} catch (Exception e) {
 			log.error("could not get artist [{}]", aIdOrName, e);
 		}
@@ -113,7 +113,7 @@ public class ApiController {
 	public ResponseWithResult<List<AlbumDto>> getAlbumList(@PathVariable("idOrName") String aIdOrName) {
 
 		try {
-			return new ResponseWithResult<List<AlbumDto>>(albumServiceRemote.getByArtistIdOrName(aIdOrName));
+			return new ResponseWithResult<List<AlbumDto>>(albumServiceFacade.getByArtistIdOrName(aIdOrName));
 		} catch (Exception e) {
 			log.error("could not get artist [{}]", aIdOrName, e);
 		}
@@ -126,7 +126,7 @@ public class ApiController {
 	public ResponseWithResult<AlbumDto> getAlbum(@PathVariable("albumId") Integer aAlbumId) {
 
 		try {
-			return new ResponseWithResult<AlbumDto>(albumServiceRemote.getById(aAlbumId));
+			return new ResponseWithResult<AlbumDto>(albumServiceFacade.getById(aAlbumId));
 		} catch (Exception e) {
 			log.error("could not get album [{}]", aAlbumId, e);
 		}
@@ -139,7 +139,7 @@ public class ApiController {
 	public ResponseWithResult<SongDto> getSong(@PathVariable("songId") Integer aSongId) {
 
 		try {
-			return new ResponseWithResult<SongDto>(songServiceRemote.getById(aSongId));
+			return new ResponseWithResult<SongDto>(songServiceFacade.getById(aSongId));
 		} catch (Exception e) {
 			log.error("could not get song [{}]", aSongId, e);
 		}
@@ -152,7 +152,7 @@ public class ApiController {
 	public ResponseWithResult<StatusDto> getStatus() {
 
 		try {
-			return new ResponseWithResult<StatusDto>(libraryServiceRemote.getStatus());
+			return new ResponseWithResult<StatusDto>(libraryServiceFacade.getStatus());
 		} catch (Exception e) {
 			log.error("could not get status", e);
 		}
@@ -166,7 +166,7 @@ public class ApiController {
 
 		try {
 
-			libraryServiceRemote.startScanning();
+			libraryServiceFacade.startScanning();
 
 			return new Response(true);
 

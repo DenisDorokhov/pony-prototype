@@ -2,7 +2,7 @@ package net.dorokhov.pony.web.server.service.impl;
 
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SongService;
-import net.dorokhov.pony.web.server.service.SongServiceRemote;
+import net.dorokhov.pony.web.server.service.SongServiceFacade;
 import net.dorokhov.pony.web.shared.SongDto;
 import net.dorokhov.pony.web.server.utility.DtoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SongServiceRemoteImpl implements SongServiceRemote {
+public class SongServiceFacadeImpl implements SongServiceFacade {
 
 	private SongService songService;
 

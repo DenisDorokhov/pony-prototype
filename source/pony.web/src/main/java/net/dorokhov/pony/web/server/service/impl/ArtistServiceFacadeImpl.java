@@ -2,7 +2,7 @@ package net.dorokhov.pony.web.server.service.impl;
 
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.service.ArtistService;
-import net.dorokhov.pony.web.server.service.ArtistServiceRemote;
+import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.server.utility.DtoUtility;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ArtistServiceRemoteImpl implements ArtistServiceRemote {
+public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 	private ArtistService artistService;
 

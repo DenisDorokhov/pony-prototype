@@ -1,7 +1,7 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
 import net.dorokhov.pony.web.client.service.AlbumService;
-import net.dorokhov.pony.web.server.service.AlbumServiceRemote;
+import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -9,11 +9,11 @@ import java.util.List;
 
 public class AlbumServiceServlet extends AbstractServiceServlet implements AlbumService {
 
-	private AlbumServiceRemote albumService;
+	private AlbumServiceFacade albumService;
 
 	@Override
 	protected void initWithApplicationContext(WebApplicationContext aContext) {
-		albumService = aContext.getBean(AlbumServiceRemote.class);
+		albumService = aContext.getBean(AlbumServiceFacade.class);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import net.dorokhov.pony.web.shared.AlbumDto;
 
 import java.util.List;
 
-public interface AlbumServiceRemote {
+public interface AlbumServiceFacade {
 
 	public Long getCountByArtist(Integer aArtistId);
 

@@ -4,7 +4,7 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.List;
 
-public interface ArtistServiceRemote {
+public interface ArtistServiceFacade {
 
 	public Long getCount();
 
