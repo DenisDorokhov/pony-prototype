@@ -5,6 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * Configuration entity.
+ *
+ * This entity is used to store system settings.
+ */
 @Entity
 @Table(name = "configuration")
 public class Configuration extends AbstractEntity<String> {

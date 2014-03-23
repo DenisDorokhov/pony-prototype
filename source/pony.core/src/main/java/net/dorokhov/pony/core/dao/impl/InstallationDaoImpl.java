@@ -24,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class InstallationDaoImpl implements InstallationDao {
 
-	private final static String BASE_PACKAGE = "/net/dorokhov/pony/core/dao";
+	/**
+	 * Java package to read the scripts from.
+	 */
+	public final static String SCRIPT_PACKAGE = "/net/dorokhov/pony/core/dao";
 
 	private EntityManager entityManager;
 
@@ -40,6 +43,13 @@ public class InstallationDaoImpl implements InstallationDao {
 		dataSource = aDataSource;
 	}
 
+	/**
+	 * Finds system installation.
+	 *
+	 * It tries to make a select query for Installation entity ignoring any errors except NonUniqueResultException.
+	 *
+	 * @return system installation or {@literal null} if the system is not installed
+	 */
 	@Override
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Installation findInstallation() {
@@ -57,6 +67,13 @@ public class InstallationDaoImpl implements InstallationDao {
 		return installation;
 	}
 
+	/**
+	 * Installs the system.
+	 *
+	 * 1) Finds the installation script "install.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
+	 * 2) Splits the script into SQL statements.
+	 * 3) Runs SQL statements one by one.
+	 */
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
 	public void install() {
@@ -74,6 +91,13 @@ public class InstallationDaoImpl implements InstallationDao {
 		}
 	}
 
+	/**
+	 * Uninstalls the system.
+	 *
+	 * 1) Finds the uninstallation script "uninstall.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
+	 * 2) Splits the script into SQL statements.
+	 * 3) Runs SQL statements one by one.
+	 */
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
 	public void uninstall() {
@@ -106,7 +130,7 @@ public class InstallationDaoImpl implements InstallationDao {
 
 		DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
 
-		StringBuilder builder = new StringBuilder(BASE_PACKAGE);
+		StringBuilder builder = new StringBuilder(SCRIPT_PACKAGE);
 
 		builder.append("/").append(metaData.getDatabaseProductName().toLowerCase()).append("/").append(aName);
 

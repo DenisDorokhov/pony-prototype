@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+/**
+ * Stored file entity.
+ *
+ * This entity represents a file stored in the system. Path is always a relative path to the physical file in the system
+ * file storage folder.
+ */
 @Entity
 @Table(name = "stored_file", uniqueConstraints = @UniqueConstraint(columnNames = {"tag", "checksum"}))
 public class StoredFile extends AbstractEntity<Integer> {

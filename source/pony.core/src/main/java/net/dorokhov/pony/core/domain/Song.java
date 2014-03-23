@@ -5,6 +5,9 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 
+/**
+ * Song.
+ */
 @Entity
 @Table(name = "song")
 @Indexed

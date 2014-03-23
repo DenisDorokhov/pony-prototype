@@ -7,6 +7,11 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Song file entity.
+ *
+ * This entity stores all information about song meta data.
+ */
 @Entity
 @Table(name = "song_file")
 public class SongFile extends AbstractEntity<Integer> {

@@ -1,5 +1,10 @@
 package net.dorokhov.pony.core.domain;
 
+/**
+ * Song file data.
+ *
+ * This class is used as a container for parsed audio file data.
+ */
 public class SongData {
 
 	private String path;

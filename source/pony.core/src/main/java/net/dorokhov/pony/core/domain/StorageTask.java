@@ -2,8 +2,19 @@ package net.dorokhov.pony.core.domain;
 
 import java.io.File;
 
+/**
+ * Task for storing StoredFile entity in the system.
+ *
+ * The idea is the following: if there is a file that needs to be stored in the system, a storage task is created.
+ * Storage task will contain all information required to store the file in the system.
+ */
 public class StorageTask {
 
+	/**
+	 * Type is used to identify what should be done with the filesystem file to be stored. It can be moved (e.g. when we
+	 * created a temporary file or handled uploaded file) or copied (e.g. we want to copy some file to our system for
+	 * using it).
+	 */
 	public static enum Type {
 		COPY, MOVE
 	}

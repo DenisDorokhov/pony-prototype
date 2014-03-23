@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Album entity.
+ */
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 @Indexed

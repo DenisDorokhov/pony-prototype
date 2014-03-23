@@ -4,6 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Abstract entity stored in the database.
+ *
+ * @param <T> primary key type
+ */
 @MappedSuperclass
 public abstract class AbstractEntity<T extends Serializable> {
 

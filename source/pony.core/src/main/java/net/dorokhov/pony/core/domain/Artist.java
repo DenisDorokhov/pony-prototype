@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Artist entity.
+ */
 @Entity
 @Table(name = "artist")
 @Indexed
