@@ -37,6 +37,11 @@ public class SongServiceServlet extends AbstractServiceServlet implements SongSe
 	}
 
 	@Override
+	public List<SongDto> search(String aQuery) {
+		return songServiceFacade.search(aQuery);
+	}
+
+	@Override
 	public SongDto getById(Integer aId) {
 		return songServiceFacade.getById(aId);
 	}

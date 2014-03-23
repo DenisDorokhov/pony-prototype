@@ -14,6 +14,8 @@ public interface AlbumService extends RemoteService {
 	public List<AlbumDto> getByArtist(Integer aArtistId);
 	public List<AlbumDto> getByArtistIdOrName(String aIdOrName);
 
+	public List<AlbumDto> search(String aQuery);
+
 	public AlbumDto getById(Integer aId);
 
 }

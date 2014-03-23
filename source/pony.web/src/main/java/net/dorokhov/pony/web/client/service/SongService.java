@@ -15,6 +15,8 @@ public interface SongService extends RemoteService {
 	public List<SongDto> getByAlbum(Integer aAlbumId);
 	public List<SongDto> getByArtist(Integer aArtistId);
 
+	public List<SongDto> search(String aQuery);
+
 	public SongDto getById(Integer aId);
 
 }

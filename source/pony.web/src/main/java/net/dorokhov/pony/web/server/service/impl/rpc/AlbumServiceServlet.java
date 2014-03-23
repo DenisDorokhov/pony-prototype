@@ -32,6 +32,11 @@ public class AlbumServiceServlet extends AbstractServiceServlet implements Album
 	}
 
 	@Override
+	public List<AlbumDto> search(String aQuery) {
+		return albumServiceFacade.search(aQuery);
+	}
+
+	@Override
 	public AlbumDto getById(Integer aId) {
 		return albumServiceFacade.getById(aId);
 	}

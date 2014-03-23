@@ -27,6 +27,11 @@ public class ArtistServiceServlet extends AbstractServiceServlet implements Arti
 	}
 
 	@Override
+	public List<ArtistDto> search(String aQuery) {
+		return artistServiceFacade.search(aQuery);
+	}
+
+	@Override
 	public ArtistDto getById(Integer aId) {
 		return artistServiceFacade.getById(aId);
 	}

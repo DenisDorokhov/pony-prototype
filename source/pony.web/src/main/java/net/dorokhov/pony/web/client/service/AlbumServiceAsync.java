@@ -12,6 +12,8 @@ public interface AlbumServiceAsync {
 	public void getByArtist(Integer aArtistId, AsyncCallback<List<AlbumDto>> aCallback);
 	public void getByArtistIdOrName(String aIdOrName, AsyncCallback<List<AlbumDto>> aCallback);
 
+	public void search(String aQuery, AsyncCallback<List<AlbumDto>> aCallback);
+
 	public void getById(Integer aId, AsyncCallback<AlbumDto> aCallback);
 
 }
