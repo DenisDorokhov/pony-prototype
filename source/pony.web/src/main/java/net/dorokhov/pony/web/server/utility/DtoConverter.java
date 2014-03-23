@@ -12,7 +12,7 @@ import net.dorokhov.pony.web.shared.StatusDto;
 
 import java.io.File;
 
-public class DtoUtility {
+public class DtoConverter {
 
 	public static StatusDto statusToDto(LibraryScanner.Status aStatus) {
 
@@ -104,6 +104,7 @@ public class DtoUtility {
 
 		if (file != null) {
 
+			dto.setFile(file.getId());
 			dto.setPath(file.getPath());
 			dto.setFormat(file.getFormat());
 			dto.setMimeType(file.getMimeType());

@@ -8,11 +8,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 public class LibraryServiceServlet extends AbstractServiceServlet implements LibraryService {
 
-	private LibraryServiceFacade libraryService;
+	private LibraryServiceFacade libraryServiceFacade;
 
 	@Override
 	protected void initWithApplicationContext(WebApplicationContext aContext) {
-		libraryService = aContext.getBean(LibraryServiceFacade.class);
+		libraryServiceFacade = aContext.getBean(LibraryServiceFacade.class);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class LibraryServiceServlet extends AbstractServiceServlet implements Lib
 
 		try {
 
-			libraryService.startScanning();
+			libraryServiceFacade.startScanning();
 
 			return true;
 
@@ -33,7 +33,7 @@ public class LibraryServiceServlet extends AbstractServiceServlet implements Lib
 
 	@Override
 	public StatusDto getStatus() {
-		return libraryService.getStatus();
+		return libraryServiceFacade.getStatus();
 	}
 
 }

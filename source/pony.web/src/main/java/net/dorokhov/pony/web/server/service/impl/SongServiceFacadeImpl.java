@@ -3,7 +3,7 @@ package net.dorokhov.pony.web.server.service.impl;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.web.server.service.SongServiceFacade;
-import net.dorokhov.pony.web.server.utility.DtoUtility;
+import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.SongDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 
 		Song song = songService.getById(aId);
 
-		return song != null ? DtoUtility.songToDto(song) : null;
+		return song != null ? DtoConverter.songToDto(song) : null;
 	}
 
 	private List<SongDto> songListToDto(List<Song> aSongList) {
@@ -66,7 +66,7 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 		List<SongDto> songList = new ArrayList<SongDto>();
 
 		for (Song song : aSongList) {
-			songList.add(DtoUtility.songToDto(song));
+			songList.add(DtoConverter.songToDto(song));
 		}
 
 		return songList;

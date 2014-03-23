@@ -9,31 +9,31 @@ import java.util.List;
 
 public class AlbumServiceServlet extends AbstractServiceServlet implements AlbumService {
 
-	private AlbumServiceFacade albumService;
+	private AlbumServiceFacade albumServiceFacade;
 
 	@Override
 	protected void initWithApplicationContext(WebApplicationContext aContext) {
-		albumService = aContext.getBean(AlbumServiceFacade.class);
+		albumServiceFacade = aContext.getBean(AlbumServiceFacade.class);
 	}
 
 	@Override
 	public Long getCountByArtist(Integer aArtistId) {
-		return albumService.getCountByArtist(aArtistId);
+		return albumServiceFacade.getCountByArtist(aArtistId);
 	}
 
 	@Override
 	public List<AlbumDto> getByArtist(Integer aArtistId) {
-		return albumService.getByArtist(aArtistId);
+		return albumServiceFacade.getByArtist(aArtistId);
 	}
 
 	@Override
 	public List<AlbumDto> getByArtistIdOrName(String aIdOrName) {
-		return albumService.getByArtistIdOrName(aIdOrName);
+		return albumServiceFacade.getByArtistIdOrName(aIdOrName);
 	}
 
 	@Override
 	public AlbumDto getById(Integer aId) {
-		return albumService.getById(aId);
+		return albumServiceFacade.getById(aId);
 	}
 
 }

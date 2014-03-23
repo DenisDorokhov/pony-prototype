@@ -3,8 +3,8 @@ package net.dorokhov.pony.web.server.service.impl;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
+import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.StatusDto;
-import net.dorokhov.pony.web.server.utility.DtoUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,6 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 
 		LibraryScanner.Status status = libraryScanner.getStatus();
 
-		return status != null ? DtoUtility.statusToDto(status) : null;
+		return status != null ? DtoConverter.statusToDto(status) : null;
 	}
 }

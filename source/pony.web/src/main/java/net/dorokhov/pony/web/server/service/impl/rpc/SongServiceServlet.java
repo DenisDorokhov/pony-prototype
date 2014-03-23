@@ -9,36 +9,36 @@ import java.util.List;
 
 public class SongServiceServlet extends AbstractServiceServlet implements SongService {
 
-	private SongServiceFacade songService;
+	private SongServiceFacade songServiceFacade;
 
 	@Override
 	protected void initWithApplicationContext(WebApplicationContext aContext) {
-		songService = aContext.getBean(SongServiceFacade.class);
+		songServiceFacade = aContext.getBean(SongServiceFacade.class);
 	}
 
 	@Override
 	public Long getCountByAlbum(Integer aAlbumId) {
-		return songService.getCountByAlbum(aAlbumId);
+		return songServiceFacade.getCountByAlbum(aAlbumId);
 	}
 
 	@Override
 	public Long getCountByArtist(Integer aArtistId) {
-		return songService.getCountByArtist(aArtistId);
+		return songServiceFacade.getCountByArtist(aArtistId);
 	}
 
 	@Override
 	public List<SongDto> getByAlbum(Integer aAlbumId) {
-		return songService.getByAlbum(aAlbumId);
+		return songServiceFacade.getByAlbum(aAlbumId);
 	}
 
 	@Override
 	public List<SongDto> getByArtist(Integer aArtistId) {
-		return songService.getByArtist(aArtistId);
+		return songServiceFacade.getByArtist(aArtistId);
 	}
 
 	@Override
 	public SongDto getById(Integer aId) {
-		return songService.getById(aId);
+		return songServiceFacade.getById(aId);
 	}
 
 }

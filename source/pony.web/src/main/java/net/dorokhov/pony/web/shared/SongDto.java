@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class SongDto extends AbstractEntityDto implements Serializable {
 
+	private Integer file;
+
 	private String path;
 
 	private String format;
@@ -41,6 +43,14 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 	private Integer albumId;
 
 	private Integer artistId;
+
+	public Integer getFile() {
+		return file;
+	}
+
+	public void setFile(Integer aFile) {
+		file = aFile;
+	}
 
 	public String getPath() {
 		return path;

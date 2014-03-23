@@ -6,8 +6,8 @@ import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.AlbumService;
 import net.dorokhov.pony.core.service.ArtistService;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
+import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.AlbumDto;
-import net.dorokhov.pony.web.server.utility.DtoUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,10 +91,10 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	private AlbumDto albumToDto(Album aAlbum) {
 
-		AlbumDto dto = DtoUtility.albumToDto(aAlbum);
+		AlbumDto dto = DtoConverter.albumToDto(aAlbum);
 
 		for (Song song : aAlbum.getSongs()) {
-			dto.getSongs().add(DtoUtility.songToDto(song));
+			dto.getSongs().add(DtoConverter.songToDto(song));
 		}
 
 		return dto;

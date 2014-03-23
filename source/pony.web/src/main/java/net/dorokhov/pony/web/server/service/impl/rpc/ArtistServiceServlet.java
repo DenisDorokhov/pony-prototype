@@ -9,36 +9,36 @@ import java.util.List;
 
 public class ArtistServiceServlet extends AbstractServiceServlet implements ArtistService {
 
-	private ArtistServiceFacade artistService;
+	private ArtistServiceFacade artistServiceFacade;
 
 	@Override
 	protected void initWithApplicationContext(WebApplicationContext aContext) {
-		artistService = aContext.getBean(ArtistServiceFacade.class);
+		artistServiceFacade = aContext.getBean(ArtistServiceFacade.class);
 	}
 
 	@Override
 	public Long getCount() {
-		return artistService.getCount();
+		return artistServiceFacade.getCount();
 	}
 
 	@Override
 	public List<ArtistDto> getAll() {
-		return artistService.getAll();
+		return artistServiceFacade.getAll();
 	}
 
 	@Override
 	public ArtistDto getById(Integer aId) {
-		return artistService.getById(aId);
+		return artistServiceFacade.getById(aId);
 	}
 
 	@Override
 	public ArtistDto getByName(String aName) {
-		return artistService.getByName(aName);
+		return artistServiceFacade.getByName(aName);
 	}
 
 	@Override
 	public ArtistDto getByIdOrName(String aNameOrId) {
-		return artistService.getByIdOrName(aNameOrId);
+		return artistServiceFacade.getByIdOrName(aNameOrId);
 	}
 
 }

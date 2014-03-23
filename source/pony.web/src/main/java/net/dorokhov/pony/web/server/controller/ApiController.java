@@ -1,15 +1,15 @@
 package net.dorokhov.pony.web.server.controller;
 
-import net.dorokhov.pony.core.domain.Song;
+import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
-import net.dorokhov.pony.core.service.SongService;
+import net.dorokhov.pony.core.service.SongFileService;
 import net.dorokhov.pony.core.service.StoredFileService;
 import net.dorokhov.pony.web.server.service.*;
+import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
 import net.dorokhov.pony.web.shared.*;
 import net.dorokhov.pony.web.shared.response.Response;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
-import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ApiController {
 
 	private SearchServiceFacade searchServiceFacade;
 
-	private SongService songService;
+	private SongFileService songFileService;
 
 	private StoredFileService storedFileService;
 
@@ -74,8 +74,8 @@ public class ApiController {
 	}
 
 	@Autowired
-	public void setSongService(SongService aSongService) {
-		songService = aSongService;
+	public void setSongFileService(SongFileService aSongFileService) {
+		songFileService = aSongFileService;
 	}
 
 	@Autowired
@@ -193,26 +193,26 @@ public class ApiController {
 		return new Response(false);
 	}
 
-	@RequestMapping(value = "/songFile/{songId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/songFile/{songFileId}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getSongFile(@PathVariable("songId") Integer aSongId) {
+	public Object getSongFile(@PathVariable("songFileId") Integer aSongFileId) {
 
 		try {
 
-			Song song = songService.getById(aSongId);
+			SongFile songFile = songFileService.getById(aSongFileId);
 
-			if (song != null) {
+			if (songFile != null) {
 
-				InputStream stream = new FileInputStream(new File(song.getFile().getPath()));
+				InputStream stream = new FileInputStream(new File(songFile.getPath()));
 
 				StreamingViewRenderer renderer = new StreamingViewRenderer();
 
 				HashMap<String, Object> model = new HashMap<String, Object>();
 
-				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, song.getFile().getSize());
-				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, song.getFile().getName());
-				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, song.getFile().getUpdateDate());
-				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, song.getFile().getMimeType());
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_LENGTH, songFile.getSize());
+				model.put(StreamingViewRenderer.DownloadConstants.FILENAME, songFile.getName());
+				model.put(StreamingViewRenderer.DownloadConstants.LAST_MODIFIED, songFile.getUpdateDate());
+				model.put(StreamingViewRenderer.DownloadConstants.CONTENT_TYPE, songFile.getMimeType());
 				model.put(StreamingViewRenderer.DownloadConstants.INPUT_STREAM, stream);
 
 				return new ModelAndView(renderer, model);
