@@ -5,10 +5,7 @@ import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.core.service.StoredFileService;
-import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
-import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
-import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
-import net.dorokhov.pony.web.server.service.SongServiceFacade;
+import net.dorokhov.pony.web.server.service.*;
 import net.dorokhov.pony.web.shared.*;
 import net.dorokhov.pony.web.shared.response.Response;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
@@ -45,6 +42,8 @@ public class ApiController {
 
 	private SongServiceFacade songServiceFacade;
 
+	private SearchServiceFacade searchServiceFacade;
+
 	private SongService songService;
 
 	private StoredFileService storedFileService;
@@ -67,6 +66,11 @@ public class ApiController {
 	@Autowired
 	public void setSongServiceFacade(SongServiceFacade aSongServiceFacade) {
 		songServiceFacade = aSongServiceFacade;
+	}
+
+	@Autowired
+	public void setSearchServiceFacade(SearchServiceFacade aSearchServiceFacade) {
+		searchServiceFacade = aSearchServiceFacade;
 	}
 
 	@Autowired
@@ -149,15 +153,7 @@ public class ApiController {
 	public ResponseWithResult<SearchDto> search(@PathVariable("query") String aQuery) {
 
 		try {
-
-			SearchDto dto = new SearchDto();
-
-			dto.setArtists(artistServiceFacade.search(aQuery));
-			dto.setAlbums(albumServiceFacade.search(aQuery));
-			dto.setSongs(songServiceFacade.search(aQuery));
-
-			return new ResponseWithResult<SearchDto>(dto);
-
+			return new ResponseWithResult<SearchDto>(searchServiceFacade.search(aQuery));
 		} catch (Exception e) {
 			log.error("could not execute search query [{}]", aQuery, e);
 		}
