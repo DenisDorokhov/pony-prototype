@@ -111,28 +111,28 @@ public class ApiController {
 
 	@RequestMapping(value = "/albums/{idOrName}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseWithResult<List<AlbumDto>> getAlbumList(@PathVariable("idOrName") String aIdOrName) {
+	public ResponseWithResult<List<AlbumSongsDto>> getAlbumList(@PathVariable("idOrName") String aIdOrName) {
 
 		try {
-			return new ResponseWithResult<List<AlbumDto>>(albumServiceFacade.getByArtistIdOrName(aIdOrName));
+			return new ResponseWithResult<List<AlbumSongsDto>>(albumServiceFacade.getByArtistIdOrName(aIdOrName));
 		} catch (Exception e) {
 			log.error("could not get artist [{}]", aIdOrName, e);
 		}
 
-		return new ResponseWithResult<List<AlbumDto>>();
+		return new ResponseWithResult<List<AlbumSongsDto>>();
 	}
 
 	@RequestMapping(value = "/album/{albumId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseWithResult<AlbumDto> getAlbum(@PathVariable("albumId") Integer aAlbumId) {
+	public ResponseWithResult<AlbumSongsDto> getAlbum(@PathVariable("albumId") Integer aAlbumId) {
 
 		try {
-			return new ResponseWithResult<AlbumDto>(albumServiceFacade.getById(aAlbumId));
+			return new ResponseWithResult<AlbumSongsDto>(albumServiceFacade.getById(aAlbumId));
 		} catch (Exception e) {
 			log.error("could not get album [{}]", aAlbumId, e);
 		}
 
-		return new ResponseWithResult<AlbumDto>();
+		return new ResponseWithResult<AlbumSongsDto>();
 	}
 
 	@RequestMapping(value = "/song/{songId}", method = RequestMethod.GET)

@@ -9,6 +9,7 @@ import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.AlbumDto;
+import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,13 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<AlbumDto> getByArtist(Integer aArtistId) {
-		return albumListToDto(albumService.getByArtist(aArtistId));
+	public List<AlbumSongsDto> getByArtist(Integer aArtistId) {
+		return albumListToSongsDto(albumService.getByArtist(aArtistId));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<AlbumDto> getByArtistIdOrName(String aIdOrName) {
+	public List<AlbumSongsDto> getByArtistIdOrName(String aIdOrName) {
 
 		Artist artist = null;
 
@@ -68,7 +69,7 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 			artist = artistService.getByName(aIdOrName);
 		}
 
-		return artist != null ? albumListToDto(albumService.getByArtist(artist.getId())) : new ArrayList<AlbumDto>();
+		return artist != null ? albumListToSongsDto(albumService.getByArtist(artist.getId())) : new ArrayList<AlbumSongsDto>();
 	}
 
 	@Override
@@ -79,11 +80,11 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public AlbumDto getById(Integer aId) {
+	public AlbumSongsDto getById(Integer aId) {
 
 		Album album = albumService.getById(aId);
 
-		return album != null ? albumToDto(album) : null;
+		return album != null ? albumToSongsDto(album) : null;
 	}
 
 	private List<AlbumDto> albumListToDto(List<Album> aAlbumList) {
@@ -91,15 +92,26 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 		List<AlbumDto> dto = new ArrayList<AlbumDto>();
 
 		for (Album album : aAlbumList) {
-			dto.add(albumToDto(album));
+			dto.add(DtoConverter.albumToDto(album));
 		}
 
 		return dto;
 	}
 
-	private AlbumDto albumToDto(Album aAlbum) {
+	private List<AlbumSongsDto> albumListToSongsDto(List<Album> aAlbumList) {
 
-		AlbumDto dto = DtoConverter.albumToDto(aAlbum);
+		List<AlbumSongsDto> dto = new ArrayList<AlbumSongsDto>();
+
+		for (Album album : aAlbumList) {
+			dto.add(albumToSongsDto(album));
+		}
+
+		return dto;
+	}
+
+	private AlbumSongsDto albumToSongsDto(Album aAlbum) {
+
+		AlbumSongsDto dto = DtoConverter.albumToSongsDto(aAlbum);
 
 		for (Song song : songService.getByAlbum(aAlbum.getId())) {
 			dto.getSongs().add(DtoConverter.songToDto(song));

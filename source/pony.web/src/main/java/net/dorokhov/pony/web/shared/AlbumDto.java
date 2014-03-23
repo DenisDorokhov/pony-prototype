@@ -1,8 +1,6 @@
 package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AlbumDto extends AbstractEntityDto implements Serializable {
 
@@ -19,8 +17,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 	private String artist;
 
 	private Integer artistArtwork;
-
-	private List<SongDto> songs;
 
 	private Integer artistId;
 
@@ -80,19 +76,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 		artistArtwork = aArtistArtwork;
 	}
 
-	public List<SongDto> getSongs() {
-
-		if (songs == null) {
-			songs = new ArrayList<SongDto>();
-		}
-
-		return songs;
-	}
-
-	public void setSongs(List<SongDto> aSongs) {
-		songs = aSongs;
-	}
-
 	public Integer getArtistId() {
 		return artistId;
 	}
@@ -100,4 +83,5 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 	public void setArtistId(Integer aArtistId) {
 		artistId = aArtistId;
 	}
+
 }

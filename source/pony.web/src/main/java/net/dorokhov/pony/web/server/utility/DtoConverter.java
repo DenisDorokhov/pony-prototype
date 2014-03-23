@@ -5,10 +5,7 @@ import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.service.LibraryScanner;
-import net.dorokhov.pony.web.shared.AlbumDto;
-import net.dorokhov.pony.web.shared.ArtistDto;
-import net.dorokhov.pony.web.shared.SongDto;
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.*;
 
 import java.io.File;
 
@@ -51,26 +48,40 @@ public class DtoConverter {
 
 		AlbumDto dto = new AlbumDto();
 
-		dto.setId(aAlbum.getId());
-		dto.setCreationDate(aAlbum.getCreationDate());
-		dto.setUpdateDate(aAlbum.getUpdateDate());
-		dto.setGeneration(aAlbum.getGeneration());
+		initAlbumDto(dto, aAlbum);
 
-		dto.setName(aAlbum.getName());
-		dto.setYear(aAlbum.getYear());
-		dto.setDiscCount(aAlbum.getDiscCount());
-		dto.setTrackCount(aAlbum.getTrackCount());
-		dto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
+		return dto;
+	}
+
+	public static AlbumSongsDto albumToSongsDto(Album aAlbum) {
+
+		AlbumSongsDto dto = new AlbumSongsDto();
+
+		initAlbumDto(dto, aAlbum);
+
+		return dto;
+	}
+
+	private static void initAlbumDto(AlbumDto aDto, Album aAlbum) {
+
+		aDto.setId(aAlbum.getId());
+		aDto.setCreationDate(aAlbum.getCreationDate());
+		aDto.setUpdateDate(aAlbum.getUpdateDate());
+		aDto.setGeneration(aAlbum.getGeneration());
+
+		aDto.setName(aAlbum.getName());
+		aDto.setYear(aAlbum.getYear());
+		aDto.setDiscCount(aAlbum.getDiscCount());
+		aDto.setTrackCount(aAlbum.getTrackCount());
+		aDto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
 
 		Artist artist = aAlbum.getArtist();
 
 		if (artist != null) {
-			dto.setArtistId(artist.getId());
-			dto.setArtist(artist.getName());
-			dto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
+			aDto.setArtistId(artist.getId());
+			aDto.setArtist(artist.getName());
+			aDto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
 		}
-
-		return dto;
 	}
 
 	public static SongDto songToDto(Song aSong) {
