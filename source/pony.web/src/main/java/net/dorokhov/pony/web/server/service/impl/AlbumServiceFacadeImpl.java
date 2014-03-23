@@ -5,6 +5,7 @@ import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.AlbumService;
 import net.dorokhov.pony.core.service.ArtistService;
+import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.AlbumDto;
@@ -24,6 +25,8 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	private AlbumService albumService;
 
+	private SongService songService;
+
 	@Autowired
 	public void setArtistService(ArtistService aArtistService) {
 		artistService = aArtistService;
@@ -32,6 +35,11 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	@Autowired
 	public void setAlbumService(AlbumService aAlbumService) {
 		albumService = aAlbumService;
+	}
+
+	@Autowired
+	public void setSongService(SongService aSongService) {
+		songService = aSongService;
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 		AlbumDto dto = DtoConverter.albumToDto(aAlbum);
 
-		for (Song song : aAlbum.getSongs()) {
+		for (Song song : songService.getByAlbum(aAlbum.getId())) {
 			dto.getSongs().add(DtoConverter.songToDto(song));
 		}
 
