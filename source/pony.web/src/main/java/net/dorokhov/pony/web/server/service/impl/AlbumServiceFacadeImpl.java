@@ -52,7 +52,7 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	@Override
 	@Transactional(readOnly = true)
 	public List<AlbumSongsDto> getByArtist(Integer aArtistId) {
-		return albumListToSongsDto(albumService.getByArtist(aArtistId));
+		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 			artist = artistService.getByName(aIdOrName);
 		}
 
-		return artist != null ? albumListToSongsDto(albumService.getByArtist(artist.getId())) : new ArrayList<AlbumSongsDto>();
+		return artist != null ? songListToDto(songService.getByArtist(artist.getId())) : new ArrayList<AlbumSongsDto>();
 	}
 
 	@Override
@@ -82,9 +82,30 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	@Transactional(readOnly = true)
 	public AlbumSongsDto getById(Integer aId) {
 
-		Album album = albumService.getById(aId);
+		List<AlbumSongsDto> dto = songListToDto(songService.getByAlbum(aId));
 
-		return album != null ? albumToSongsDto(album) : null;
+		return dto.size() > 0 ? dto.get(0) : DtoConverter.albumToSongsDto(albumService.getById(aId));
+	}
+
+	private List<AlbumSongsDto> songListToDto(List<Song> aSongList) {
+
+		List<AlbumSongsDto> result = new ArrayList<AlbumSongsDto>();
+
+		AlbumSongsDto currentDto = null;
+
+		for (Song song : aSongList) {
+
+			if (currentDto == null || !currentDto.getId().equals(song.getAlbum().getId())) {
+
+				currentDto = DtoConverter.albumToSongsDto(song.getAlbum());
+
+				result.add(currentDto);
+			}
+
+			currentDto.getSongs().add(DtoConverter.songToDto(song));
+		}
+
+		return result;
 	}
 
 	private List<AlbumDto> albumListToDto(List<Album> aAlbumList) {
@@ -93,28 +114,6 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 		for (Album album : aAlbumList) {
 			dto.add(DtoConverter.albumToDto(album));
-		}
-
-		return dto;
-	}
-
-	private List<AlbumSongsDto> albumListToSongsDto(List<Album> aAlbumList) {
-
-		List<AlbumSongsDto> dto = new ArrayList<AlbumSongsDto>();
-
-		for (Album album : aAlbumList) {
-			dto.add(albumToSongsDto(album));
-		}
-
-		return dto;
-	}
-
-	private AlbumSongsDto albumToSongsDto(Album aAlbum) {
-
-		AlbumSongsDto dto = DtoConverter.albumToSongsDto(aAlbum);
-
-		for (Song song : songService.getByAlbum(aAlbum.getId())) {
-			dto.getSongs().add(DtoConverter.songToDto(song));
 		}
 
 		return dto;
