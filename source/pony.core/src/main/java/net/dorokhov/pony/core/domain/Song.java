@@ -17,7 +17,7 @@ public class Song extends AbstractEntity<Integer> {
 
 	private Album album;
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "song_file_id", unique = true)
 	@IndexedEmbedded
 	public SongFile getFile() {
@@ -28,7 +28,7 @@ public class Song extends AbstractEntity<Integer> {
 		file = aSongFile;
 	}
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "album_id")
 	public Album getAlbum() {
 		return album;

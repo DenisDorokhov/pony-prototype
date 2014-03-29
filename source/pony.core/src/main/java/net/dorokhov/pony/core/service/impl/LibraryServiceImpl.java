@@ -211,6 +211,7 @@ public class LibraryServiceImpl implements LibraryService {
 		} while (page != null);
 
 		for (Integer id : itemsToDelete) {
+			songService.deleteByFileId(id);
 			songFileService.deleteById(id);
 		}
 

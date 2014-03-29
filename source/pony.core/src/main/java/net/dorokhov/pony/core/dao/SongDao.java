@@ -31,12 +31,30 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	public long countByAlbumArtistId(Integer aArtistId);
 
 	/**
+	 * Finds song by ID.
+	 *
+	 * @param aId song ID
+	 * @return song with the given ID or {@literal null} if none found
+	 */
+	@Query("SELECT s FROM Song s " +
+			"INNER JOIN FETCH s.file " +
+			"INNER JOIN FETCH s.album a " +
+			"INNER JOIN FETCH a.artist " +
+			"WHERE s.id = ?1")
+	public Song findById(Integer aId);
+
+	/**
 	 * Finds songs by album ID.
 	 *
 	 * @param aAlbumId album ID
 	 * @param aSort sort option
 	 * @return list of songs with the given album ID
 	 */
+	@Query("SELECT s FROM Song s " +
+			"INNER JOIN FETCH s.file " +
+			"INNER JOIN FETCH s.album a " +
+			"INNER JOIN FETCH a.artist " +
+			"WHERE a.id = ?1")
 	public List<Song> findByAlbumId(Integer aAlbumId, Sort aSort);
 
 	/**
@@ -46,6 +64,11 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * @param aSort sort option
 	 * @return list of songs with the given artist ID
 	 */
+	@Query("SELECT s FROM Song s " +
+			"INNER JOIN FETCH s.file " +
+			"INNER JOIN FETCH s.album a " +
+			"INNER JOIN FETCH a.artist " +
+			"WHERE a.artist.id = ?1")
 	public List<Song> findByAlbumArtistId(Integer aArtistId, Sort aSort);
 
 	/**
@@ -54,6 +77,11 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * @param aSongFileId song file ID
 	 * @return song with the given song file ID or {@literal null} if none found
 	 */
+	@Query("SELECT s FROM Song s " +
+			"INNER JOIN FETCH s.file " +
+			"INNER JOIN FETCH s.album a " +
+			"INNER JOIN FETCH a.artist " +
+			"WHERE s.id = ?1")
 	public Song findByFileId(Integer aSongFileId);
 
 	/**

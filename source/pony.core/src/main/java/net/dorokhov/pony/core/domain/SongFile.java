@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -45,8 +44,6 @@ public class SongFile extends AbstractEntity<Integer> {
 	private Integer year;
 
 	private StoredFile artwork;
-
-	private Song song;
 
 	@Column(name = "path", unique = true)
 	@NotBlank
@@ -181,7 +178,7 @@ public class SongFile extends AbstractEntity<Integer> {
 		year = aYear;
 	}
 
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artwork_stored_file_id")
 	public StoredFile getArtwork() {
 		return artwork;
@@ -189,16 +186,6 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	public void setArtwork(StoredFile aArtwork) {
 		artwork = aArtwork;
-	}
-
-	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "file")
-	@ContainedIn
-	public Song getSong() {
-		return song;
-	}
-
-	public void setSong(Song aSong) {
-		song = aSong;
 	}
 
 	@Override

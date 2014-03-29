@@ -67,7 +67,7 @@ public class Album extends AbstractEntity<Integer> {
 		trackCount = aTrackCount;
 	}
 
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artwork_stored_file_id")
 	public StoredFile getArtwork() {
 		return artwork;
@@ -86,7 +86,7 @@ public class Album extends AbstractEntity<Integer> {
 		songs = aSongs;
 	}
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artist_id")
 	public Artist getArtist() {
 		return artist;

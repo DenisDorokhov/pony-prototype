@@ -37,6 +37,12 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 
 	@Override
 	@Transactional(readOnly = true)
+	public Song getById(Integer aId) {
+		return dao.findById(aId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public List<Song> getByAlbum(Integer aAlbumId) {
 		return dao.findByAlbumId(aAlbumId, new Sort("file.discNumber", "file.trackNumber", "file.name"));
 	}
@@ -57,5 +63,11 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 	@Transactional(readOnly = true)
 	public Song getByFile(Integer aSongFileId) {
 		return dao.findByFileId(aSongFileId);
+	}
+
+	@Override
+	@Transactional
+	public void deleteByFileId(Integer aSongFileId) {
+		dao.deleteByFileId(aSongFileId);
 	}
 }

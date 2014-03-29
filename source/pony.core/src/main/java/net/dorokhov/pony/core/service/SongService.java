@@ -21,6 +21,7 @@ public interface SongService {
 	public Song save(Song aSong) throws ConstraintViolationException;
 
 	public void deleteById(Integer aId);
+	public void deleteByFileId(Integer aSongFileId);
 
 	public void validate(Song aSong) throws ConstraintViolationException;
 

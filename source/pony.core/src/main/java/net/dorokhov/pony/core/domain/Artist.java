@@ -32,7 +32,7 @@ public class Artist extends AbstractEntity<Integer> {
 		name = aName;
 	}
 
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artwork_stored_file_id")
 	public StoredFile getArtwork() {
 		return artwork;
