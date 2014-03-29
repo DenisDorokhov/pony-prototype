@@ -5,6 +5,9 @@ import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SearchService;
 import org.apache.lucene.search.*;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -74,6 +77,11 @@ public class SearchServiceImpl implements SearchService {
 
 		FullTextQuery jpaQuery = buildQuery(aQuery, Album.class, "name");
 
+		Criteria criteria = getSession().createCriteria(Album.class)
+				.setFetchMode("artist", FetchMode.JOIN);
+
+		jpaQuery.setCriteriaQuery(criteria);
+
 		jpaQuery.setSort(new Sort(new SortField("name", SortField.STRING)));
 		jpaQuery.setFirstResult(0);
 		jpaQuery.setMaxResults(aMaxResults);
@@ -87,6 +95,13 @@ public class SearchServiceImpl implements SearchService {
 	public List<Song> searchSongs(String aQuery, int aMaxResults) {
 
 		FullTextQuery jpaQuery = buildQuery(aQuery, Song.class, "file.name");
+
+		Criteria criteria = getSession().createCriteria(Song.class)
+				.setFetchMode("file", FetchMode.JOIN)
+				.setFetchMode("album", FetchMode.JOIN)
+				.setFetchMode("album.artist", FetchMode.JOIN);
+
+		jpaQuery.setCriteriaQuery(criteria);
 
 		jpaQuery.setSort(new Sort(new SortField("file.name", SortField.STRING)));
 		jpaQuery.setFirstResult(0);
@@ -111,5 +126,9 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		return fullTextEntityManager.createFullTextQuery(luceneQuery, aClass);
+	}
+
+	private Session getSession() {
+		return (Session)entityManager.getDelegate();
 	}
 }
