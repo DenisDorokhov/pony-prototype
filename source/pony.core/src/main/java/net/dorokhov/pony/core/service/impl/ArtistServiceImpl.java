@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,13 +28,23 @@ public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, Ar
 	@Override
 	@Transactional(readOnly = true)
 	public List<Artist> getAll() {
-		return IteratorUtils.toList(dao.findAll(new Sort("name")).iterator());
+
+		List<Artist> result = IteratorUtils.toList(dao.findAll(new Sort("name")).iterator());
+
+		Collections.sort(result);
+
+		return result;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Artist> getByArtwork(Integer aStoredFileId) {
-		return dao.findByArtworkId(aStoredFileId, new Sort("name"));
+
+		List<Artist> result = dao.findByArtworkId(aStoredFileId, new Sort("name"));
+
+		Collections.sort(result);
+
+		return result;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "artist")
 @Indexed
-public class Artist extends AbstractEntity<Integer> {
+public class Artist extends AbstractEntity<Integer> implements Comparable<Artist> {
 
     private String name;
 
@@ -49,6 +50,25 @@ public class Artist extends AbstractEntity<Integer> {
 
 	public void setAlbums(List<Album> aAlbums) {
 		albums = aAlbums;
+	}
+
+	@Override
+	@SuppressWarnings("NullableProblems")
+	public int compareTo(Artist aArtist) {
+
+		int result = 0;
+
+		if (!equals(aArtist)) {
+
+			String regex = "^the\\s+";
+
+			String name1 = getName() != null ? getName().toLowerCase().replaceAll(regex, "") : null;
+			String name2 = aArtist.getName() != null ? aArtist.getName().toLowerCase().replaceAll(regex, "") : null;
+
+			result = ObjectUtils.compare(name1, name2);
+		}
+
+		return result;
 	}
 
 	@Override

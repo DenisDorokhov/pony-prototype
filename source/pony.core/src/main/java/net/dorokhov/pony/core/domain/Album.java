@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 @Indexed
-public class Album extends AbstractEntity<Integer> {
+public class Album extends AbstractEntity<Integer> implements Comparable<Album> {
 
 	private String name;
 
@@ -72,6 +73,27 @@ public class Album extends AbstractEntity<Integer> {
 
 	public void setArtist(Artist aArtist) {
 		artist = aArtist;
+	}
+
+	@Override
+	@SuppressWarnings("NullableProblems")
+	public int compareTo(Album aAlbum) {
+
+		int result = 0;
+
+		if (!equals(aAlbum)) {
+
+			result = ObjectUtils.compare(getArtist(), aAlbum.getArtist());
+
+			if (result == 0) {
+				result = ObjectUtils.compare(getYear(), aAlbum.getYear());
+			}
+			if (result == 0) {
+				result = ObjectUtils.compare(getName(), aAlbum.getName());
+			}
+		}
+
+		return result;
 	}
 
 	@Override

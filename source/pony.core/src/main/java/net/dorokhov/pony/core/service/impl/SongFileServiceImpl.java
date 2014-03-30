@@ -21,11 +21,4 @@ public class SongFileServiceImpl extends AbstractEntityService<SongFile, Integer
 		return dao.findByPath(aPath);
 	}
 
-	@Override
-	protected void normalize(SongFile aSongFile) {
-		if (aSongFile.getName() != null) {
-			aSongFile.setName(aSongFile.getName().trim());
-		}
-	}
-	
 }

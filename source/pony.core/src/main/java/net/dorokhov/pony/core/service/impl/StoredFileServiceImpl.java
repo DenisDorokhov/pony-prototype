@@ -188,13 +188,6 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 		});
 	}
 
-	@Override
-	protected void normalize(StoredFile aStoredFile) {
-		if (aStoredFile.getName() != null) {
-			aStoredFile.setName(aStoredFile.getName().trim());
-		}
-	}
-
 	private void createFilesFolder() {
 
 		File userHome = FileUtils.getUserDirectory();

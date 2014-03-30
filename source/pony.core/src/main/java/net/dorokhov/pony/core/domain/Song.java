@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -49,56 +49,37 @@ public class Song extends AbstractEntity<Integer> implements Comparable<Song> {
 				'}';
 	}
 
-	/**
-	 * Null safe song comparison. It's useful to resolve inconsistencies like {@literal null} disc number or
-	 * {@literal null} track number. {@literal null} for these fields should be taken as {@literal 1}. If song data is
-	 * inconsistent, without explicit comparison song order can be incorrect after database query sorting .
-	 *
-	 * @param aSong song to compare
-	 * @return comparison result
-	 */
-	@SuppressWarnings("NullableProblems")
 	@Override
+	@SuppressWarnings("NullableProblems")
 	public int compareTo(Song aSong) {
 
 		int result = 0;
 
-		if (aSong != null) {
+		if (!equals(aSong)) {
 
-			if (getAlbum() != null && aSong.getAlbum() != null) {
-				if (getAlbum().getArtist() != null && aSong.getAlbum().getArtist() != null) {
-					result = ObjectUtils.compare(getAlbum().getArtist().getName(), aSong.getAlbum().getArtist().getName());
-				}
-				if (result == 0) {
-					result = ObjectUtils.compare(getAlbum().getYear(), aSong.getAlbum().getYear());
-				}
-				if (result == 0) {
-					result = ObjectUtils.compare(getAlbum().getName(), aSong.getAlbum().getName());
-				}
+			result = ObjectUtils.compare(getAlbum(), aSong.getAlbum());
+
+			if (result == 0) {
+
+				Integer discNumber1 = getFile() != null && getFile().getDiscNumber() != null ? getFile().getDiscNumber() : 1;
+				Integer discNumber2 = aSong.getFile() != null && aSong.getFile().getDiscNumber() != null ? aSong.getFile().getDiscNumber() : 1;
+
+				result = ObjectUtils.compare(discNumber1, discNumber2);
 			}
+			if (result == 0) {
 
-			if (getFile() != null && aSong.getFile() != null) {
-				if (result == 0) {
+				Integer trackNumber1 = getFile() != null && getFile().getTrackNumber() != null ? getFile().getTrackNumber() : 1;
+				Integer trackNumber2 = aSong.getFile() != null && aSong.getFile().getTrackNumber() != null ? aSong.getFile().getTrackNumber() : 1;
 
-					Integer discNumber1 = getFile().getDiscNumber() != null ? getFile().getDiscNumber() : 1;
-					Integer discNumber2 = aSong.getFile().getDiscNumber() != null ? aSong.getFile().getDiscNumber() : 1;
-
-					result = ObjectUtils.compare(discNumber1, discNumber2);
-				}
-				if (result == 0) {
-
-					Integer trackNumber1 = getFile().getTrackNumber() != null ? getFile().getTrackNumber() : 1;
-					Integer trackNumber2 = aSong.getFile().getTrackNumber() != null ? aSong.getFile().getTrackNumber() : 1;
-
-					result = ObjectUtils.compare(trackNumber1, trackNumber2);
-				}
-				if (result == 0) {
-					result = ObjectUtils.compare(getFile().getName(), aSong.getFile().getName());
-				}
+				result = ObjectUtils.compare(trackNumber1, trackNumber2);
 			}
+			if (result == 0) {
 
-		} else {
-			result = -1;
+				String name1 = getFile() != null ? getFile().getName() : null;
+				String name2 = aSong.getFile() != null ? aSong.getFile().getName() : null;
+
+				result = ObjectUtils.compare(name1, name2);
+			}
 		}
 
 		return result;
