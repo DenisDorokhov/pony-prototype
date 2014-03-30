@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,13 +45,23 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 	@Override
 	@Transactional(readOnly = true)
 	public List<Song> getByAlbum(Integer aAlbumId) {
-		return dao.findByAlbumId(aAlbumId, new Sort("file.discNumber", "file.trackNumber", "file.name"));
+
+		List<Song> result = dao.findByAlbumId(aAlbumId, new Sort("file.discNumber", "file.trackNumber", "file.name"));
+
+		Collections.sort(result);
+
+		return result;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Song> getByArtist(Integer aArtistId) {
-		return dao.findByAlbumArtistId(aArtistId, new Sort("album.year", "album.name", "file.discNumber", "file.trackNumber", "file.name"));
+
+		List<Song> result = dao.findByAlbumArtistId(aArtistId, new Sort("album.year", "album.name", "file.discNumber", "file.trackNumber", "file.name"));
+
+		Collections.sort(result);
+
+		return result;
 	}
 
 	@Override
