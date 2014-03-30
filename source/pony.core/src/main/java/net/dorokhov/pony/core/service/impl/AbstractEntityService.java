@@ -63,7 +63,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 	 * Proxies findOne(IdType) call to the DAO.
 	 *
 	 * @param aId entity ID
-	 * @return entity with the given ID or {@literal null} if none found
+	 * @return entity with the given ID or null if none found
 	 */
 	@Transactional(readOnly = true)
 	public EntityType getById(IdType aId) {
@@ -75,7 +75,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 	 *
 	 * 1) Validates entity.
 	 * 2) Normalizes entity.
-	 * 3) If entity ID is not {@literal null}, checks if entity exists. If it doesn't, throws an exception.
+	 * 3) If entity ID is not null, checks if entity exists. If it doesn't, throws an exception.
 	 * 4) Initializes entity creation and update dates.
 	 * 5) Saves the entity.
 	 *

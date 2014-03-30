@@ -20,7 +20,7 @@ public interface SongFileDao extends PagingAndSortingRepository<SongFile, Intege
 	 * Finds song file by file path.
 	 *
 	 * @param aPath file path
-	 * @return song file with the given file path or {@literal null} if none found
+	 * @return song file with the given file path or null if none found
 	 */
 	public SongFile findByPath(String aPath);
 

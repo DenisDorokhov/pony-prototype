@@ -34,7 +34,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * Finds song by ID.
 	 *
 	 * @param aId song ID
-	 * @return song with the given ID or {@literal null} if none found
+	 * @return song with the given ID or null if none found
 	 */
 	@Query("SELECT s FROM Song s " +
 			"INNER JOIN FETCH s.file " +
@@ -75,7 +75,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * Finds song by song file ID.
 	 *
 	 * @param aSongFileId song file ID
-	 * @return song with the given song file ID or {@literal null} if none found
+	 * @return song with the given song file ID or null if none found
 	 */
 	@Query("SELECT s FROM Song s " +
 			"INNER JOIN FETCH s.file " +

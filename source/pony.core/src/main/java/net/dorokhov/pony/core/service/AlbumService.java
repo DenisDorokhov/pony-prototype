@@ -56,7 +56,7 @@ public interface AlbumService {
 	 * Gets album by ID.
 	 *
 	 * @param aId album ID.
-	 * @return album with the given ID or {@literal null} if none found
+	 * @return album with the given ID or null if none found
 	 */
 	public Album getById(Integer aId);
 
@@ -65,7 +65,7 @@ public interface AlbumService {
 	 *
 	 * @param aArtistId artist ID
 	 * @param aName album name
-	 * @return album with the given artist ID and album name or {@literal null} if none found
+	 * @return album with the given artist ID and album name or null if none found
 	 */
 	public Album getByArtistAndName(Integer aArtistId, String aName);
 

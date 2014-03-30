@@ -44,11 +44,11 @@ public class InstallationDaoImpl implements InstallationDao {
 	}
 
 	/**
-	 * Finds system installation.
+	 * Finds database installation.
 	 *
 	 * It tries to make a select query for Installation entity ignoring any errors except NonUniqueResultException.
 	 *
-	 * @return system installation or {@literal null} if the system is not installed
+	 * @return database installation or null if the database is not installed
 	 */
 	@Override
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -68,7 +68,7 @@ public class InstallationDaoImpl implements InstallationDao {
 	}
 
 	/**
-	 * Installs the system.
+	 * Installs the database.
 	 *
 	 * 1) Finds the installation script "install.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
 	 * 2) Splits the script into SQL statements.
@@ -92,7 +92,7 @@ public class InstallationDaoImpl implements InstallationDao {
 	}
 
 	/**
-	 * Uninstalls the system.
+	 * Uninstalls the database.
 	 *
 	 * 1) Finds the uninstallation script "uninstall.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
 	 * 2) Splits the script into SQL statements.

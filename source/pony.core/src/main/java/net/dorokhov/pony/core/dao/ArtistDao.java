@@ -24,7 +24,7 @@ public interface ArtistDao extends PagingAndSortingRepository<Artist, Integer> {
 	 * Finds artist by name.
 	 *
 	 * @param aName artist name
-	 * @return artist with the given name or {@literal null} if none found
+	 * @return artist with the given name or null if none found
 	 */
 	public Artist findByName(String aName);
 

@@ -34,7 +34,7 @@ public interface StoredFileDao extends PagingAndSortingRepository<StoredFile, In
 	 *
 	 * @param aTag stored file tag
 	 * @param aChecksum stored file checksum
-	 * @return stored file with the given tag and checksum or {@literal null} if none found
+	 * @return stored file with the given tag and checksum or null if none found
 	 */
 	public StoredFile findByTagAndChecksum(String aTag, String aChecksum);
 

@@ -24,7 +24,7 @@ public interface AlbumDao extends PagingAndSortingRepository<Album, Integer> {
 	 * Finds album by ID.
 	 *
 	 * @param aId album ID
-	 * @return song with the given ID or {@literal null} if none found
+	 * @return song with the given ID or null if none found
 	 */
 	@Query("SELECT a FROM Album a " +
 			"INNER JOIN FETCH a.artist " +
@@ -54,7 +54,7 @@ public interface AlbumDao extends PagingAndSortingRepository<Album, Integer> {
 	 *
 	 * @param aArtistId artist ID
 	 * @param aName album name
-	 * @return album with the given artist ID and album name or {@literal null} if none found
+	 * @return album with the given artist ID and album name or null if none found
 	 */
 	public Album findByArtistIdAndName(Integer aArtistId, String aName);
 

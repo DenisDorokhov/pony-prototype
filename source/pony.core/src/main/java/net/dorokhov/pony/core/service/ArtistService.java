@@ -54,7 +54,7 @@ public interface ArtistService {
 	 * Gets artist by ID.
 	 *
 	 * @param aId artist ID
-	 * @return artist with the given ID or {@literal null} if none found
+	 * @return artist with the given ID or null if none found
 	 */
 	public Artist getById(Integer aId);
 
@@ -62,7 +62,7 @@ public interface ArtistService {
 	 * Gets artist by name.
 	 *
 	 * @param aName artist name
-	 * @return artist with the given name or {@literal null} if none found
+	 * @return artist with the given name or null if none found
 	 */
 	public Artist getByName(String aName);
 

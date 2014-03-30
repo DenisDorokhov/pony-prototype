@@ -8,19 +8,19 @@ import net.dorokhov.pony.core.domain.Installation;
 public interface InstallationDao {
 
 	/**
-	 * Finds system installation.
+	 * Finds database installation.
 	 *
-	 * @return system installation or {@literal null} if the system is not installed
+	 * @return database installation or null if the database is not installed
 	 */
 	public Installation findInstallation();
 
 	/**
-	 * Installs the system.
+	 * Installs the database.
 	 */
 	public void install();
 
 	/**
-	 * Uninstalls the system.
+	 * Uninstalls the database.
 	 */
 	public void uninstall();
 
