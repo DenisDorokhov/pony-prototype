@@ -26,23 +26,31 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private Integer trackCount;
 
-	private String name;
-
 	private String artist;
 
-	private Integer artistArtwork;
+	private String albumArtist;
 
 	private String album;
 
-	private Integer albumArtwork;
+	private String name;
 
 	private Integer year;
 
 	private Integer artwork;
 
+	private Integer artistId;
+
+	private String artistName;
+
+	private Integer artistArtwork;
+
 	private Integer albumId;
 
-	private Integer artistId;
+	private String albumName;
+
+	private Integer albumYear;
+
+	private Integer albumArtwork;
 
 	public Integer getFile() {
 		return file;
@@ -132,14 +140,6 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		trackCount = aTrackCount;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String aName) {
-		name = aName;
-	}
-
 	public String getArtist() {
 		return artist;
 	}
@@ -148,12 +148,12 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		artist = aArtist;
 	}
 
-	public Integer getArtistArtwork() {
-		return artistArtwork;
+	public String getAlbumArtist() {
+		return albumArtist;
 	}
 
-	public void setArtistArtwork(Integer aArtistArtwork) {
-		artistArtwork = aArtistArtwork;
+	public void setAlbumArtist(String aAlbumArtist) {
+		albumArtist = aAlbumArtist;
 	}
 
 	public String getAlbum() {
@@ -164,12 +164,12 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		album = aAlbum;
 	}
 
-	public Integer getAlbumArtwork() {
-		return albumArtwork;
+	public String getName() {
+		return name;
 	}
 
-	public void setAlbumArtwork(Integer aAlbumArtwork) {
-		albumArtwork = aAlbumArtwork;
+	public void setName(String aName) {
+		name = aName;
 	}
 
 	public Integer getYear() {
@@ -188,6 +188,30 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		artwork = aArtwork;
 	}
 
+	public Integer getArtistId() {
+		return artistId;
+	}
+
+	public void setArtistId(Integer aArtistId) {
+		artistId = aArtistId;
+	}
+
+	public String getArtistName() {
+		return artistName;
+	}
+
+	public void setArtistName(String aArtistName) {
+		artistName = aArtistName;
+	}
+
+	public Integer getArtistArtwork() {
+		return artistArtwork;
+	}
+
+	public void setArtistArtwork(Integer aArtistArtwork) {
+		artistArtwork = aArtistArtwork;
+	}
+
 	public Integer getAlbumId() {
 		return albumId;
 	}
@@ -196,11 +220,27 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		albumId = aAlbumId;
 	}
 
-	public Integer getArtistId() {
-		return artistId;
+	public String getAlbumName() {
+		return albumName;
 	}
 
-	public void setArtistId(Integer aArtistId) {
-		artistId = aArtistId;
+	public void setAlbumName(String aAlbumName) {
+		albumName = aAlbumName;
+	}
+
+	public Integer getAlbumYear() {
+		return albumYear;
+	}
+
+	public void setAlbumYear(Integer aAlbumYear) {
+		albumYear = aAlbumYear;
+	}
+
+	public Integer getAlbumArtwork() {
+		return albumArtwork;
+	}
+
+	public void setAlbumArtwork(Integer aAlbumArtwork) {
+		albumArtwork = aAlbumArtwork;
 	}
 }

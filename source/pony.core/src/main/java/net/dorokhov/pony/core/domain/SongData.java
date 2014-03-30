@@ -31,9 +31,13 @@ public class SongData {
 
 	private String artist;
 
+	private String albumArtist;
+
 	private String album;
 
 	private Integer year;
+
+	private String genre;
 
 	private Artwork artwork;
 
@@ -133,6 +137,14 @@ public class SongData {
 		artist = aArtist;
 	}
 
+	public String getAlbumArtist() {
+		return albumArtist;
+	}
+
+	public void setAlbumArtist(String aAlbumArtist) {
+		albumArtist = aAlbumArtist;
+	}
+
 	public String getAlbum() {
 		return album;
 	}
@@ -147,6 +159,14 @@ public class SongData {
 
 	public void setYear(Integer aYear) {
 		year = aYear;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String aGenre) {
+		genre = aGenre;
 	}
 
 	public Artwork getArtwork() {

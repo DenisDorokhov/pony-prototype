@@ -48,13 +48,14 @@ public class SongDataReaderImpl implements SongDataReader {
 			metaData.setTrackNumber(parseIntegerTag(tag, FieldKey.TRACK));
 			metaData.setTrackCount(parseIntegerTag(tag, FieldKey.TRACK_TOTAL));
 
-			metaData.setName(parseStringTag(tag, FieldKey.TITLE));
-			metaData.setAlbum(parseStringTag(tag, FieldKey.ALBUM));
+			metaData.setName(StringUtils.trim(parseStringTag(tag, FieldKey.TITLE)));
+			metaData.setAlbum(StringUtils.trim(parseStringTag(tag, FieldKey.ALBUM)));
 			metaData.setYear(parseIntegerTag(tag, FieldKey.YEAR));
 
-			String albumArtist = parseStringTag(tag, FieldKey.ALBUM_ARTIST);
+			metaData.setArtist(StringUtils.trim(parseStringTag(tag, FieldKey.ARTIST)));
+			metaData.setAlbumArtist(StringUtils.trim(parseStringTag(tag, FieldKey.ALBUM_ARTIST)));
 
-			metaData.setArtist(albumArtist != null ? albumArtist : parseStringTag(tag, FieldKey.ARTIST));
+			metaData.setGenre(StringUtils.trim(parseStringTag(tag, FieldKey.GENRE)));
 
 			Artwork artwork = tag.getFirstArtwork();
 

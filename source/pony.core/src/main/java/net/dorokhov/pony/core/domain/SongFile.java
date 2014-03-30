@@ -39,6 +39,8 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	private String artist;
 
+	private String albumArtist;
+
 	private String album;
 
 	private Integer year;
@@ -158,6 +160,15 @@ public class SongFile extends AbstractEntity<Integer> {
 
 	public void setArtist(String aArtist) {
 		artist = aArtist;
+	}
+
+	@Column(name = "album_artist")
+	public String getAlbumArtist() {
+		return albumArtist;
+	}
+
+	public void setAlbumArtist(String aAlbumArtist) {
+		albumArtist = aAlbumArtist;
 	}
 
 	@Column(name = "album")

@@ -77,7 +77,7 @@ public class DtoConverter {
 
 		if (artist != null) {
 			aDto.setArtistId(artist.getId());
-			aDto.setArtist(artist.getName());
+			aDto.setArtistName(artist.getName());
 			aDto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
 		}
 	}
@@ -96,15 +96,15 @@ public class DtoConverter {
 		if (album != null) {
 
 			dto.setAlbumId(album.getId());
-			dto.setAlbum(album.getName());
+			dto.setAlbumName(album.getName());
 			dto.setAlbumArtwork(album.getArtwork() != null ? album.getArtwork().getId() : null);
-			dto.setYear(album.getYear());
+			dto.setAlbumYear(album.getYear());
 
 			Artist artist = album.getArtist();
 
 			if (artist != null) {
 				dto.setArtistId(artist.getId());
-				dto.setArtist(artist.getName());
+				dto.setArtistName(artist.getName());
 				dto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
 			}
 		}
@@ -122,6 +122,10 @@ public class DtoConverter {
 			dto.setBitRate(file.getBitRate());
 
 			dto.setName(file.getName());
+			dto.setArtist(file.getArtist());
+			dto.setAlbumArtist(file.getAlbumArtist());
+			dto.setAlbum(file.getAlbum());
+			dto.setYear(file.getYear());
 
 			dto.setDiscNumber(file.getDiscNumber());
 			dto.setDiscCount(file.getDiscCount());

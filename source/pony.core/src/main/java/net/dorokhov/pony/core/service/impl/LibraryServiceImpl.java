@@ -460,6 +460,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 				!ObjectUtils.nullSafeEquals(songFile.getName(), aSongData.getName()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getArtist(), aSongData.getArtist()) ||
+				!ObjectUtils.nullSafeEquals(songFile.getAlbumArtist(), aSongData.getAlbumArtist()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getAlbum(), aSongData.getAlbum()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getYear(), aSongData.getYear()) ||
 				!ObjectUtils.nullSafeEquals(songFile.getArtwork(), storedFile)) {
@@ -484,6 +485,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 			songFile.setName(aSongData.getName());
 			songFile.setArtist(aSongData.getArtist());
+			songFile.setAlbumArtist(aSongData.getAlbumArtist());
 			songFile.setAlbum(aSongData.getAlbum());
 			songFile.setYear(aSongData.getYear());
 
@@ -497,13 +499,19 @@ public class LibraryServiceImpl implements LibraryService {
 
 	private EntityModification<Artist> importArtist(SongFile aSongFile) {
 
-		Artist artist = artistService.getByName(aSongFile.getArtist());
+		String artistName = aSongFile.getAlbumArtist();
+
+		if (artistName == null) {
+			artistName = aSongFile.getArtist();
+		}
+
+		Artist artist = artistService.getByName(artistName);
 
 		if (artist == null) {
 
 			artist = new Artist();
 
-			artist.setName(aSongFile.getArtist());
+			artist.setName(artistName);
 
 			artist = artistService.save(artist);
 		}

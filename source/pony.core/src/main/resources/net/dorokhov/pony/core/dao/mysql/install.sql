@@ -78,6 +78,7 @@ CREATE TABLE song_file (
 
 	name VARCHAR(255),
 	artist VARCHAR(255),
+	album_artist VARCHAR(255),
 	album VARCHAR(255),
 
 	year INT,
