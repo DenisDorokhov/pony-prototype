@@ -161,7 +161,7 @@ public class LibraryServiceImpl implements LibraryService {
 		return songFile;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeSongs(List<File> aTargetFiles, ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
@@ -220,7 +220,7 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeStoredFiles(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
@@ -276,7 +276,7 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeAlbums(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();
@@ -338,7 +338,7 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeArtists(ProgressHandler aHandler) {
 
 		List<Integer> itemsToDelete = new ArrayList<Integer>();

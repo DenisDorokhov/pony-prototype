@@ -227,7 +227,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 				String name = aTask.getName();
 
-				name = name.replaceAll("[^a-zA-Z0-9\\s]", "");
+				name = name.replaceAll("[^\\p{L}0-9\\s]", "");
 				name = name.replaceAll("\\s+", "-");
 
 				buf.append(name);

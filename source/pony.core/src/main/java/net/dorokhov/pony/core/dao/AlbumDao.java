@@ -2,6 +2,7 @@ package net.dorokhov.pony.core.dao;
 
 import net.dorokhov.pony.core.domain.Album;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
@@ -18,6 +19,17 @@ public interface AlbumDao extends PagingAndSortingRepository<Album, Integer> {
 	 * @return number of albums with the given artist ID
 	 */
 	public long countByArtistId(Integer aArtistId);
+
+	/**
+	 * Finds album by ID.
+	 *
+	 * @param aId album ID
+	 * @return song with the given ID or {@literal null} if none found
+	 */
+	@Query("SELECT a FROM Album a " +
+			"INNER JOIN FETCH a.artist " +
+			"WHERE a.id = ?1")
+	public Album findById(Integer aId);
 
 	/**
 	 * Finds albums by artwork stored file ID.

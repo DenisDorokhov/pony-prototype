@@ -31,6 +31,12 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
+	public Album getById(Integer aId) {
+		return dao.findById(aId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public List<Album> getByArtwork(Integer aStoredFileId) {
 		return dao.findByArtworkId(aStoredFileId, new Sort("artist", "year", "name"));
 	}
