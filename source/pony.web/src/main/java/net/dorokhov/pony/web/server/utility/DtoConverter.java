@@ -71,8 +71,6 @@ public class DtoConverter {
 
 		aDto.setName(aAlbum.getName());
 		aDto.setYear(aAlbum.getYear());
-		aDto.setDiscCount(aAlbum.getDiscCount());
-		aDto.setTrackCount(aAlbum.getTrackCount());
 		aDto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
 
 		Artist artist = aAlbum.getArtist();

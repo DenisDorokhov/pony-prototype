@@ -122,8 +122,6 @@ CREATE TABLE album (
 	generation BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
-	disc_count INT,
-	track_count INT,
 	year INT,
 	artwork_stored_file_id INT,
 

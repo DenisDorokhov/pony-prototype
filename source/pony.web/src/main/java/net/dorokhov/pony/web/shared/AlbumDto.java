@@ -8,10 +8,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	private Integer year;
 
-	private Integer discCount;
-
-	private Integer trackCount;
-
 	private Integer artwork;
 
 	private String artist;
@@ -34,22 +30,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	public void setYear(Integer aYear) {
 		year = aYear;
-	}
-
-	public Integer getDiscCount() {
-		return discCount;
-	}
-
-	public void setDiscCount(Integer aDiscCount) {
-		discCount = aDiscCount;
-	}
-
-	public Integer getTrackCount() {
-		return trackCount;
-	}
-
-	public void setTrackCount(Integer aTrackCount) {
-		trackCount = aTrackCount;
 	}
 
 	public Integer getArtwork() {

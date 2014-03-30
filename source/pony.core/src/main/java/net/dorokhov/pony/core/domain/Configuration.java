@@ -73,4 +73,11 @@ public class Configuration extends AbstractEntity<String> {
 		value = Boolean.toString(aValue);
 	}
 
+	@Override
+	public String toString() {
+		return "Configuration{" +
+				"id=" + getId() +
+				", value='" + value + '\'' +
+				'}';
+	}
 }

@@ -19,10 +19,6 @@ public class Album extends AbstractEntity<Integer> {
 
 	private Integer year;
 
-	private Integer discCount;
-
-	private Integer trackCount;
-
 	private StoredFile artwork;
 
 	private List<Song> songs;
@@ -47,24 +43,6 @@ public class Album extends AbstractEntity<Integer> {
 
 	public void setYear(Integer aYear) {
 		year = aYear;
-	}
-
-	@Column(name = "disc_count")
-	public Integer getDiscCount() {
-		return discCount;
-	}
-
-	public void setDiscCount(Integer aDiscCount) {
-		discCount = aDiscCount;
-	}
-
-	@Column(name = "track_count")
-	public Integer getTrackCount() {
-		return trackCount;
-	}
-
-	public void setTrackCount(Integer aTrackCount) {
-		trackCount = aTrackCount;
 	}
 
 	@OneToOne(optional = true, fetch = FetchType.LAZY)

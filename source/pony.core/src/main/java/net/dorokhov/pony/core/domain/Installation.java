@@ -23,4 +23,12 @@ public class Installation extends AbstractEntity<Integer> {
 	public void setVersion(String aVersion) {
 		version = aVersion;
 	}
+
+	@Override
+	public String toString() {
+		return "Installation{" +
+				"id=" + getId() +
+				", version='" + version + '\'' +
+				'}';
+	}
 }

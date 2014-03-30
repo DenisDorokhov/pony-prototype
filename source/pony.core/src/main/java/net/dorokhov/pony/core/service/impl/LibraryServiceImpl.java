@@ -528,10 +528,7 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 
 		if (album.getId() != null) {
-			if (!ObjectUtils.nullSafeEquals(album.getYear(), aSongFile.getYear()) ||
-				!ObjectUtils.nullSafeEquals(album.getDiscCount(), aSongFile.getDiscCount()) ||
-				!ObjectUtils.nullSafeEquals(album.getTrackCount(), aSongFile.getTrackCount())) {
-
+			if (!ObjectUtils.nullSafeEquals(album.getYear(), aSongFile.getYear())) {
 				shouldSave = true;
 			}
 		}
@@ -539,8 +536,6 @@ public class LibraryServiceImpl implements LibraryService {
 		if (shouldSave) {
 
 			album.setYear(aSongFile.getYear());
-			album.setDiscCount(aSongFile.getDiscCount());
-			album.setTrackCount(aSongFile.getTrackCount());
 
 			album = albumService.save(album);
 		}

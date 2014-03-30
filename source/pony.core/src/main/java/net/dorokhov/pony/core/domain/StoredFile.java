@@ -79,7 +79,8 @@ public class StoredFile extends AbstractEntity<Integer> {
 	@Override
 	public String toString() {
 		return "StoredFile{" +
-				"name='" + name + '\'' +
+				"id=" + getId() +
+				", name='" + name + '\'' +
 				", mimeType='" + mimeType + '\'' +
 				", path='" + path + '\'' +
 				", tag='" + tag + '\'' +
