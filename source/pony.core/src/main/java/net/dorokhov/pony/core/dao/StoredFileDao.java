@@ -17,7 +17,7 @@ public interface StoredFileDao extends PagingAndSortingRepository<StoredFile, In
 	 *
 	 * @param aTag stored file tag
 	 * @param aPageable pagination option
-	 * @return list of stored files with the given tag.
+	 * @return page of stored files with the given tag.
 	 */
 	public Page<StoredFile> findByTag(String aTag, Pageable aPageable);
 

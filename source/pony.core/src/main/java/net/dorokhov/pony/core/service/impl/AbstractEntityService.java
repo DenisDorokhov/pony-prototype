@@ -131,7 +131,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 	}
 
 	/**
-	 * Normalizes the entity.
+	 * Normalizes entity.
 	 *
 	 * This method is useful when some activities must be performed on entity before storing it in the database (e.g.
 	 * trimming string values, nullify empty values, etc.). This method does nothing by default.
