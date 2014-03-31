@@ -31,6 +31,8 @@ public class StorageTask {
 
 	private String tag;
 
+	private String userData;
+
 	public StorageTask(Type aType, File aFile) {
 		type = aType;
 		file = aFile;
@@ -74,6 +76,14 @@ public class StorageTask {
 
 	public void setTag(String aTag) {
 		tag = aTag;
+	}
+
+	public String getUserData() {
+		return userData;
+	}
+
+	public void setUserData(String aUserData) {
+		userData = aUserData;
 	}
 
 	@Override

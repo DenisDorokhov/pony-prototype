@@ -42,6 +42,7 @@ CREATE TABLE stored_file (
 	checksum VARCHAR(255) NOT NULL,
 	tag VARCHAR(255),
 	relative_path VARCHAR(255) NOT NULL,
+	user_data VARCHAR(255),
 
 	UNIQUE (relative_path),
 	UNIQUE (tag, checksum),

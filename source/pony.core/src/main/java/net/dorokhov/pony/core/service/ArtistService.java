@@ -20,6 +20,14 @@ public interface ArtistService {
 	public long getCount();
 
 	/**
+	 * Gets number of artists by artwork stored file ID.
+	 *
+	 * @param aStoredFileId artwork stored file ID.
+	 * @return number of artists with the given artwork stored file ID.
+	 */
+	public long getCountByArtwork(Integer aStoredFileId);
+
+	/**
 	 * Gets all artists.
 	 *
 	 * @return list of all artists

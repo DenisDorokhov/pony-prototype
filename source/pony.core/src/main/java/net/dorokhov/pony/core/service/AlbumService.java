@@ -21,6 +21,14 @@ public interface AlbumService {
 	public long getCountByArtist(Integer aArtistId);
 
 	/**
+	 * Gets number of albums by artwork stored file ID.
+	 *
+	 * @param aStoredFileId artwork stored file ID.
+	 * @return number of albums with the given artwork stored file ID.
+	 */
+	public long getCountByArtwork(Integer aStoredFileId);
+
+	/**
 	 * Gets all albums with pagination option.
 	 *
 	 * @param aPageable pagination option

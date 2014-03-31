@@ -120,6 +120,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 			storedFile.setMimeType(aTask.getMimeType());
 			storedFile.setChecksum(aTask.getChecksum());
 			storedFile.setTag(aTask.getTag());
+			storedFile.setUserData(aTask.getUserData());
 			storedFile.setPath(relativePath);
 
 			storedFile = save(storedFile);

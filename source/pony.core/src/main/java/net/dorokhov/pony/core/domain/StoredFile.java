@@ -27,6 +27,8 @@ public class StoredFile extends AbstractEntity<Integer> {
 
 	private String path;
 
+	private String userData;
+
 	@Column(name = "name")
 	@NotBlank
 	public String getName() {
@@ -74,6 +76,15 @@ public class StoredFile extends AbstractEntity<Integer> {
 
 	public void setPath(String aPath) {
 		path = aPath;
+	}
+
+	@Column(name = "user_data")
+	public String getUserData() {
+		return userData;
+	}
+
+	public void setUserData(String aUserData) {
+		userData = aUserData;
 	}
 
 	@Override

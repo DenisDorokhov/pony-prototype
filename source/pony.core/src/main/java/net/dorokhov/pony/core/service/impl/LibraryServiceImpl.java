@@ -2,6 +2,7 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +32,9 @@ import java.util.UUID;
 public class LibraryServiceImpl implements LibraryService {
 
 	private static final int CLEANING_BUFFER_SIZE = 300;
+
 	private static final String FILE_TAG_ARTWORK = "artwork";
+	private static final String FILE_USER_DATA_PREFIX_EXTERNAL = "external:";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -47,6 +52,8 @@ public class LibraryServiceImpl implements LibraryService {
 	private StoredFileService storedFileService;
 
 	private SongDataReader songDataReader;
+
+	private ExternalArtworkService externalArtworkService;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -81,6 +88,11 @@ public class LibraryServiceImpl implements LibraryService {
 	@Autowired
 	public void setSongDataReader(SongDataReader aSongDataReader) {
 		songDataReader = aSongDataReader;
+	}
+
+	@Autowired
+	public void setExternalArtworkService(ExternalArtworkService aExternalArtworkService) {
+		externalArtworkService = aExternalArtworkService;
 	}
 
 	@Override
@@ -233,11 +245,26 @@ public class LibraryServiceImpl implements LibraryService {
 
 			for (StoredFile storedFile : page.getContent()) {
 
-				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
+				if (storedFile.getUserData() != null && storedFile.getUserData().startsWith(FILE_USER_DATA_PREFIX_EXTERNAL)) {
 
-					itemsToDelete.add(storedFile.getId());
+					File externalFile = new File(storedFile.getUserData().replaceFirst(FILE_USER_DATA_PREFIX_EXTERNAL, ""));
 
-					log.debug("stored file deleted: {}", storedFile);
+					if (!externalFile.exists() ||
+							(albumService.getCountByArtwork(storedFile.getId()) == 0 && artistService.getCountByArtwork(storedFile.getId()) == 0)) {
+
+						itemsToDelete.add(storedFile.getId());
+
+						log.debug("external stored file deleted: {}", storedFile);
+					}
+
+				} else {
+
+					if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
+
+						itemsToDelete.add(storedFile.getId());
+
+						log.debug("stored file deleted: {}", storedFile);
+					}
 				}
 
 				if (aHandler != null) {
@@ -298,18 +325,17 @@ public class LibraryServiceImpl implements LibraryService {
 
 				} else if (album.getArtwork() == null) {
 
-					for (Song song : album.getSongs()) {
+					try {
+						fetchAlbumArtwork(album);
+					} catch (Exception e) {
+						log.error("could not fetch artwork for album {}", album);
+					}
 
-						if (song.getFile() != null && song.getFile().getArtwork() != null) {
+					if (album.getArtwork() != null) {
 
-							album.setArtwork(song.getFile().getArtwork());
+						albumService.save(album);
 
-							albumService.save(album);
-
-							updatedArtworks++;
-
-							break;
-						}
+						updatedArtworks++;
 					}
 				}
 
@@ -595,6 +621,60 @@ public class LibraryServiceImpl implements LibraryService {
 		storageTask.setTag(FILE_TAG_ARTWORK);
 
 		return storageTask;
+	}
+
+	private void fetchAlbumArtwork(Album aAlbum) throws IOException {
+
+		List<Song> songList = aAlbum.getSongs();
+
+		if (aAlbum.getArtwork() == null) {
+			for (Song song : songList) {
+				if (song.getFile() != null && song.getFile().getArtwork() != null) {
+
+					aAlbum.setArtwork(song.getFile().getArtwork());
+
+					break;
+				}
+			}
+		}
+
+		if (aAlbum.getArtwork() == null) {
+
+			File lastFolder = null;
+
+			for (Song song : songList) {
+				if (song.getFile() != null) {
+
+					File folder = new File(song.getFile().getPath()).getParentFile();
+
+					if (lastFolder == null || !folder.getAbsolutePath().equals(lastFolder.getAbsolutePath())) {
+
+						File artworkFile = externalArtworkService.discoverArtwork(folder);
+
+						if (artworkFile != null) {
+
+							StorageTask storageTask = new StorageTask(StorageTask.Type.COPY, artworkFile);
+
+							storageTask.setName(song.getFile().getArtist() + " " + song.getFile().getAlbum() + " " + song.getFile().getName());
+							storageTask.setMimeType(URLConnection.guessContentTypeFromName(artworkFile.getName()));
+							storageTask.setChecksum(DigestUtils.md5Hex(new FileInputStream(artworkFile)));
+							storageTask.setTag(FILE_TAG_ARTWORK);
+							storageTask.setUserData(FILE_USER_DATA_PREFIX_EXTERNAL + artworkFile.getAbsolutePath());
+
+							StoredFile storedFile = storedFileService.save(storageTask);
+
+							log.debug("external artwork stored {}", storedFile);
+
+							aAlbum.setArtwork(storedFile);
+
+							break;
+						}
+					}
+
+					lastFolder = folder;
+				}
+			}
+		}
 	}
 
 	private static class EntityModification<T extends AbstractEntity> {

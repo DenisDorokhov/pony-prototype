@@ -21,6 +21,14 @@ public interface AlbumDao extends PagingAndSortingRepository<Album, Integer> {
 	public long countByArtistId(Integer aArtistId);
 
 	/**
+	 * Retrieves number of albums by artwork stored file ID.
+	 *
+	 * @param aStoredFileId stored file ID
+	 * @return number of albums with the given artwork stored file ID
+	 */
+	public long countByArtworkId(Integer aStoredFileId);
+
+	/**
 	 * Finds album by ID.
 	 *
 	 * @param aId album ID

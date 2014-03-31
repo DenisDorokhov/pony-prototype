@@ -27,6 +27,12 @@ public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, Ar
 
 	@Override
 	@Transactional(readOnly = true)
+	public long getCountByArtwork(Integer aStoredFileId) {
+		return dao.countByArtworkId(aStoredFileId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public List<Artist> getAll() {
 
 		List<Artist> result = IteratorUtils.toList(dao.findAll(new Sort("name")).iterator());

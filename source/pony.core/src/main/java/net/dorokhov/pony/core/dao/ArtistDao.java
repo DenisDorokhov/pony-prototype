@@ -12,6 +12,14 @@ import java.util.List;
 public interface ArtistDao extends PagingAndSortingRepository<Artist, Integer> {
 
 	/**
+	 * Retrieves number of artists by artwork stored file ID.
+	 *
+	 * @param aStoredFileId stored file ID
+	 * @return number of artists with the given artwork stored file ID
+	 */
+	public long countByArtworkId(Integer aStoredFileId);
+
+	/**
 	 * Finds artists by artwork stored file ID.
 	 *
 	 * @param aStoredFileId stored file ID
