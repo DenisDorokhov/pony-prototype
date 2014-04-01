@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
@@ -640,14 +638,14 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (aAlbum.getArtwork() == null) {
 
-			File lastFolder = null;
+			Set<String> discoveredPaths = new HashSet<String>();
 
 			for (Song song : songList) {
 				if (song.getFile() != null) {
 
 					File folder = new File(song.getFile().getPath()).getParentFile();
 
-					if (lastFolder == null || !folder.getAbsolutePath().equals(lastFolder.getAbsolutePath())) {
+					if (!discoveredPaths.contains(folder.getAbsolutePath())) {
 
 						File artworkFile = externalArtworkService.discoverArtwork(folder);
 
@@ -669,9 +667,9 @@ public class LibraryServiceImpl implements LibraryService {
 
 							break;
 						}
-					}
 
-					lastFolder = folder;
+						discoveredPaths.add(folder.getAbsolutePath());
+					}
 				}
 			}
 		}
