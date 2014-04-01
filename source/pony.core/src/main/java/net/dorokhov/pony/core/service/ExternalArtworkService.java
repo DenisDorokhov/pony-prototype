@@ -4,6 +4,6 @@ import java.io.File;
 
 public interface ExternalArtworkService {
 
-	public File discoverArtwork(File aFolder);
+	public File fetchArtwork(File aFolder);
 
 }

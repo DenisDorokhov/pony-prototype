@@ -35,14 +35,14 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 	}
 
 	@Override
-	public File discoverArtwork(File aFolder) {
+	public File fetchArtwork(File aFolder) {
 
-		File artwork = fetchArtwork(aFolder);
+		File artwork = doFetchArtwork(aFolder);
 
 		if (artwork == null) {
 			for (String artworkFolder : externalArtworkFolders) {
 
-				artwork = fetchArtwork(new File(aFolder, artworkFolder));
+				artwork = doFetchArtwork(new File(aFolder, artworkFolder));
 
 				if (artwork != null) {
 					break;
@@ -69,11 +69,11 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 		return result;
 	}
 
-	private File fetchArtwork(File aParent) {
+	private File doFetchArtwork(File aParent) {
 
 		File artwork = null;
 
-		File[] childFiles = aParent.listFiles(new FileFilter() {
+		File[] allowedFiles = aParent.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File aFile) {
 
@@ -83,9 +83,9 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 			}
 		});
 
-		if (childFiles != null) {
+		if (allowedFiles != null) {
 
-			for (File file : childFiles) {
+			for (File file : allowedFiles) {
 
 				String name = FilenameUtils.getBaseName(file.getAbsolutePath()).toLowerCase();
 
@@ -98,8 +98,8 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 				}
 			}
 
-			if (artwork == null && childFiles.length == 1) {
-				artwork = childFiles[0];
+			if (artwork == null && allowedFiles.length > 0) {
+				artwork = allowedFiles[0];
 			}
 		}
 

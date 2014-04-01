@@ -394,6 +394,8 @@ public class LibraryScannerImpl implements LibraryScanner {
 				}
 			}
 
+			Thread.sleep(50); // avoid high CPU load
+
 			return songFile;
 		}
 	}

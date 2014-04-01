@@ -13,9 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
@@ -31,8 +33,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 	private static final int CLEANING_BUFFER_SIZE = 300;
 
-	private static final String FILE_TAG_ARTWORK = "artwork";
-	private static final String FILE_USER_DATA_PREFIX_EXTERNAL = "external:";
+	private static final String FILE_TAG_ARTWORK_INTERNAL = "artworkEmbedded";
+	private static final String FILE_TAG_ARTWORK_EXTERNAL = "artworkExternal";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -55,7 +57,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
-		transactionTemplate = new TransactionTemplate(aTransactionManager);
+		transactionTemplate = new TransactionTemplate(aTransactionManager, new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
 	}
 
 	@Autowired
@@ -94,7 +96,7 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional
 	public SongFile importSong(File aFile) {
 
 		SongFile songFile;
@@ -237,46 +239,65 @@ public class LibraryServiceImpl implements LibraryService {
 
 		long processedItems = 0;
 
-		Page<StoredFile> page = storedFileService.getByTag(FILE_TAG_ARTWORK, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		Page<StoredFile> pageInternal = storedFileService.getByTag(FILE_TAG_ARTWORK_INTERNAL, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+		Page<StoredFile> pageExternal = storedFileService.getByTag(FILE_TAG_ARTWORK_EXTERNAL, new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
+
+		long totalElements = pageInternal.getTotalElements() + pageExternal.getTotalElements();
 
 		do {
 
-			for (StoredFile storedFile : page.getContent()) {
+			for (StoredFile storedFile : pageInternal.getContent()) {
 
-				if (storedFile.getUserData() != null && storedFile.getUserData().startsWith(FILE_USER_DATA_PREFIX_EXTERNAL)) {
+				if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
 
-					File externalFile = new File(storedFile.getUserData().replaceFirst(FILE_USER_DATA_PREFIX_EXTERNAL, ""));
+					itemsToDelete.add(storedFile.getId());
 
-					if (!externalFile.exists() ||
-							(albumService.getCountByArtwork(storedFile.getId()) == 0 && artistService.getCountByArtwork(storedFile.getId()) == 0)) {
-
-						itemsToDelete.add(storedFile.getId());
-
-						log.debug("external stored file deleted: {}", storedFile);
-					}
-
-				} else {
-
-					if (songFileService.getCountByArtwork(storedFile.getId()) == 0) {
-
-						itemsToDelete.add(storedFile.getId());
-
-						log.debug("stored file deleted: {}", storedFile);
-					}
+					log.debug("internal artwork file deleted: {}", storedFile);
 				}
 
 				if (aHandler != null) {
-					aHandler.handleProgress((double) processedItems / page.getTotalElements());
+					aHandler.handleProgress((double) processedItems / totalElements);
 				}
 
 				processedItems++;
 			}
 
-			Pageable nextPageable = page.nextPageable();
+			Pageable nextPageable = pageInternal.nextPageable();
 
-			page = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK, nextPageable) : null;
+			pageInternal = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK_INTERNAL, nextPageable) : null;
 
-		} while (page != null);
+		} while (pageInternal != null);
+
+		do {
+
+			for (StoredFile storedFile : pageExternal.getContent()) {
+
+				File externalFile = null;
+
+				if (storedFile.getUserData() != null) {
+					externalFile = new File(storedFile.getUserData());
+				}
+
+				if (externalFile == null || !externalFile.exists() ||
+						(albumService.getCountByArtwork(storedFile.getId()) == 0 && artistService.getCountByArtwork(storedFile.getId()) == 0)) {
+
+					itemsToDelete.add(storedFile.getId());
+
+					log.debug("external artwork file deleted: {}", storedFile);
+				}
+
+				if (aHandler != null) {
+					aHandler.handleProgress((double) processedItems / totalElements);
+				}
+
+				processedItems++;
+			}
+
+			Pageable nextPageable = pageExternal.nextPageable();
+
+			pageExternal = nextPageable != null ? storedFileService.getByTag(FILE_TAG_ARTWORK_EXTERNAL, nextPageable) : null;
+
+		} while (pageExternal != null);
 
 		for (Integer id : itemsToDelete) {
 
@@ -308,6 +329,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 		long processedItems = 0;
 		long updatedArtworks = 0;
+		long updatedYears = 0;
 
 		Page<Album> page = albumService.getAll(new PageRequest(0, CLEANING_BUFFER_SIZE, Sort.Direction.ASC, "id"));
 
@@ -321,19 +343,36 @@ public class LibraryServiceImpl implements LibraryService {
 
 					log.debug("album deleted: {}", album);
 
-				} else if (album.getArtwork() == null) {
+				} else {
 
-					try {
-						fetchAlbumArtwork(album);
-					} catch (Exception e) {
-						log.error("could not fetch artwork for album {}", album);
+					boolean shouldSave = false;
+
+					if (album.getArtwork() == null) {
+
+						try {
+							fetchAlbumArtwork(album);
+						} catch (Exception e) {
+							log.error("could not fetch external artwork for album {}", album, e);
+						}
+
+						if (album.getArtwork() != null) {
+							updatedArtworks++;
+							shouldSave = true;
+						}
 					}
 
-					if (album.getArtwork() != null) {
+					if (album.getYear() == null) {
 
+						fetchAlbumYear(album);
+
+						if (album.getYear() != null) {
+							updatedYears++;
+							shouldSave = true;
+						}
+					}
+
+					if (shouldSave) {
 						albumService.save(album);
-
-						updatedArtworks++;
 					}
 				}
 
@@ -358,7 +397,10 @@ public class LibraryServiceImpl implements LibraryService {
 			log.info("deleted {} albums", itemsToDelete.size());
 		}
 		if (updatedArtworks > 0) {
-			log.info("updated artworks of {} albums", updatedArtworks);
+			log.info("updated artwork of {} albums", updatedArtworks);
+		}
+		if (updatedYears > 0) {
+			log.info("updated year of {} albums", updatedYears);
 		}
 	}
 
@@ -437,7 +479,7 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (aSongData.getArtwork() != null && aSongData.getArtwork().getChecksum() != null) {
 
-			storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK, aSongData.getArtwork().getChecksum());
+			storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK_INTERNAL, aSongData.getArtwork().getChecksum());
 
 			if (storedFile == null) {
 
@@ -616,7 +658,7 @@ public class LibraryServiceImpl implements LibraryService {
 		storageTask.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
 		storageTask.setMimeType(aSongData.getArtwork().getMimeType());
 		storageTask.setChecksum(aSongData.getArtwork().getChecksum());
-		storageTask.setTag(FILE_TAG_ARTWORK);
+		storageTask.setTag(FILE_TAG_ARTWORK_INTERNAL);
 
 		return storageTask;
 	}
@@ -627,10 +669,12 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (aAlbum.getArtwork() == null) {
 			for (Song song : songList) {
+
 				if (song.getFile() != null && song.getFile().getArtwork() != null) {
-
 					aAlbum.setArtwork(song.getFile().getArtwork());
+				}
 
+				if (aAlbum.getArtwork() != null) {
 					break;
 				}
 			}
@@ -645,32 +689,67 @@ public class LibraryServiceImpl implements LibraryService {
 
 					File folder = new File(song.getFile().getPath()).getParentFile();
 
-					if (!discoveredPaths.contains(folder.getAbsolutePath())) {
+					if (folder != null && !discoveredPaths.contains(folder.getAbsolutePath())) {
 
-						File artworkFile = externalArtworkService.discoverArtwork(folder);
+						fetchAlbumArtwork(aAlbum, song, folder);
 
-						if (artworkFile != null) {
-
-							StorageTask storageTask = new StorageTask(StorageTask.Type.COPY, artworkFile);
-
-							storageTask.setName(song.getFile().getArtist() + " " + song.getFile().getAlbum() + " " + song.getFile().getName());
-							storageTask.setMimeType(URLConnection.guessContentTypeFromName(artworkFile.getName()));
-							storageTask.setChecksum(DigestUtils.md5Hex(new FileInputStream(artworkFile)));
-							storageTask.setTag(FILE_TAG_ARTWORK);
-							storageTask.setUserData(FILE_USER_DATA_PREFIX_EXTERNAL + artworkFile.getAbsolutePath());
-
-							StoredFile storedFile = storedFileService.save(storageTask);
-
-							log.debug("external artwork stored {}", storedFile);
-
-							aAlbum.setArtwork(storedFile);
-
+						if (aAlbum.getArtwork() != null) {
 							break;
 						}
 
 						discoveredPaths.add(folder.getAbsolutePath());
 					}
 				}
+			}
+		}
+	}
+
+	private void fetchAlbumArtwork(Album aAlbum, Song aSong, File aFolder) throws IOException {
+
+		File artworkFile = externalArtworkService.fetchArtwork(aFolder);
+
+		if (artworkFile != null) {
+
+			String checksum = DigestUtils.md5Hex(new FileInputStream(artworkFile));
+
+			StoredFile storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK_EXTERNAL, checksum);
+
+			if (storedFile == null) {
+
+				String mimeType = URLConnection.guessContentTypeFromName(artworkFile.getName());
+
+				if (mimeType != null) {
+
+					StorageTask storageTask = new StorageTask(StorageTask.Type.COPY, artworkFile);
+
+					storageTask.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
+					storageTask.setMimeType(mimeType);
+					storageTask.setChecksum(checksum);
+					storageTask.setTag(FILE_TAG_ARTWORK_EXTERNAL);
+					storageTask.setUserData(artworkFile.getAbsolutePath());
+
+					storedFile = storedFileService.save(storageTask);
+
+					log.debug("external artwork stored {}", storedFile);
+				}
+			}
+
+			if (storedFile != null) {
+				aAlbum.setArtwork(storedFile);
+			}
+		}
+	}
+
+	private void fetchAlbumYear(Album aAlbum) {
+
+		for (Song song : aAlbum.getSongs()) {
+			if (song.getFile() != null && song.getFile().getYear() != null) {
+
+				aAlbum.setYear(song.getFile().getYear());
+
+				log.debug("year of album {} set by song {}", aAlbum, song);
+
+				break;
 			}
 		}
 	}
