@@ -1,8 +1,8 @@
 package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.SongData;
+import net.dorokhov.pony.core.service.ChecksumService;
 import net.dorokhov.pony.core.service.SongDataReader;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -10,12 +10,20 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 @Service
 public class SongDataReaderImpl implements SongDataReader {
+
+	private ChecksumService checksumService;
+
+	@Autowired
+	public void setChecksumService(ChecksumService aChecksumService) {
+		checksumService = aChecksumService;
+	}
 
 	@Override
 	public SongData readSongData(File aFile) throws Exception {
@@ -60,7 +68,7 @@ public class SongDataReaderImpl implements SongDataReader {
 			Artwork artwork = tag.getFirstArtwork();
 
 			if (artwork != null) {
-				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), DigestUtils.md5Hex(artwork.getBinaryData()), artwork.getMimeType()));
+				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), checksumService.calculateChecksum(artwork.getBinaryData()), artwork.getMimeType()));
 			}
 		}
 

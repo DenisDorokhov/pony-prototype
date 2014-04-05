@@ -3,11 +3,13 @@ package net.dorokhov.pony.core.service.impl;
 import net.dorokhov.pony.core.dao.StoredFileDao;
 import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
+import net.dorokhov.pony.core.service.MimeTypeService;
 import net.dorokhov.pony.core.service.StoredFileService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,9 +29,16 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
 
+	private MimeTypeService mimeTypeService;
+
 	private String storageFolder;
 
 	private File filesFolder;
+
+	@Autowired
+	public void setMimeTypeService(MimeTypeService aMimeTypeService) {
+		mimeTypeService = aMimeTypeService;
+	}
 
 	@Value("${storedFile.path}")
 	public void setStorageFolder(String aStorageFolder) {
@@ -236,9 +245,9 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 			}
 
 			// Append type extension
-			String[] mimeTypeParts = aTask.getMimeType().split("/");
-			if (mimeTypeParts.length > 1) {
-				buf.append(".").append(mimeTypeParts[1]);
+			String mimeType = mimeTypeService.getFileExtension(aTask.getMimeType());
+			if (mimeType != null) {
+				buf.append(".").append(mimeType);
 			}
 
 			file = new File(buf.toString());

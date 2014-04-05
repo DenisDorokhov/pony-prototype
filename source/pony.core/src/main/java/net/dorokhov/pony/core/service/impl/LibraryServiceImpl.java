@@ -2,7 +2,6 @@ package net.dorokhov.pony.core.service.impl;
 
 import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.*;
 
 @Service
@@ -54,6 +51,10 @@ public class LibraryServiceImpl implements LibraryService {
 	private SongDataReader songDataReader;
 
 	private ExternalArtworkService externalArtworkService;
+
+	private ChecksumService checksumService;
+
+	private MimeTypeService mimeTypeService;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -93,6 +94,16 @@ public class LibraryServiceImpl implements LibraryService {
 	@Autowired
 	public void setExternalArtworkService(ExternalArtworkService aExternalArtworkService) {
 		externalArtworkService = aExternalArtworkService;
+	}
+
+	@Autowired
+	public void setChecksumService(ChecksumService aChecksumService) {
+		checksumService = aChecksumService;
+	}
+
+	@Autowired
+	public void setMimeTypeService(MimeTypeService aMimeTypeService) {
+		mimeTypeService = aMimeTypeService;
 	}
 
 	@Override
@@ -710,13 +721,13 @@ public class LibraryServiceImpl implements LibraryService {
 
 		if (artworkFile != null) {
 
-			String checksum = DigestUtils.md5Hex(new FileInputStream(artworkFile));
+			String checksum = checksumService.calculateChecksum(artworkFile);
 
 			StoredFile storedFile = storedFileService.getByTagAndChecksum(FILE_TAG_ARTWORK_EXTERNAL, checksum);
 
 			if (storedFile == null) {
 
-				String mimeType = URLConnection.guessContentTypeFromName(artworkFile.getName());
+				String mimeType = mimeTypeService.getFileMimeType(artworkFile);
 
 				if (mimeType != null) {
 
