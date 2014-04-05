@@ -2,13 +2,12 @@ package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AlbumSongsDto extends AlbumDto implements Serializable {
 
-	private List<SongDto> songs;
+	private ArrayList<SongDto> songs;
 
-	public List<SongDto> getSongs() {
+	public ArrayList<SongDto> getSongs() {
 
 		if (songs == null) {
 			songs = new ArrayList<SongDto>();
@@ -17,7 +16,7 @@ public class AlbumSongsDto extends AlbumDto implements Serializable {
 		return songs;
 	}
 
-	public void setSongs(List<SongDto> aSongs) {
+	public void setSongs(ArrayList<SongDto> aSongs) {
 		songs = aSongs;
 	}
 

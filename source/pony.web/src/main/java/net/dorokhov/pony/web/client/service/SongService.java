@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RemoteServiceRelativePath("rpc/songService")
 public interface SongService extends RemoteService {
@@ -12,10 +12,10 @@ public interface SongService extends RemoteService {
 	public Long getCountByAlbum(Integer aAlbumId);
 	public Long getCountByArtist(Integer aArtistId);
 
-	public List<SongDto> getByAlbum(Integer aAlbumId);
-	public List<SongDto> getByArtist(Integer aArtistId);
+	public ArrayList<SongDto> getByAlbum(Integer aAlbumId);
+	public ArrayList<SongDto> getByArtist(Integer aArtistId);
 
-	public List<SongDto> search(String aQuery);
+	public ArrayList<SongDto> search(String aQuery);
 
 	public SongDto getById(Integer aId);
 

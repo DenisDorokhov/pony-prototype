@@ -6,7 +6,7 @@ import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class AlbumServiceServlet extends AbstractServiceServlet implements AlbumService {
 
@@ -23,17 +23,17 @@ public class AlbumServiceServlet extends AbstractServiceServlet implements Album
 	}
 
 	@Override
-	public List<AlbumSongsDto> getByArtist(Integer aArtistId) {
+	public ArrayList<AlbumSongsDto> getByArtist(Integer aArtistId) {
 		return albumServiceFacade.getByArtist(aArtistId);
 	}
 
 	@Override
-	public List<AlbumSongsDto> getByArtistIdOrName(String aIdOrName) {
+	public ArrayList<AlbumSongsDto> getByArtistIdOrName(String aIdOrName) {
 		return albumServiceFacade.getByArtistIdOrName(aIdOrName);
 	}
 
 	@Override
-	public List<AlbumDto> search(String aQuery) {
+	public ArrayList<AlbumDto> search(String aQuery) {
 		return albumServiceFacade.search(aQuery);
 	}
 

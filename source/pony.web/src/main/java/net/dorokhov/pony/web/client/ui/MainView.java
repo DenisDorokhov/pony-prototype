@@ -11,7 +11,7 @@ import net.dorokhov.pony.web.client.service.ArtistService;
 import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MainView extends Composite {
 
@@ -29,7 +29,7 @@ public class MainView extends Composite {
 
 		initWidget(root);
 
-		artistService.getAll(new AsyncCallback<List<ArtistDto>>() {
+		artistService.getAll(new AsyncCallback<ArrayList<ArtistDto>>() {
 
 			@Override
 			public void onFailure(Throwable aThrowable) {
@@ -37,7 +37,7 @@ public class MainView extends Composite {
 			}
 
 			@Override
-			public void onSuccess(List<ArtistDto> aArtists) {
+			public void onSuccess(ArrayList<ArtistDto> aArtists) {
 				for (ArtistDto artist : aArtists) {
 					root.add(new HTML(artist.getName()));
 				}

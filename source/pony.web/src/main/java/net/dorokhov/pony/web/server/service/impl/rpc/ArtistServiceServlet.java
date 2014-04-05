@@ -5,7 +5,7 @@ import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ArtistServiceServlet extends AbstractServiceServlet implements ArtistService {
 
@@ -22,12 +22,12 @@ public class ArtistServiceServlet extends AbstractServiceServlet implements Arti
 	}
 
 	@Override
-	public List<ArtistDto> getAll() {
+	public ArrayList<ArtistDto> getAll() {
 		return artistServiceFacade.getAll();
 	}
 
 	@Override
-	public List<ArtistDto> search(String aQuery) {
+	public ArrayList<ArtistDto> search(String aQuery) {
 		return artistServiceFacade.search(aQuery);
 	}
 

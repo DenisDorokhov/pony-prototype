@@ -36,19 +36,19 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SongDto> getByAlbum(Integer aAlbumId) {
+	public ArrayList<SongDto> getByAlbum(Integer aAlbumId) {
 		return songListToDto(songService.getByAlbum(aAlbumId));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SongDto> getByArtist(Integer aArtistId) {
+	public ArrayList<SongDto> getByArtist(Integer aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SongDto> search(String aQuery) {
+	public ArrayList<SongDto> search(String aQuery) {
 		return songListToDto(songService.search(aQuery));
 	}
 
@@ -61,9 +61,9 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 		return song != null ? DtoConverter.songToDto(song) : null;
 	}
 
-	private List<SongDto> songListToDto(List<Song> aSongList) {
+	private ArrayList<SongDto> songListToDto(List<Song> aSongList) {
 
-		List<SongDto> songList = new ArrayList<SongDto>();
+		ArrayList<SongDto> songList = new ArrayList<SongDto>();
 
 		for (Song song : aSongList) {
 			songList.add(DtoConverter.songToDto(song));

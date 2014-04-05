@@ -2,11 +2,10 @@ package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class StatusDto implements Serializable {
 
-	private List<String> targetFiles;
+	private ArrayList<String> targetFiles;
 
 	private String description;
 
@@ -16,7 +15,7 @@ public class StatusDto implements Serializable {
 
 	private int totalSteps;
 
-	public List<String> getTargetFiles() {
+	public ArrayList<String> getTargetFiles() {
 
 		if (targetFiles == null) {
 			targetFiles = new ArrayList<String>();
@@ -25,7 +24,7 @@ public class StatusDto implements Serializable {
 		return targetFiles;
 	}
 
-	public void setTargetFiles(List<String> aTargetFiles) {
+	public void setTargetFiles(ArrayList<String> aTargetFiles) {
 		targetFiles = aTargetFiles;
 	}
 

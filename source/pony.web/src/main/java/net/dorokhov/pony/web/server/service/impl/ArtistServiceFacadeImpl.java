@@ -32,13 +32,13 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ArtistDto> getAll() {
+	public ArrayList<ArtistDto> getAll() {
 		return artistListToDto(artistService.getAll());
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ArtistDto> search(String aQuery) {
+	public ArrayList<ArtistDto> search(String aQuery) {
 		return artistListToDto(artistService.search(aQuery));
 	}
 
@@ -77,9 +77,9 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 		return artist;
 	}
 
-	private List<ArtistDto> artistListToDto(List<Artist> aArtistList) {
+	private ArrayList<ArtistDto> artistListToDto(List<Artist> aArtistList) {
 
-		List<ArtistDto> dto = new ArrayList<ArtistDto>();
+		ArrayList<ArtistDto> dto = new ArrayList<ArtistDto>();
 
 		for (Artist artist : aArtistList) {
 			dto.add(DtoConverter.artistToDto(artist));
