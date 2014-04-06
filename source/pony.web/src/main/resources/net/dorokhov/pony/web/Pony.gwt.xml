@@ -2,12 +2,14 @@
 <module rename-to="pony">
 
 	<inherits name="com.google.gwt.user.User"/>
-
 	<inherits name="com.google.gwt.junit.JUnit"/>
+	<inherits name="com.google.gwt.inject.Inject"/>
+	<inherits name="com.google.gwt.activity.Activity"/>
+	<inherits name="com.google.gwt.place.Place"/>
 
 	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
 
-	<entry-point class="net.dorokhov.pony.web.client.PonyApplication" />
+	<entry-point class="net.dorokhov.pony.web.client.Application" />
 
 	<source path="client" />
 	<source path="shared" />

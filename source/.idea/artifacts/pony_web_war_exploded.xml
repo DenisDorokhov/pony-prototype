@@ -81,6 +81,10 @@
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.28" />
           <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
           <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.6.0" />
+          <element id="library" level="project" name="Maven: com.google.gwt.inject:gin:2.1.2" />
+          <element id="library" level="project" name="Maven: com.google.inject:guice:3.0" />
+          <element id="library" level="project" name="Maven: javax.inject:javax.inject:1" />
+          <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-assistedinject:3.0" />
         </element>
       </element>
       <element id="gwt-compiler-output" facet="pony.web/gwt/GWT" />
