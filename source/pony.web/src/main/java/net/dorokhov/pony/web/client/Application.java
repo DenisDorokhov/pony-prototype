@@ -11,8 +11,8 @@ public class Application implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 
-		ApplicationController controller = injector.getApplicationController();
+		Bootstrap bootstrap = injector.getBootstrap();
 
-		controller.start();
+		bootstrap.run();
 	}
 }

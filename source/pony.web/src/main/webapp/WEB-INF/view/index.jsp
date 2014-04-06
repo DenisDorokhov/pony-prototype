@@ -10,6 +10,4 @@
 
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 
-<div id="mainView"></div>
-
 </body>
