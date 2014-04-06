@@ -3,14 +3,24 @@
 
 	<ui:style src="MainViewImpl.css" />
 
-	<g:DockLayoutPanel unit="PX">
+	<g:DockLayoutPanel unit="PX" styleName="{style.rootContainer}">
 
-		<g:north size="200">
-			<g:HorizontalPanel>
-				<g:SimplePanel ui:field="logoContainer" />
-				<g:SimplePanel ui:field="playerContainer" />
-				<g:SimplePanel ui:field="searchContainer" />
-			</g:HorizontalPanel>
+		<g:north size="100">
+			<g:DockLayoutPanel unit="PX">
+
+				<g:west size="200">
+					<g:SimplePanel ui:field="logoContainer" />
+				</g:west>
+
+				<g:center>
+					<g:SimplePanel ui:field="playerContainer" />
+				</g:center>
+
+				<g:east size="200">
+					<g:SimplePanel ui:field="searchContainer" />
+				</g:east>
+
+			</g:DockLayoutPanel>
 		</g:north>
 
 		<g:center>
