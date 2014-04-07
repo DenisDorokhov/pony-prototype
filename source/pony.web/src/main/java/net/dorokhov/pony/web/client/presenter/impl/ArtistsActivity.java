@@ -2,11 +2,13 @@ package net.dorokhov.pony.web.client.presenter.impl;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import net.dorokhov.pony.web.client.common.ContentState;
+import net.dorokhov.pony.web.client.place.ArtistsPlace;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
 import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
@@ -16,12 +18,15 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ArtistsActivity extends AbstractActivity implements ArtistsPresenter {
 
 	private final Logger log = Logger.getLogger(getClass().getName());
+
+	private PlaceController placeController;
 
 	private ArtistServiceAsync artistService;
 
@@ -30,6 +35,11 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	private ArtistsView view;
 
 	private String selectedArtistIdOrName;
+
+	@Inject
+	public void setPlaceController(PlaceController aPlaceController) {
+		placeController = aPlaceController;
+	}
 
 	@Inject
 	public void setArtistService(ArtistServiceAsync aArtistService) {
@@ -51,7 +61,10 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	}
 
 	public void setSelectedArtistIdOrName(String aSelectedArtistIdOrName) {
+
 		selectedArtistIdOrName = aSelectedArtistIdOrName;
+
+		selectArtist(selectedArtistIdOrName);
 	}
 
 	@Override
@@ -74,6 +87,9 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	@Override
 	public void onArtistSelected(ArtistDto aArtist) {
+
+		placeController.goTo(new ArtistsPlace(aArtist.getName()));
+
 		updateAlbums();
 	}
 
@@ -100,11 +116,9 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 				view.setArtistsContentState(ContentState.LOADED);
 
-				if (aResult.size() > 0) {
-					view.setSelectedArtist(aResult.get(0));
-				}
-
 				log.fine("artists updated");
+
+				selectArtist(selectedArtistIdOrName);
 			}
 
 			@Override
@@ -148,5 +162,44 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 				Window.alert(aCaught.getMessage());
 			}
 		});
+	}
+
+	private void selectArtist(String aArtistIdOrName) {
+
+		List<ArtistDto> artists = view.getArtists();
+
+		if (artists != null && artists.size() > 0) {
+
+			ArtistDto artistToSelect = findArtist(aArtistIdOrName, artists);
+
+			if (artistToSelect == null) {
+				artistToSelect = artists.get(0);
+			}
+
+			view.setSelectedArtist(artistToSelect);
+		}
+	}
+
+	private ArtistDto findArtist(String aArtistIdOrName, List<ArtistDto> aArtists) {
+
+		if (aArtistIdOrName != null) {
+
+			String artistName = aArtistIdOrName.trim();
+
+			Integer artistId = null;
+			try {
+				artistId = new Integer(artistName);
+			} catch (NumberFormatException e) {}
+
+			for (ArtistDto artist : aArtists) {
+				if (artist.getId() != null && artist.getId().equals(artistId)) {
+					return artist;
+				} else  if (artist.getName() != null && artist.getName().equals(artistName)) {
+					return artist;
+				}
+			}
+		}
+
+		return null;
 	}
 }
