@@ -3,8 +3,17 @@
 
 	<ui:style src="ArtistsViewImpl.css" />
 
-	<g:HTMLPanel>
-		Artists
-	</g:HTMLPanel>
+	<g:SplitLayoutPanel ui:field="rootContainer">
+		<g:west size="200">
+			<g:SimpleLayoutPanel ui:field="artistContainer">
+				<g:Label>Artists</g:Label>
+			</g:SimpleLayoutPanel>
+		</g:west>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="albumContainer">
+				<g:Label>Albums</g:Label>
+			</g:SimpleLayoutPanel>
+		</g:center>
+	</g:SplitLayoutPanel>
 
 </ui:UiBinder>

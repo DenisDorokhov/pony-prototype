@@ -1,16 +1,16 @@
 package net.dorokhov.pony.web.client.view;
 
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 public interface MainView extends IsWidget {
 
-	public AcceptsOneWidget getLogoContainer();
+	public SimpleLayoutPanel getLogoContainer();
 
-	public AcceptsOneWidget getPlayerContainer();
+	public SimpleLayoutPanel getPlayerContainer();
 
-	public AcceptsOneWidget getSearchContainer();
+	public SimpleLayoutPanel getSearchContainer();
 
-	public AcceptsOneWidget getContentContainer();
+	public SimpleLayoutPanel getContentContainer();
 
 }

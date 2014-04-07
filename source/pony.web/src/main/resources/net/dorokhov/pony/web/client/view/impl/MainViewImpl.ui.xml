@@ -9,22 +9,22 @@
 			<g:DockLayoutPanel unit="PX">
 
 				<g:west size="200">
-					<g:SimplePanel ui:field="logoContainer" />
+					<g:SimpleLayoutPanel ui:field="logoContainer" />
 				</g:west>
 
 				<g:center>
-					<g:SimplePanel ui:field="playerContainer" />
+					<g:SimpleLayoutPanel ui:field="playerContainer" />
 				</g:center>
 
 				<g:east size="200">
-					<g:SimplePanel ui:field="searchContainer" />
+					<g:SimpleLayoutPanel ui:field="searchContainer" />
 				</g:east>
 
 			</g:DockLayoutPanel>
 		</g:north>
 
 		<g:center>
-			<g:SimplePanel ui:field="contentContainer" />
+			<g:SimpleLayoutPanel ui:field="contentContainer" />
 		</g:center>
 
 	</g:DockLayoutPanel>
