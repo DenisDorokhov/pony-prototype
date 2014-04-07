@@ -29,6 +29,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	private ArtistsView view;
 
+	private String selectedArtistIdOrName;
+
 	@Inject
 	public void setArtistService(ArtistServiceAsync aArtistService) {
 		artistService = aArtistService;
@@ -42,6 +44,14 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	@Inject
 	public void setView(ArtistsView aView) {
 		view = aView;
+	}
+
+	public String getSelectedArtistIdOrName() {
+		return selectedArtistIdOrName;
+	}
+
+	public void setSelectedArtistIdOrName(String aSelectedArtistIdOrName) {
+		selectedArtistIdOrName = aSelectedArtistIdOrName;
 	}
 
 	@Override

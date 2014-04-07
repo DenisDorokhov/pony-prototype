@@ -4,8 +4,8 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import net.dorokhov.pony.web.client.Bootstrap;
 
-@GinModules(Module.class)
-public interface Injector extends Ginjector {
+@GinModules(GinModule.class)
+public interface GinInjector extends Ginjector {
 
 	public Bootstrap getBootstrap();
 

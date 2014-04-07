@@ -3,13 +3,14 @@ package net.dorokhov.pony.web.client.view.impl;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.view.ArtistsView;
+import net.dorokhov.pony.web.client.view.common.ArtistCell;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -27,13 +28,15 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	@UiField
 	SplitLayoutPanel rootContainer;
 
-	@UiField
-	SimpleLayoutPanel artistContainer;
+	@UiField(provided = true)
+	CellList<ArtistDto> artistList;
 
-	@UiField
-	SimpleLayoutPanel albumContainer;
+	private List<ArtistDto> artists;
 
 	public ArtistsViewImpl() {
+
+		artistList = new CellList<ArtistDto>(new ArtistCell());
+
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -64,17 +67,20 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	@Override
 	public List<ArtistDto> getArtists() {
-		return null; // TODO: implement
+		return artists;
 	}
 
 	@Override
 	public void setArtists(List<ArtistDto> aArtists) {
-		// TODO: implement
+
+		artists = aArtists;
+
+		updateArtists();
 	}
 
 	@Override
 	public ArtistDto getSelectedArtist() {
-		return null; // TODO: implement
+		return null;
 	}
 
 	@Override
@@ -100,5 +106,9 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	@Override
 	public void setSelectedSong(SongDto aSong) {
 		// TODO: implement
+	}
+
+	private void updateArtists() {
+		artistList.setRowData(artists);
 	}
 }

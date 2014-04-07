@@ -20,6 +20,11 @@ public class ArtistsActivityMapper implements ActivityMapper {
 	public Activity getActivity(Place aPlace) {
 
 		if (aPlace instanceof ArtistsPlace) {
+
+			ArtistsPlace place = (ArtistsPlace) aPlace;
+
+			activity.setSelectedArtistIdOrName(place.getArtistIdOrName());
+
 			return activity;
 		}
 

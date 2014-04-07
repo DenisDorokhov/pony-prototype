@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="pony">
 
-	<inherits name="com.google.gwt.user.User"/>
-	<inherits name="com.google.gwt.junit.JUnit"/>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.junit.JUnit" />
+	<inherits name="com.google.gwt.logging.Logging" />
 
-	<inherits name="com.google.gwt.inject.Inject"/>
-	<inherits name="com.google.gwt.activity.Activity"/>
-	<inherits name="com.google.gwt.place.Place"/>
+	<inherits name="com.google.gwt.inject.Inject" />
+	<inherits name="com.google.gwt.activity.Activity" />
+	<inherits name="com.google.gwt.place.Place" />
 
-	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
+	<inherits name="com.google.gwt.user.theme.standard.Standard" />
+
+	<set-property name="gwt.logging.logLevel" value="FINE" />
+	<set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
 	<entry-point class="net.dorokhov.pony.web.client.Application" />
 

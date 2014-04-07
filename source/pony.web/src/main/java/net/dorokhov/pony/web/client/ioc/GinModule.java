@@ -18,7 +18,7 @@ import net.dorokhov.pony.web.client.service.*;
 import net.dorokhov.pony.web.client.view.*;
 import net.dorokhov.pony.web.client.view.impl.*;
 
-public class Module extends AbstractGinModule {
+public class GinModule extends AbstractGinModule {
 
 	@Override
 	public void configure() {
