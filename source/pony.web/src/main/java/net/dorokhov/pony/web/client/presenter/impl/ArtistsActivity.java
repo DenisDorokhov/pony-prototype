@@ -100,6 +100,10 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 				view.setArtistsContentState(ContentState.LOADED);
 
+				if (aResult.size() > 0) {
+					view.setSelectedArtist(aResult.get(0));
+				}
+
 				log.fine("artists updated");
 			}
 
@@ -119,6 +123,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	private void updateAlbums() {
 
 		log.fine("updating albums...");
+
+		view.setAlbumsContentState(ContentState.LOADING);
 
 		albumService.getByArtist(view.getSelectedArtist().getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
 

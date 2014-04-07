@@ -5,11 +5,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.view.ArtistsView;
+import net.dorokhov.pony.web.client.view.common.AlbumsView;
 import net.dorokhov.pony.web.client.view.common.ArtistCell;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
@@ -26,16 +29,45 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	private ArtistsPresenter presenter;
 
 	@UiField
-	SplitLayoutPanel rootContainer;
+	DeckLayoutPanel artistsContainer;
+
+	@UiField
+	DeckLayoutPanel albumsContainer;
+
+	@UiField
+	Widget artistsLoadingLabel;
 
 	@UiField(provided = true)
-	CellList<ArtistDto> artistList;
+	CellList<ArtistDto> artistsView;
+
+	@UiField
+	Widget albumsLoadingLabel;
+
+	@UiField(provided = true)
+	AlbumsView albumsView;
+
+	private SingleSelectionModel<ArtistDto> artistListSelectionModel;
+
+	private ContentState artistsContentState;
+	private ContentState albumsContentState;
 
 	private List<ArtistDto> artists;
+	private List<AlbumSongsDto> albums;
 
 	public ArtistsViewImpl() {
 
-		artistList = new CellList<ArtistDto>(new ArtistCell());
+		artistsView = new CellList<ArtistDto>(new ArtistCell());
+		artistListSelectionModel = new SingleSelectionModel<ArtistDto>();
+
+		artistsView.setSelectionModel(artistListSelectionModel);
+		artistListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent aEvent) {
+				presenter.onArtistSelected(artistListSelectionModel.getSelectedObject());
+			}
+		});
+
+		albumsView = new AlbumsView();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -47,22 +79,28 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	@Override
 	public ContentState getArtistsContentState() {
-		return null; // TODO: implement
+		return artistsContentState;
 	}
 
 	@Override
 	public void setArtistsContentState(ContentState aContentState) {
-		// TODO: implement
+
+		artistsContentState = aContentState;
+
+		updateArtistsContentState();
 	}
 
 	@Override
 	public ContentState getAlbumsContentState() {
-		return null;
+		return albumsContentState;
 	}
 
 	@Override
 	public void setAlbumsContentState(ContentState aContentState) {
-		// TODO: implement
+
+		albumsContentState = aContentState;
+
+		updateAlbumsContentState();
 	}
 
 	@Override
@@ -80,22 +118,22 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	@Override
 	public ArtistDto getSelectedArtist() {
-		return null;
+		return artistListSelectionModel.getSelectedObject();
 	}
 
 	@Override
 	public void setSelectedArtist(ArtistDto aArtist) {
-		// TODO: implement
+		artistListSelectionModel.setSelected(aArtist, true);
 	}
 
 	@Override
 	public List<AlbumSongsDto> getAlbums() {
-		return null; // TODO: implement
+		return albums;
 	}
 
 	@Override
 	public void setAlbums(List<AlbumSongsDto> aAlbums) {
-		// TODO: implement
+		albums = aAlbums;
 	}
 
 	@Override
@@ -109,6 +147,26 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	}
 
 	private void updateArtists() {
-		artistList.setRowData(artists);
+		artistsView.setRowData(artists);
+	}
+
+	private void updateAlbums() {
+		// TODO: implement
+	}
+
+	private void updateArtistsContentState() {
+		if (getArtistsContentState() == ContentState.LOADED) {
+			artistsContainer.showWidget(artistsView);
+		} else {
+			artistsContainer.showWidget(artistsLoadingLabel);
+		}
+	}
+
+	private void updateAlbumsContentState() {
+		if (getAlbumsContentState() == ContentState.LOADED) {
+			albumsContainer.showWidget(albumsView);
+		} else {
+			albumsContainer.showWidget(albumsLoadingLabel);
+		}
 	}
 }

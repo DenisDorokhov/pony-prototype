@@ -3,8 +3,6 @@
 
 	<ui:style src="LogoViewImpl.css" />
 
-	<g:HTMLPanel>
-		<g:Label styleName="{style.logo}">Pony</g:Label>
-	</g:HTMLPanel>
+	<g:HTMLPanel>Logo</g:HTMLPanel>
 
 </ui:UiBinder>
