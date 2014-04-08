@@ -6,6 +6,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -29,13 +30,16 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	private ArtistsPresenter presenter;
 
 	@UiField
-	DeckLayoutPanel artistsContainer;
+	DeckLayoutPanel artistsDeck;
 
 	@UiField
-	DeckLayoutPanel albumsContainer;
+	DeckLayoutPanel albumsDeck;
 
 	@UiField
 	Widget artistsLoadingLabel;
+
+	@UiField
+	ScrollPanel artistsScroller;
 
 	@UiField(provided = true)
 	CellList<ArtistDto> artistsView;
@@ -156,17 +160,17 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	private void updateArtistsContentState() {
 		if (getArtistsContentState() == ContentState.LOADED) {
-			artistsContainer.showWidget(artistsView);
+			artistsDeck.showWidget(artistsScroller);
 		} else {
-			artistsContainer.showWidget(artistsLoadingLabel);
+			artistsDeck.showWidget(artistsLoadingLabel);
 		}
 	}
 
 	private void updateAlbumsContentState() {
 		if (getAlbumsContentState() == ContentState.LOADED) {
-			albumsContainer.showWidget(albumsView);
+			albumsDeck.showWidget(albumsView);
 		} else {
-			albumsContainer.showWidget(albumsLoadingLabel);
+			albumsDeck.showWidget(albumsLoadingLabel);
 		}
 	}
 }

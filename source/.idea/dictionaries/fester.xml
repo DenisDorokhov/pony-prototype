@@ -9,6 +9,7 @@
       <w>inno</w>
       <w>jdbc</w>
       <w>pageable</w>
+      <w>scroller</w>
       <w>springframework</w>
     </words>
   </dictionary>

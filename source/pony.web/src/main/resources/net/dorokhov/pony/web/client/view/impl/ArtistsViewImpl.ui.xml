@@ -7,13 +7,15 @@
 
 	<g:SplitLayoutPanel>
 		<g:west size="200">
-			<g:DeckLayoutPanel ui:field="artistsContainer">
+			<g:DeckLayoutPanel ui:field="artistsDeck">
 				<g:Label ui:field="artistsLoadingLabel" text="Loading..." />
-				<c:CellList ui:field="artistsView" styleName="{style.artistList}" />
+				<g:ScrollPanel ui:field="artistsScroller">
+					<c:CellList ui:field="artistsView" />
+				</g:ScrollPanel>
 			</g:DeckLayoutPanel>
 		</g:west>
 		<g:center>
-			<g:DeckLayoutPanel ui:field="albumsContainer">
+			<g:DeckLayoutPanel ui:field="albumsDeck">
 				<g:Label ui:field="albumsLoadingLabel" text="Loading..." />
 				<p:AlbumsView ui:field="albumsView" />
 			</g:DeckLayoutPanel>
