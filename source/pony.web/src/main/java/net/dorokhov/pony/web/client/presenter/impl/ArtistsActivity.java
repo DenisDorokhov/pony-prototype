@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.presenter.impl;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.place.shared.PlaceController;
@@ -8,6 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import net.dorokhov.pony.web.client.common.AbstractRunAsyncCallback;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.place.ArtistsPlace;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
@@ -60,10 +62,6 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		view = aView;
 	}
 
-	public String getSelectedArtistIdOrName() {
-		return selectedArtistIdOrName;
-	}
-
 	public void setSelectedArtistIdOrName(String aSelectedArtistIdOrName) {
 
 		selectedArtistIdOrName = aSelectedArtistIdOrName;
@@ -91,10 +89,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	@Override
 	public void onArtistSelected(ArtistDto aArtist) {
-
-		placeController.goTo(new ArtistsPlace(aArtist.getName()));
-
-		updateAlbums();
+		goToArtist(aArtist);
 	}
 
 	@Override
@@ -192,17 +187,22 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	private void selectArtist(String aArtistIdOrName) {
 
-		List<ArtistDto> artists = view.getArtists();
+		final List<ArtistDto> artists = view.getArtists();
 
 		if (artists != null && artists.size() > 0) {
 
 			ArtistDto artistToSelect = findArtist(aArtistIdOrName, artists);
 
-			if (artistToSelect == null) {
-				artistToSelect = artists.get(0);
+			if (artistToSelect != null) {
+				view.setSelectedArtist(artistToSelect);
+			} else {
+				GWT.runAsync(new AbstractRunAsyncCallback() {
+					@Override
+					public void onSuccess() {
+						goToArtist(artists.get(0));
+					}
+				});
 			}
-
-			view.setSelectedArtist(artistToSelect);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 		if (aArtistIdOrName != null) {
 
-			String artistName = aArtistIdOrName.trim();
+			String artistName = aArtistIdOrName.toLowerCase();
 
 			Integer artistId = null;
 			try {
@@ -220,12 +220,19 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 			for (ArtistDto artist : aArtists) {
 				if (artist.getId() != null && artist.getId().equals(artistId)) {
 					return artist;
-				} else  if (artist.getName() != null && artist.getName().equals(artistName)) {
+				} else  if (artist.getName() != null && artist.getName().toLowerCase().equals(artistName)) {
 					return artist;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	private void goToArtist(final ArtistDto aArtist) {
+
+		placeController.goTo(new ArtistsPlace(aArtist.getName()));
+
+		updateAlbums();
 	}
 }
