@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.presenter.impl;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.place.shared.PlaceController;
@@ -9,7 +8,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import net.dorokhov.pony.web.client.common.AbstractRunAsyncCallback;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.place.ArtistsPlace;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
@@ -229,13 +227,12 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 			if (artistToSelect != null) {
 				view.setSelectedArtist(artistToSelect);
-			} else {
-				GWT.runAsync(new AbstractRunAsyncCallback() {
-					@Override
-					public void onSuccess() {
-						goToArtist(artists.get(0));
-					}
-				});
+			} else if (aArtistIdOrName != null && !aArtistIdOrName.trim().equals("")) {
+				log.warning("could not find artist [" + aArtistIdOrName + "]");
+			}
+
+			if (view.getSelectedArtist() == null) {
+				goToArtist(artists.get(0));
 			}
 		}
 	}
