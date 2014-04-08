@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.view.impl;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
@@ -127,7 +128,25 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	@Override
 	public void setSelectedArtist(ArtistDto aArtist) {
+
 		artistListSelectionModel.setSelected(aArtist, true);
+
+		if (artists != null) {
+
+			final int index = artistsView.getVisibleItems().indexOf(artistListSelectionModel.getSelectedObject());
+
+			// I don't know why, but without runAsync it doesn't work
+			GWT.runAsync(new RunAsyncCallback() {
+
+				@Override
+				public void onSuccess() {
+					artistsView.getRowElement(index).scrollIntoView();
+				}
+
+				@Override
+				public void onFailure(Throwable reason) {}
+			});
+		}
 	}
 
 	@Override
