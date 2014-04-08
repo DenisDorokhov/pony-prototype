@@ -21,7 +21,9 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +40,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	private ArtistsView view;
 
 	private String selectedArtistIdOrName;
+
+	private Map<String, ArtistDto> artistMap = new HashMap<String, ArtistDto>();
 
 	private Request currentArtistsRequest;
 	private Request currentAlbumsRequest;
@@ -89,6 +93,9 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	@Override
 	public void onArtistSelected(ArtistDto aArtist) {
+
+		updateAlbums();
+
 		goToArtist(aArtist);
 	}
 
@@ -120,19 +127,25 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 				currentArtistsRequest = null;
 
-				view.setArtists(aResult);
+				doUpdateArtists(aResult);
 
 				view.setArtistsContentState(ContentState.LOADED);
 
 				log.fine("artists updated");
 
-				selectArtist(selectedArtistIdOrName);
+				if (aResult.size() > 0) {
+					selectArtist(selectedArtistIdOrName);
+				} else {
+					view.setAlbumsContentState(ContentState.LOADED);
+				}
 			}
 
 			@Override
 			public void onFailure(Throwable aCaught) {
 
 				currentArtistsRequest = null;
+
+				doUpdateArtists(new ArrayList<ArtistDto>());
 
 				view.setArtistsContentState(ContentState.ERROR);
 				view.setAlbumsContentState(ContentState.ERROR);
@@ -144,9 +157,30 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		});
 	}
 
+	private void doUpdateArtists(List<ArtistDto> aArtists) {
+
+		for (String key : artistMap.keySet()) {
+			artistMap.remove(key);
+		}
+
+		for (ArtistDto artist : aArtists) {
+			if (artist.getName() != null) {
+				artistMap.put(artist.getName().toLowerCase(), artist);
+			}
+		}
+		// Identifier has higher priority, name keys must be rewritten
+		for (ArtistDto artist : aArtists) {
+			if (artist.getId() != null) {
+				artistMap.put(artist.getId().toString(), artist);
+			}
+		}
+
+		view.setArtists(aArtists);
+	}
+
 	private void updateAlbums() {
 
-		log.fine("updating albums...");
+		log.fine("updating albums of artist [" + view.getSelectedArtist().getName() + "]...");
 
 		view.setAlbumsContentState(ContentState.LOADING);
 
@@ -191,7 +225,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 		if (artists != null && artists.size() > 0) {
 
-			ArtistDto artistToSelect = findArtist(aArtistIdOrName, artists);
+			ArtistDto artistToSelect = findArtist(aArtistIdOrName);
 
 			if (artistToSelect != null) {
 				view.setSelectedArtist(artistToSelect);
@@ -206,33 +240,19 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		}
 	}
 
-	private ArtistDto findArtist(String aArtistIdOrName, List<ArtistDto> aArtists) {
+	private ArtistDto findArtist(String aArtistIdOrName) {
 
 		if (aArtistIdOrName != null) {
 
 			String artistName = aArtistIdOrName.toLowerCase();
 
-			Integer artistId = null;
-			try {
-				artistId = new Integer(artistName);
-			} catch (NumberFormatException e) {}
-
-			for (ArtistDto artist : aArtists) {
-				if (artist.getId() != null && artist.getId().equals(artistId)) {
-					return artist;
-				} else  if (artist.getName() != null && artist.getName().toLowerCase().equals(artistName)) {
-					return artist;
-				}
-			}
+			return artistMap.get(artistName);
 		}
 
 		return null;
 	}
 
 	private void goToArtist(final ArtistDto aArtist) {
-
 		placeController.goTo(new ArtistsPlace(aArtist.getName()));
-
-		updateAlbums();
 	}
 }
