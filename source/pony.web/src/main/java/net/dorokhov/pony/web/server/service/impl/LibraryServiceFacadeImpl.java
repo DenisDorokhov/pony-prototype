@@ -2,8 +2,8 @@ package net.dorokhov.pony.web.server.service.impl;
 
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.LibraryScanner;
+import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
-import net.dorokhov.pony.web.server.utility.DtoConverter;
 import net.dorokhov.pony.web.shared.StatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,18 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 
 	private LibraryScanner libraryScanner;
 
+	private DtoService dtoService;
+
 	private String libraryPath;
 
 	@Autowired
 	public void setLibraryScanner(LibraryScanner aLibraryScanner) {
 		libraryScanner = aLibraryScanner;
+	}
+
+	@Autowired
+	public void setDtoService(DtoService aDtoService) {
+		dtoService = aDtoService;
 	}
 
 	@Value("${library.path}")
@@ -56,6 +63,6 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 
 		LibraryScanner.Status status = libraryScanner.getStatus();
 
-		return status != null ? DtoConverter.statusToDto(status) : null;
+		return status != null ? dtoService.statusToDto(status) : null;
 	}
 }

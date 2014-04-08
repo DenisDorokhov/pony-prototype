@@ -7,7 +7,7 @@ import net.dorokhov.pony.core.service.AlbumService;
 import net.dorokhov.pony.core.service.ArtistService;
 import net.dorokhov.pony.core.service.SongService;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
-import net.dorokhov.pony.web.server.utility.DtoConverter;
+import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +28,8 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 	private SongService songService;
 
+	private DtoService dtoService;
+
 	@Autowired
 	public void setArtistService(ArtistService aArtistService) {
 		artistService = aArtistService;
@@ -41,6 +43,11 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	@Autowired
 	public void setSongService(SongService aSongService) {
 		songService = aSongService;
+	}
+
+	@Autowired
+	public void setDtoService(DtoService aDtoService) {
+		dtoService = aDtoService;
 	}
 
 	@Override
@@ -84,12 +91,14 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 		List<AlbumSongsDto> dto = songListToDto(songService.getByAlbum(aId));
 
-		return dto.size() > 0 ? dto.get(0) : DtoConverter.albumToSongsDto(albumService.getById(aId));
+		return dto.size() > 0 ? dto.get(0) : dtoService.albumToSongsDto(albumService.getById(aId), new ArrayList<Song>());
 	}
 
 	private ArrayList<AlbumSongsDto> songListToDto(List<Song> aSongList) {
 
 		ArrayList<AlbumSongsDto> result = new ArrayList<AlbumSongsDto>();
+
+		List<Song> emptySongList = new ArrayList<Song>();
 
 		AlbumSongsDto currentDto = null;
 
@@ -97,12 +106,12 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 
 			if (currentDto == null || !currentDto.getId().equals(song.getAlbum().getId())) {
 
-				currentDto = DtoConverter.albumToSongsDto(song.getAlbum());
+				currentDto = dtoService.albumToSongsDto(song.getAlbum(), emptySongList);
 
 				result.add(currentDto);
 			}
 
-			currentDto.getSongs().add(DtoConverter.songToDto(song));
+			currentDto.getSongs().add(dtoService.songToDto(song));
 		}
 
 		return result;
@@ -113,7 +122,7 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 		ArrayList<AlbumDto> dto = new ArrayList<AlbumDto>();
 
 		for (Album album : aAlbumList) {
-			dto.add(DtoConverter.albumToDto(album));
+			dto.add(dtoService.albumToDto(album));
 		}
 
 		return dto;

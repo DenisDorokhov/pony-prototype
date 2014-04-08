@@ -3,7 +3,7 @@ package net.dorokhov.pony.web.server.service.impl;
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.service.ArtistService;
 import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
-import net.dorokhov.pony.web.server.utility.DtoConverter;
+import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -19,9 +19,16 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 	private ArtistService artistService;
 
+	private DtoService dtoService;
+
 	@Autowired
 	public void setArtistService(ArtistService aArtistService) {
 		artistService = aArtistService;
+	}
+
+	@Autowired
+	public void setDtoService(DtoService aDtoService) {
+		dtoService = aDtoService;
 	}
 
 	@Override
@@ -48,7 +55,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 		Artist artist = artistService.getById(aId);
 
-		return artist != null ? DtoConverter.artistToDto(artist) : null;
+		return artist != null ? dtoService.artistToDto(artist) : null;
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 		Artist artist = artistService.getByName(aName);
 
-		return artist != null ? DtoConverter.artistToDto(artist) : null;
+		return artist != null ? dtoService.artistToDto(artist) : null;
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 		ArrayList<ArtistDto> dto = new ArrayList<ArtistDto>();
 
 		for (Artist artist : aArtistList) {
-			dto.add(DtoConverter.artistToDto(artist));
+			dto.add(dtoService.artistToDto(artist));
 		}
 
 		return dto;

@@ -1,24 +1,28 @@
-package net.dorokhov.pony.web.server.utility;
+package net.dorokhov.pony.web.server.service.impl;
 
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.service.LibraryScanner;
+import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.shared.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.List;
 
-public class DtoConverter {
+@Service
+public class DtoServiceImpl implements DtoService {
 
-	private final static Logger log = LoggerFactory.getLogger(DtoConverter.class);
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public static StatusDto statusToDto(LibraryScanner.Status aStatus) {
+	public StatusDto statusToDto(LibraryScanner.Status aStatus) {
 
 		StatusDto dto = new StatusDto();
 
@@ -36,7 +40,7 @@ public class DtoConverter {
 		return dto;
 	}
 
-	public static ArtistDto artistToDto(Artist aArtist) {
+	public ArtistDto artistToDto(Artist aArtist) {
 
 		ArtistDto dto = new ArtistDto();
 
@@ -52,7 +56,7 @@ public class DtoConverter {
 		return dto;
 	}
 
-	public static AlbumDto albumToDto(Album aAlbum) {
+	public AlbumDto albumToDto(Album aAlbum) {
 
 		AlbumDto dto = new AlbumDto();
 
@@ -61,16 +65,20 @@ public class DtoConverter {
 		return dto;
 	}
 
-	public static AlbumSongsDto albumToSongsDto(Album aAlbum) {
+	public AlbumSongsDto albumToSongsDto(Album aAlbum, List<Song> aSongs) {
 
 		AlbumSongsDto dto = new AlbumSongsDto();
 
 		initAlbumDto(dto, aAlbum);
 
+		for (Song song : aSongs) {
+			dto.getSongs().add(songToDto(song));
+		}
+
 		return dto;
 	}
 
-	public static SongDto songToDto(Song aSong) {
+	public SongDto songToDto(Song aSong) {
 
 		SongDto dto = new SongDto();
 
@@ -132,7 +140,7 @@ public class DtoConverter {
 		return dto;
 	}
 
-	private static void initAlbumDto(AlbumDto aDto, Album aAlbum) {
+	private void initAlbumDto(AlbumDto aDto, Album aAlbum) {
 
 		aDto.setId(aAlbum.getId());
 		aDto.setCreationDate(aAlbum.getCreationDate());
@@ -154,15 +162,15 @@ public class DtoConverter {
 		}
 	}
 
-	private static String getStoredFileUrl(Integer aId) {
+	private String getStoredFileUrl(Integer aId) {
 		return getApiRelatedUrl(aId, "storedFile");
 	}
 
-	private static String getSongFileUrl(Integer aId) {
+	private String getSongFileUrl(Integer aId) {
 		return getApiRelatedUrl(aId, "songFile");
 	}
 
-	private static String getApiRelatedUrl(Integer aId, String aCall) {
+	private String getApiRelatedUrl(Integer aId, String aCall) {
 
 		String url = null;
 
@@ -186,7 +194,7 @@ public class DtoConverter {
 		return url;
 	}
 
-	private static HttpServletRequest getCurrentRequest() {
+	private HttpServletRequest getCurrentRequest() {
 
 		HttpServletRequest request = null;
 
@@ -202,4 +210,5 @@ public class DtoConverter {
 
 		return request;
 	}
+
 }
