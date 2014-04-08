@@ -1,10 +1,11 @@
 package net.dorokhov.pony.web.client.service;
 
+import com.google.gwt.http.client.Request;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.dorokhov.pony.web.shared.SearchDto;
 
 public interface SearchServiceAsync {
 
-	public void search(String aQuery, AsyncCallback<SearchDto> aCallback);
+	public Request search(String aQuery, AsyncCallback<SearchDto> aCallback);
 
 }

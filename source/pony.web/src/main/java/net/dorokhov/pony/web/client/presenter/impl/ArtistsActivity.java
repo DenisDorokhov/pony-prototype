@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.client.presenter.impl;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.Request;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -35,6 +36,9 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	private ArtistsView view;
 
 	private String selectedArtistIdOrName;
+
+	private Request currentArtistsRequest;
+	private Request currentAlbumsRequest;
 
 	@Inject
 	public void setPlaceController(PlaceController aPlaceController) {
@@ -107,10 +111,19 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 		log.fine("updating artists...");
 
-		artistService.getAll(new AsyncCallback<ArrayList<ArtistDto>>() {
+		if (currentArtistsRequest != null) {
+
+			currentArtistsRequest.cancel();
+
+			log.fine("active artists request cancelled");
+		}
+
+		currentArtistsRequest = artistService.getAll(new AsyncCallback<ArrayList<ArtistDto>>() {
 
 			@Override
 			public void onSuccess(ArrayList<ArtistDto> aResult) {
+
+				currentArtistsRequest = null;
 
 				view.setArtists(aResult);
 
@@ -123,6 +136,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 			@Override
 			public void onFailure(Throwable aCaught) {
+
+				currentArtistsRequest = null;
 
 				view.setArtistsContentState(ContentState.ERROR);
 				view.setAlbumsContentState(ContentState.ERROR);
@@ -140,10 +155,19 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 		view.setAlbumsContentState(ContentState.LOADING);
 
-		albumService.getByArtist(view.getSelectedArtist().getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
+		if (currentAlbumsRequest != null) {
+
+			currentAlbumsRequest.cancel();
+
+			log.fine("active albums request cancelled");
+		}
+
+		currentAlbumsRequest = albumService.getByArtist(view.getSelectedArtist().getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
 
 			@Override
 			public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
+
+				currentAlbumsRequest = null;
 
 				view.setAlbums(aResult);
 
@@ -154,6 +178,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 			@Override
 			public void onFailure(Throwable aCaught) {
+
+				currentAlbumsRequest = null;
 
 				view.setAlbumsContentState(ContentState.ERROR);
 
