@@ -6,6 +6,8 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private Integer file;
 
+	private String fileUrl;
+
 	private String path;
 
 	private String format;
@@ -38,11 +40,15 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private Integer artwork;
 
+	private String artworkUrl;
+
 	private Integer artistId;
 
 	private String artistName;
 
 	private Integer artistArtwork;
+
+	private String artistArtworkUrl;
 
 	private Integer albumId;
 
@@ -52,12 +58,22 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private Integer albumArtwork;
 
+	private String albumArtworkUrl;
+
 	public Integer getFile() {
 		return file;
 	}
 
 	public void setFile(Integer aFile) {
 		file = aFile;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String aFileUrl) {
+		fileUrl = aFileUrl;
 	}
 
 	public String getPath() {
@@ -188,6 +204,14 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 		artwork = aArtwork;
 	}
 
+	public String getArtworkUrl() {
+		return artworkUrl;
+	}
+
+	public void setArtworkUrl(String aArtworkUrl) {
+		artworkUrl = aArtworkUrl;
+	}
+
 	public Integer getArtistId() {
 		return artistId;
 	}
@@ -210,6 +234,14 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	public void setArtistArtwork(Integer aArtistArtwork) {
 		artistArtwork = aArtistArtwork;
+	}
+
+	public String getArtistArtworkUrl() {
+		return artistArtworkUrl;
+	}
+
+	public void setArtistArtworkUrl(String aArtistArtworkUrl) {
+		artistArtworkUrl = aArtistArtworkUrl;
 	}
 
 	public Integer getAlbumId() {
@@ -242,5 +274,13 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	public void setAlbumArtwork(Integer aAlbumArtwork) {
 		albumArtwork = aAlbumArtwork;
+	}
+
+	public String getAlbumArtworkUrl() {
+		return albumArtworkUrl;
+	}
+
+	public void setAlbumArtworkUrl(String aAlbumArtworkUrl) {
+		albumArtworkUrl = aAlbumArtworkUrl;
 	}
 }

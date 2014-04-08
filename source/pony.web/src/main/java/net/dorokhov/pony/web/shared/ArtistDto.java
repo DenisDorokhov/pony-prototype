@@ -8,6 +8,8 @@ public class ArtistDto extends AbstractEntityDto implements Serializable {
 
 	private Integer artwork;
 
+	private String artworkUrl;
+
 	public String getName() {
 		return name;
 	}
@@ -22,5 +24,13 @@ public class ArtistDto extends AbstractEntityDto implements Serializable {
 
 	public void setArtwork(Integer aArtwork) {
 		artwork = aArtwork;
+	}
+
+	public String getArtworkUrl() {
+		return artworkUrl;
+	}
+
+	public void setArtworkUrl(String aArtworkUrl) {
+		artworkUrl = aArtworkUrl;
 	}
 }
