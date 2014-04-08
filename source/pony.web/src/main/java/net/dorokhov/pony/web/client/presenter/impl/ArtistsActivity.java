@@ -219,7 +219,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	private void selectArtist(String aArtistIdOrName) {
 
-		final List<ArtistDto> artists = view.getArtists();
+		List<ArtistDto> artists = view.getArtists();
 
 		if (artists != null && artists.size() > 0) {
 
@@ -249,7 +249,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		return null;
 	}
 
-	private void goToArtist(final ArtistDto aArtist) {
+	private void goToArtist(ArtistDto aArtist) {
 		placeController.goTo(new ArtistsPlace(aArtist.getName()));
 	}
 }
