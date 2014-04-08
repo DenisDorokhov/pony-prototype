@@ -89,8 +89,8 @@ public class Bootstrap {
 		ActivityManager searchManager = new ActivityManager(searchActivityMapper, eventBus);
 		searchManager.setDisplay(mainView.getSearchContainer());
 
-		ActivityManager artistsManager = new ActivityManager(artistsActivityMapper, eventBus);
-		artistsManager.setDisplay(mainView.getContentContainer());
+		ActivityManager contentManager = new ActivityManager(artistsActivityMapper, eventBus);
+		contentManager.setDisplay(mainView.getContentContainer());
 	}
 
 }

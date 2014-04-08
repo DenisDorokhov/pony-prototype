@@ -23,6 +23,28 @@ public class ArtistsPlace extends Place {
 	}
 
 	@Override
+	public int hashCode() {
+		return artistIdOrName != null ? artistIdOrName.hashCode() : 0;
+	}
+
+	@Override
+	public boolean equals(Object aObj) {
+
+		if (this == aObj) {
+			return true;
+		}
+
+		if (aObj != null && getArtistIdOrName() != null && getClass().equals(aObj.getClass())) {
+
+			ArtistsPlace place = (ArtistsPlace) aObj;
+
+			return getArtistIdOrName().equals(place.getArtistIdOrName());
+		}
+
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return "ArtistsPlace{" +
 				"artistIdOrName='" + artistIdOrName + '\'' +
