@@ -3,6 +3,7 @@ package net.dorokhov.pony.web.client.place;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+import net.dorokhov.pony.web.client.common.StringUtils;
 
 public class ArtistsPlace extends Place {
 
@@ -38,10 +39,7 @@ public class ArtistsPlace extends Place {
 
 			ArtistsPlace place = (ArtistsPlace) aObj;
 
-			String normalizedValue1 = getArtistIdOrName() != null ? getArtistIdOrName().trim().toLowerCase() : "";
-			String normalizedValue2 = place.getArtistIdOrName() != null ? place.getArtistIdOrName().trim().toLowerCase() : "";
-
-			return normalizedValue1.equals(normalizedValue2);
+			return StringUtils.nullSafeNormalizedEquals(getArtistIdOrName(), place.getArtistIdOrName());
 		}
 
 		return false;

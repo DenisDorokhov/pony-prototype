@@ -2,7 +2,11 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:HTMLPanel>
-		Search: <g:TextBox ui:field="searchText" />
+
+		<p><b><g:Label ui:field="artistNameLabel" /></b></p>
+
+		<g:VerticalPanel ui:field="albumList" />
+
 	</g:HTMLPanel>
 
 </ui:UiBinder>

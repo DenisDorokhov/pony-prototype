@@ -3,8 +3,6 @@
 			 xmlns:c="urn:import:com.google.gwt.user.cellview.client"
 			 xmlns:p="urn:import:net.dorokhov.pony.web.client.view.common">
 
-	<ui:style src="ArtistsViewImpl.css" />
-
 	<g:SplitLayoutPanel>
 		<g:west size="200">
 			<g:DeckLayoutPanel ui:field="artistsDeck">
@@ -17,7 +15,7 @@
 		<g:center>
 			<g:DeckLayoutPanel ui:field="albumsDeck">
 				<g:Label ui:field="albumsLoadingLabel" text="Loading..." />
-				<p:AlbumsView ui:field="albumsView" />
+				<p:AlbumListView ui:field="albumListView" />
 			</g:DeckLayoutPanel>
 		</g:center>
 	</g:SplitLayoutPanel>

@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.view.impl;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
@@ -11,11 +10,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.google.gwt.dom.client.Element;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.view.ArtistsView;
-import net.dorokhov.pony.web.client.view.common.AlbumsView;
+import net.dorokhov.pony.web.client.view.common.AlbumListView;
 import net.dorokhov.pony.web.client.view.common.ArtistCell;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
@@ -49,8 +47,8 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	@UiField
 	Widget albumsLoadingLabel;
 
-	@UiField(provided = true)
-	AlbumsView albumsView;
+	@UiField
+	AlbumListView albumListView;
 
 	private SingleSelectionModel<ArtistDto> artistListSelectionModel;
 
@@ -69,11 +67,14 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 		artistListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent aEvent) {
-				presenter.onArtistSelected(artistListSelectionModel.getSelectedObject());
+
+				ArtistDto artist = artistListSelectionModel.getSelectedObject();
+
+				albumListView.setArtist(artist);
+
+				presenter.onArtistSelected(artist);
 			}
 		});
-
-		albumsView = new AlbumsView();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -134,25 +135,10 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 		if (artists != null) {
 
-			final int index = artistsView.getVisibleItems().indexOf(artistListSelectionModel.getSelectedObject());
+			int index = artistsView.getVisibleItems().indexOf(artistListSelectionModel.getSelectedObject());
 
 			if (index > -1) {
-				// I don't know why, but without runAsync it doesn't work
-				GWT.runAsync(new RunAsyncCallback() {
-
-					@Override
-					public void onSuccess() {
-
-						Element element = artistsView.getRowElement(index);
-
-						element.scrollIntoView();
-						element.focus();
-					}
-
-					@Override
-					public void onFailure(Throwable reason) {
-					}
-				});
+				artistsView.setKeyboardSelectedRow(index); // Scroll to selected item
 			}
 		}
 	}
@@ -164,7 +150,10 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	@Override
 	public void setAlbums(List<AlbumSongsDto> aAlbums) {
+
 		albums = aAlbums;
+
+		updateAlbums();
 	}
 
 	@Override
@@ -182,7 +171,7 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	}
 
 	private void updateAlbums() {
-		// TODO: implement
+		albumListView.setAlbums(albums);
 	}
 
 	private void updateArtistsContentState() {
@@ -195,7 +184,7 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	private void updateAlbumsContentState() {
 		if (getAlbumsContentState() == ContentState.LOADED) {
-			albumsDeck.showWidget(albumsView);
+			albumsDeck.showWidget(albumListView);
 		} else {
 			albumsDeck.showWidget(albumsLoadingLabel);
 		}

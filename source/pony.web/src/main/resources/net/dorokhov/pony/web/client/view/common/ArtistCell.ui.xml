@@ -3,8 +3,6 @@
 
 	<ui:with field="artist" type="net.dorokhov.pony.web.shared.ArtistDto" />
 
-	<ui:style src="ArtistCell.css" />
-
 	<span><ui:text from="{artist.getName}" /></span>
 
 </ui:UiBinder>
