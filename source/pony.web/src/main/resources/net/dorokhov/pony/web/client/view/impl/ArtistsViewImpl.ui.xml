@@ -4,7 +4,7 @@
 			 xmlns:p="urn:import:net.dorokhov.pony.web.client.view.common">
 
 	<g:SplitLayoutPanel>
-		<g:west size="200">
+		<g:west size="250">
 			<g:DeckLayoutPanel ui:field="artistsDeck">
 				<g:Label ui:field="artistsLoadingLabel" text="Loading..." />
 				<g:ScrollPanel ui:field="artistsScroller">

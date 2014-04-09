@@ -9,7 +9,7 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 public class ArtistCell extends AbstractCell<ArtistDto> {
 
 	interface ArtistCellUiBinder extends UiRenderer {
-		void render(SafeHtmlBuilder sb, ArtistDto artist);
+		void render(SafeHtmlBuilder sb, ArtistDto artist, String artworkUrl);
 	}
 
 	private static ArtistCellUiBinder uiBinder = GWT.create(ArtistCellUiBinder.class);
@@ -17,7 +17,13 @@ public class ArtistCell extends AbstractCell<ArtistDto> {
 	@Override
 	public void render(Context aContext, ArtistDto aArtist, SafeHtmlBuilder aSafeHtmlBuilder) {
 		if (aArtist != null) {
-			uiBinder.render(aSafeHtmlBuilder, aArtist);
+
+			String artworkUrl = aArtist.getArtworkUrl();
+			if (artworkUrl == null) {
+				artworkUrl = GWT.getHostPageBaseURL() + "img/artist-unknown.png";
+			}
+
+			uiBinder.render(aSafeHtmlBuilder, aArtist, artworkUrl);
 		}
 	}
 }
