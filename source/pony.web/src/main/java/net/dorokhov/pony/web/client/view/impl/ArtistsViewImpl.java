@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.dom.client.Element;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.view.ArtistsView;
@@ -135,17 +136,24 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 			final int index = artistsView.getVisibleItems().indexOf(artistListSelectionModel.getSelectedObject());
 
-			// I don't know why, but without runAsync it doesn't work
-			GWT.runAsync(new RunAsyncCallback() {
+			if (index > -1) {
+				// I don't know why, but without runAsync it doesn't work
+				GWT.runAsync(new RunAsyncCallback() {
 
-				@Override
-				public void onSuccess() {
-					artistsView.getRowElement(index).scrollIntoView();
-				}
+					@Override
+					public void onSuccess() {
 
-				@Override
-				public void onFailure(Throwable reason) {}
-			});
+						Element element = artistsView.getRowElement(index);
+
+						element.scrollIntoView();
+						element.focus();
+					}
+
+					@Override
+					public void onFailure(Throwable reason) {
+					}
+				});
+			}
 		}
 	}
 

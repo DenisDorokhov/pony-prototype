@@ -6,7 +6,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import net.dorokhov.pony.web.client.mapper.ArtistsActivityMapper;
+import net.dorokhov.pony.web.client.mapper.ContentActivityMapper;
 import net.dorokhov.pony.web.client.mapper.LogoActivityMapper;
 import net.dorokhov.pony.web.client.mapper.PlayerActivityMapper;
 import net.dorokhov.pony.web.client.mapper.SearchActivityMapper;
@@ -37,7 +37,7 @@ public class GinModule extends AbstractGinModule {
 		bind(LogoActivityMapper.class);
 		bind(PlayerActivityMapper.class);
 		bind(SearchActivityMapper.class);
-		bind(ArtistsActivityMapper.class);
+		bind(ContentActivityMapper.class);
 
 		bind(MainView.class).to(MainViewImpl.class).in(Singleton.class);
 		bind(LogoView.class).to(LogoViewImpl.class).in(Singleton.class);

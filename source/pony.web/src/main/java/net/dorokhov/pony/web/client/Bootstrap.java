@@ -21,7 +21,7 @@ public class Bootstrap {
 	private LogoActivityMapper logoActivityMapper;
 	private PlayerActivityMapper playerActivityMapper;
 	private SearchActivityMapper searchActivityMapper;
-	private ArtistsActivityMapper artistsActivityMapper;
+	private ContentActivityMapper contentActivityMapper;
 
 	private MainView mainView;
 
@@ -56,8 +56,8 @@ public class Bootstrap {
 	}
 
 	@Inject
-	public void setArtistsActivityMapper(ArtistsActivityMapper aArtistsActivityMapper) {
-		artistsActivityMapper = aArtistsActivityMapper;
+	public void setContentActivityMapper(ContentActivityMapper aContentActivityMapper) {
+		contentActivityMapper = aContentActivityMapper;
 	}
 
 	@Inject
@@ -89,7 +89,7 @@ public class Bootstrap {
 		ActivityManager searchManager = new ActivityManager(searchActivityMapper, eventBus);
 		searchManager.setDisplay(mainView.getSearchContainer());
 
-		ActivityManager contentManager = new ActivityManager(artistsActivityMapper, eventBus);
+		ActivityManager contentManager = new ActivityManager(contentActivityMapper, eventBus);
 		contentManager.setDisplay(mainView.getContentContainer());
 	}
 

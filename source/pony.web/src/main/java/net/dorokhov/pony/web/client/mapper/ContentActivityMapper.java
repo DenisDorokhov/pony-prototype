@@ -7,7 +7,7 @@ import com.google.inject.Inject;
 import net.dorokhov.pony.web.client.place.ArtistsPlace;
 import net.dorokhov.pony.web.client.presenter.impl.ArtistsActivity;
 
-public class ArtistsActivityMapper implements ActivityMapper {
+public class ContentActivityMapper implements ActivityMapper {
 
 	private ArtistsActivity activity;
 

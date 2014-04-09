@@ -34,11 +34,14 @@ public class ArtistsPlace extends Place {
 			return true;
 		}
 
-		if (aObj != null && getArtistIdOrName() != null && getClass().equals(aObj.getClass())) {
+		if (aObj != null && getClass().equals(aObj.getClass())) {
 
 			ArtistsPlace place = (ArtistsPlace) aObj;
 
-			return getArtistIdOrName().equals(place.getArtistIdOrName());
+			String normalizedValue1 = getArtistIdOrName() != null ? getArtistIdOrName().trim().toLowerCase() : "";
+			String normalizedValue2 = place.getArtistIdOrName() != null ? place.getArtistIdOrName().trim().toLowerCase() : "";
+
+			return normalizedValue1.equals(normalizedValue2);
 		}
 
 		return false;
