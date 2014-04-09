@@ -2,7 +2,10 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:HTMLPanel>
+
+		<g:Image ui:field="albumImage" width="100px" />
 		<g:InlineLabel ui:field="albumNameLabel" /> (<g:InlineLabel ui:field="albumYearLabel" />)
+
 	</g:HTMLPanel>
 
 </ui:UiBinder>

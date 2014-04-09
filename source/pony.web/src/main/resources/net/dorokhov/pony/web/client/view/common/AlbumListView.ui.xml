@@ -1,12 +1,20 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<g:HTMLPanel>
+	<g:DockLayoutPanel>
 
-		<p><b><g:Label ui:field="artistNameLabel" /></b></p>
+		<g:north size="50">
+			<g:HTMLPanel>
+				<p><b><g:Label ui:field="artistNameLabel" /></b></p>
+			</g:HTMLPanel>
+		</g:north>
 
-		<g:VerticalPanel ui:field="albumList" />
+		<g:center>
+			<g:ScrollPanel>
+				<g:VerticalPanel ui:field="albumList" />
+			</g:ScrollPanel>
+		</g:center>
 
-	</g:HTMLPanel>
+	</g:DockLayoutPanel>
 
 </ui:UiBinder>

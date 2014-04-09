@@ -20,7 +20,7 @@ public class ArtistCell extends AbstractCell<ArtistDto> {
 
 			String artworkUrl = aArtist.getArtworkUrl();
 			if (artworkUrl == null) {
-				artworkUrl = GWT.getHostPageBaseURL() + "img/artist-unknown.png";
+				artworkUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
 			}
 
 			uiBinder.render(aSafeHtmlBuilder, aArtist, artworkUrl);
