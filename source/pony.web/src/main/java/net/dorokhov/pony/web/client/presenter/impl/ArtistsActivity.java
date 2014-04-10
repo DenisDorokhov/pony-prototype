@@ -29,6 +29,8 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
+	private final Map<String, ArtistDto> artistMap = new HashMap<String, ArtistDto>();
+
 	private PlaceController placeController;
 
 	private ArtistServiceAsync artistService;
@@ -37,9 +39,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	private ArtistsView view;
 
-	private String selectedArtistIdOrName;
-
-	private Map<String, ArtistDto> artistMap = new HashMap<String, ArtistDto>();
+	private String artistToSelect;
 
 	private Request currentArtistsRequest;
 	private Request currentAlbumsRequest;
@@ -62,13 +62,6 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	@Inject
 	public void setView(ArtistsView aView) {
 		view = aView;
-	}
-
-	public void setSelectedArtistIdOrName(String aSelectedArtistIdOrName) {
-
-		selectedArtistIdOrName = aSelectedArtistIdOrName;
-
-		selectArtist(selectedArtistIdOrName);
 	}
 
 	@Override
@@ -107,6 +100,13 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		log.fine("song [" + aSong + "] activated");
 	}
 
+	public void setArtistToSelect(String aArtistToSelect) {
+
+		artistToSelect = aArtistToSelect;
+
+		selectArtist(artistToSelect);
+	}
+
 	private void updateArtists() {
 
 		log.fine("updating artists...");
@@ -132,7 +132,7 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 				log.fine("artists updated");
 
 				if (aResult.size() > 0) {
-					selectArtist(selectedArtistIdOrName);
+					selectArtist(artistToSelect);
 				} else {
 					view.setAlbumsContentState(ContentState.LOADED);
 				}
@@ -217,18 +217,18 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		});
 	}
 
-	private void selectArtist(String aArtistIdOrName) {
+	private void selectArtist(String aArtist) {
 
 		List<ArtistDto> artists = view.getArtists();
 
 		if (artists != null && artists.size() > 0) {
 
-			ArtistDto artistToSelect = findArtist(aArtistIdOrName);
+			ArtistDto artistToSelect = findArtist(aArtist);
 
 			if (artistToSelect != null) {
 				view.setSelectedArtist(artistToSelect);
-			} else if (aArtistIdOrName != null && !aArtistIdOrName.trim().equals("")) {
-				log.warning("could not find artist [" + aArtistIdOrName + "]");
+			} else if (aArtist != null && !aArtist.trim().equals("")) {
+				log.warning("could not find artist [" + aArtist + "]");
 			}
 
 			if (view.getSelectedArtist() == null) {
@@ -237,11 +237,11 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 		}
 	}
 
-	private ArtistDto findArtist(String aArtistIdOrName) {
+	private ArtistDto findArtist(String aArtist) {
 
-		if (aArtistIdOrName != null) {
+		if (aArtist != null) {
 
-			String artistName = aArtistIdOrName.toLowerCase();
+			String artistName = aArtist.toLowerCase();
 
 			return artistMap.get(artistName);
 		}

@@ -7,25 +7,25 @@ import net.dorokhov.pony.web.client.common.StringUtils;
 
 public class ArtistsPlace extends Place {
 
-	private String artistIdOrName;
+	private String artist;
 
 	public ArtistsPlace() {}
 
-	public ArtistsPlace(String aArtistIdOrName) {
-		setArtistIdOrName(aArtistIdOrName);
+	public ArtistsPlace(String aArtist) {
+		setArtist(aArtist);
 	}
 
-	public String getArtistIdOrName() {
-		return artistIdOrName;
+	public String getArtist() {
+		return artist;
 	}
 
-	public void setArtistIdOrName(String aArtistIdOrName) {
-		artistIdOrName = aArtistIdOrName;
+	public void setArtist(String aArtist) {
+		artist = aArtist;
 	}
 
 	@Override
 	public int hashCode() {
-		return artistIdOrName != null ? artistIdOrName.hashCode() : 0;
+		return artist != null ? artist.hashCode() : 0;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class ArtistsPlace extends Place {
 
 			ArtistsPlace place = (ArtistsPlace) aObj;
 
-			return StringUtils.nullSafeNormalizedEquals(getArtistIdOrName(), place.getArtistIdOrName());
+			return StringUtils.nullSafeNormalizedEquals(getArtist(), place.getArtist());
 		}
 
 		return false;
@@ -48,7 +48,7 @@ public class ArtistsPlace extends Place {
 	@Override
 	public String toString() {
 		return "ArtistsPlace{" +
-				"artistIdOrName='" + artistIdOrName + '\'' +
+				"artist='" + artist + '\'' +
 				'}';
 	}
 
@@ -62,7 +62,7 @@ public class ArtistsPlace extends Place {
 
 		@Override
 		public String getToken(ArtistsPlace aPlace) {
-			return aPlace.getArtistIdOrName();
+			return aPlace.getArtist();
 		}
 	}
 

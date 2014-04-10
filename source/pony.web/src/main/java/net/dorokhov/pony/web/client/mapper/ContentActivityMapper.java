@@ -23,7 +23,7 @@ public class ContentActivityMapper implements ActivityMapper {
 
 			ArtistsPlace place = (ArtistsPlace) aPlace;
 
-			activity.setSelectedArtistIdOrName(place.getArtistIdOrName());
+			activity.setArtistToSelect(place.getArtist());
 
 			return activity;
 		}
