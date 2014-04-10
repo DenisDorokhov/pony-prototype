@@ -1,12 +1,15 @@
 package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.common.TimeUtils;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -19,6 +22,17 @@ public class AlbumView extends Composite {
 	interface AlbumViewUiBinder extends UiBinder<Widget, AlbumView> {}
 
 	private static AlbumViewUiBinder uiBinder = GWT.create(AlbumViewUiBinder.class);
+
+	interface AlbumViewStyle extends CssResource {
+		String albumImage();
+		String nameContainer();
+		String songContainer();
+		String trackColumn();
+		String durationColumn();
+	}
+
+	@UiField
+	AlbumViewStyle style;
 
 	@UiField
 	Image albumImage;
@@ -52,21 +66,6 @@ public class AlbumView extends Composite {
 		updateAlbum();
 	}
 
-	private void updateAlbum() {
-
-		String imageUrl = album != null ? album.getArtworkUrl() : null;
-		if (imageUrl == null) {
-			imageUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
-		}
-
-		albumImage.setUrl(imageUrl);
-
-		albumNameLabel.setText(album != null ? album.getName() : null);
-		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
-
-		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
-	}
-
 	private void initSongTable() {
 
 		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
@@ -88,14 +87,26 @@ public class AlbumView extends Composite {
 			}
 		};
 
-		trackColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		durationColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		trackColumn.setCellStyleNames(style.trackColumn());
+		durationColumn.setCellStyleNames(style.durationColumn());
 
 		songTable.addColumn(trackColumn);
 		songTable.addColumn(nameColumn);
 		songTable.addColumn(durationColumn);
+	}
 
-		songTable.setColumnWidth(trackColumn, 50, Style.Unit.PX);
-		songTable.setColumnWidth(durationColumn, 80, Style.Unit.PX);
+	private void updateAlbum() {
+
+		String imageUrl = album != null ? album.getArtworkUrl() : null;
+		if (imageUrl == null) {
+			imageUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+		}
+
+		albumImage.setUrl(imageUrl);
+
+		albumNameLabel.setText(album != null ? album.getName() : null);
+		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
+
+		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
 	}
 }

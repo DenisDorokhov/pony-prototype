@@ -60,21 +60,7 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 
 	public ArtistsViewImpl() {
 
-		artistsView = new CellList<ArtistDto>(new ArtistCell());
-		artistListSelectionModel = new SingleSelectionModel<ArtistDto>();
-
-		artistsView.setSelectionModel(artistListSelectionModel);
-		artistListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent aEvent) {
-
-				ArtistDto artist = artistListSelectionModel.getSelectedObject();
-
-				albumsView.setArtist(artist);
-
-				eventBus.fireEvent(new ArtistSelectionEvent(artist));
-			}
-		});
+		initArtistsView();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -157,6 +143,26 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 		albums = aAlbums;
 
 		updateAlbums();
+	}
+
+	private void initArtistsView() {
+
+		artistListSelectionModel = new SingleSelectionModel<ArtistDto>();
+
+		artistsView = new CellList<ArtistDto>(new ArtistCell());
+		artistsView.setSelectionModel(artistListSelectionModel);
+
+		artistListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent aEvent) {
+
+				ArtistDto artist = artistListSelectionModel.getSelectedObject();
+
+				albumsView.setArtist(artist);
+
+				eventBus.fireEvent(new ArtistSelectionEvent(artist));
+			}
+		});
 	}
 
 	private void updateArtists() {

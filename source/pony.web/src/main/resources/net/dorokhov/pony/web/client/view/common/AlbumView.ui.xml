@@ -2,7 +2,7 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
 			 xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-	<ui:style>
+	<ui:style type="net.dorokhov.pony.web.client.view.common.AlbumView.AlbumViewStyle">
 		.albumImage {
 			max-width: 100px;
 			max-height: 100px;
@@ -12,6 +12,14 @@
 		}
 		.songContainer {
 			max-width: 800px;
+		}
+		.trackColumn {
+			width: 20px;
+			text-align: right;
+		}
+		.durationColumn {
+			width: 40px;
+			text-align: right;
 		}
 	</ui:style>
 
