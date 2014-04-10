@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.presenter.impl;
+package net.dorokhov.pony.web.client.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -9,14 +9,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import net.dorokhov.pony.web.client.common.ContentState;
+import net.dorokhov.pony.web.client.event.ArtistSelectionEvent;
 import net.dorokhov.pony.web.client.place.ArtistsPlace;
-import net.dorokhov.pony.web.client.presenter.ArtistsPresenter;
 import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
 import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
 import net.dorokhov.pony.web.client.view.ArtistsView;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
-import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArtistsActivity extends AbstractActivity implements ArtistsPresenter {
+public class ArtistsActivity extends AbstractActivity implements ArtistSelectionEvent.Handler {
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
@@ -67,7 +66,9 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 	@Override
 	public void start(AcceptsOneWidget aPanel, EventBus aEventBus) {
 
-		view.setPresenter(this);
+		aEventBus.addHandler(ArtistSelectionEvent.TYPE, this);
+
+		view.setEventBus(aEventBus);
 
 		view.setArtistsContentState(ContentState.LOADING);
 		view.setAlbumsContentState(ContentState.LOADING);
@@ -79,25 +80,15 @@ public class ArtistsActivity extends AbstractActivity implements ArtistsPresente
 
 	@Override
 	public void onStop() {
-		view.setPresenter(null);
+		view.setEventBus(null);
 	}
 
 	@Override
-	public void onArtistSelected(ArtistDto aArtist) {
+	public void onArtistSelection(ArtistSelectionEvent aEvent) {
 
 		updateAlbums();
 
-		goToArtist(aArtist);
-	}
-
-	@Override
-	public void onSongSelected(SongDto aSong) {
-		log.fine("song [" + aSong + "] selected");
-	}
-
-	@Override
-	public void onSongActivated(SongDto aSong) {
-		log.fine("song [" + aSong + "] activated");
+		goToArtist(aEvent.getArtist());
 	}
 
 	public void setArtistToSelect(String aArtistToSelect) {

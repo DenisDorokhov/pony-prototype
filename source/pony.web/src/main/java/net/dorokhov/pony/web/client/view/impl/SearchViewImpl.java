@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import net.dorokhov.pony.web.client.presenter.SearchPresenter;
 import net.dorokhov.pony.web.client.view.SearchView;
 
 public class SearchViewImpl extends Composite implements SearchView {
@@ -13,14 +12,7 @@ public class SearchViewImpl extends Composite implements SearchView {
 
 	private static SearchViewUiBinder uiBinder = GWT.create(SearchViewUiBinder.class);
 
-	private SearchPresenter presenter;
-
 	public SearchViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
-	}
-
-	@Override
-	public void setPresenter(SearchPresenter aPresenter) {
-		presenter = aPresenter;
 	}
 }

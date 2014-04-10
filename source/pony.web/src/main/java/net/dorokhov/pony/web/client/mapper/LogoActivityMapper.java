@@ -4,7 +4,7 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
-import net.dorokhov.pony.web.client.presenter.impl.LogoActivity;
+import net.dorokhov.pony.web.client.activity.LogoActivity;
 
 public class LogoActivityMapper implements ActivityMapper {
 

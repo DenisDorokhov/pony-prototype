@@ -1,10 +1,12 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import net.dorokhov.pony.web.client.common.PresenterView;
-import net.dorokhov.pony.web.client.presenter.PlayerPresenter;
 
-public interface PlayerView extends PresenterView<PlayerPresenter>, IsWidget {
+public interface PlayerView extends IsWidget {
+
+	public static enum State {
+		STOPPED, PLAYING, PAUSED
+	}
 
 	public double getVolume();
 
@@ -17,9 +19,5 @@ public interface PlayerView extends PresenterView<PlayerPresenter>, IsWidget {
 	public State getState();
 
 	public void setState(State aState);
-
-	public static enum State {
-		STOPPED, PLAYING, PAUSED
-	}
 
 }

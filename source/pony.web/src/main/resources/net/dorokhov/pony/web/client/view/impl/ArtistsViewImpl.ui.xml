@@ -15,7 +15,7 @@
 		<g:center>
 			<g:DeckLayoutPanel ui:field="albumsDeck">
 				<g:Label ui:field="albumsLoadingLabel" text="Loading..." />
-				<p:AlbumListView ui:field="albumListView" />
+				<p:AlbumListView ui:field="albumsView" />
 			</g:DeckLayoutPanel>
 		</g:center>
 	</g:SplitLayoutPanel>

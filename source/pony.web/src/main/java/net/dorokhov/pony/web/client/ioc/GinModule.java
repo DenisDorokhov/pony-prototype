@@ -10,10 +10,10 @@ import net.dorokhov.pony.web.client.mapper.ContentActivityMapper;
 import net.dorokhov.pony.web.client.mapper.LogoActivityMapper;
 import net.dorokhov.pony.web.client.mapper.PlayerActivityMapper;
 import net.dorokhov.pony.web.client.mapper.SearchActivityMapper;
-import net.dorokhov.pony.web.client.presenter.impl.ArtistsActivity;
-import net.dorokhov.pony.web.client.presenter.impl.LogoActivity;
-import net.dorokhov.pony.web.client.presenter.impl.PlayerActivity;
-import net.dorokhov.pony.web.client.presenter.impl.SearchActivity;
+import net.dorokhov.pony.web.client.activity.ArtistsActivity;
+import net.dorokhov.pony.web.client.activity.LogoActivity;
+import net.dorokhov.pony.web.client.activity.PlayerActivity;
+import net.dorokhov.pony.web.client.activity.SearchActivity;
 import net.dorokhov.pony.web.client.service.*;
 import net.dorokhov.pony.web.client.view.*;
 import net.dorokhov.pony.web.client.view.impl.*;
@@ -39,11 +39,11 @@ public class GinModule extends AbstractGinModule {
 		bind(SearchActivityMapper.class);
 		bind(ContentActivityMapper.class);
 
-		bind(MainView.class).to(MainViewImpl.class).in(Singleton.class);
-		bind(LogoView.class).to(LogoViewImpl.class).in(Singleton.class);
-		bind(PlayerView.class).to(PlayerViewImpl.class).in(Singleton.class);
-		bind(SearchView.class).to(SearchViewImpl.class).in(Singleton.class);
-		bind(ArtistsView.class).to(ArtistsViewImpl.class).in(Singleton.class);
+		bind(MainView.class).to(MainViewImpl.class);
+		bind(LogoView.class).to(LogoViewImpl.class);
+		bind(PlayerView.class).to(PlayerViewImpl.class);
+		bind(SearchView.class).to(SearchViewImpl.class);
+		bind(ArtistsView.class).to(ArtistsViewImpl.class);
 
 		bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
 	}
