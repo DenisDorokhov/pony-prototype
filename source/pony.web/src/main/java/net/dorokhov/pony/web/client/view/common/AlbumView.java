@@ -3,12 +3,15 @@ package net.dorokhov.pony.web.client.view.common;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.*;
 import net.dorokhov.pony.web.client.common.StringUtils;
+import net.dorokhov.pony.web.client.common.TimeUtils;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
+import net.dorokhov.pony.web.shared.SongDto;
+
+import java.util.ArrayList;
 
 public class AlbumView extends Composite {
 
@@ -25,9 +28,33 @@ public class AlbumView extends Composite {
 	@UiField
 	Label albumYearLabel;
 
+	@UiField(provided = true)
+	CellTable<SongDto> songTable;
+
 	private AlbumSongsDto album;
 
 	public AlbumView() {
+
+		songTable = new CellTable<SongDto>();
+
+		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
+			@Override
+			public String getValue(SongDto aSong) {
+				return aSong.getName();
+			}
+		};
+		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
+			@Override
+			public String getValue(SongDto aSong) {
+				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
+			}
+		};
+
+		durationColumn.setHorizontalAlignment(HasAutoHorizontalAlignment.ALIGN_RIGHT);
+
+		songTable.addColumn(nameColumn);
+		songTable.addColumn(durationColumn);
+
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -53,5 +80,7 @@ public class AlbumView extends Composite {
 
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
+
+		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
 	}
 }

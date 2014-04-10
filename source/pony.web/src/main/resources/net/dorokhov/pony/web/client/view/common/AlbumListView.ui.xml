@@ -5,13 +5,13 @@
 
 		<g:north size="50">
 			<g:HTMLPanel>
-				<p><b><g:Label ui:field="artistNameLabel" /></b></p>
+				<h1><g:Label ui:field="artistNameLabel" /></h1>
 			</g:HTMLPanel>
 		</g:north>
 
 		<g:center>
 			<g:ScrollPanel>
-				<g:VerticalPanel ui:field="albumList" />
+				<g:VerticalPanel ui:field="albumList" width="100%" />
 			</g:ScrollPanel>
 		</g:center>
 
