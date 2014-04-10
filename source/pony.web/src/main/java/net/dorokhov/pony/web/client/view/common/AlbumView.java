@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -28,34 +29,16 @@ public class AlbumView extends Composite {
 	@UiField
 	Label albumYearLabel;
 
-	@UiField(provided = true)
+	@UiField
 	CellTable<SongDto> songTable;
 
 	private AlbumSongsDto album;
 
 	public AlbumView() {
 
-		songTable = new CellTable<SongDto>();
-
-		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getName();
-			}
-		};
-		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
-			}
-		};
-
-		durationColumn.setHorizontalAlignment(HasAutoHorizontalAlignment.ALIGN_RIGHT);
-
-		songTable.addColumn(nameColumn);
-		songTable.addColumn(durationColumn);
-
 		initWidget(uiBinder.createAndBindUi(this));
+
+		initSongTable();
 	}
 
 	public AlbumSongsDto getAlbum() {
@@ -82,5 +65,37 @@ public class AlbumView extends Composite {
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
 
 		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
+	}
+
+	private void initSongTable() {
+
+		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
+			@Override
+			public String getValue(SongDto aSong) {
+				return StringUtils.nullSafeToString(aSong.getTrackNumber());
+			}
+		};
+		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
+			@Override
+			public String getValue(SongDto aSong) {
+				return aSong.getName();
+			}
+		};
+		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
+			@Override
+			public String getValue(SongDto aSong) {
+				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
+			}
+		};
+
+		trackColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		durationColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+		songTable.addColumn(trackColumn);
+		songTable.addColumn(nameColumn);
+		songTable.addColumn(durationColumn);
+
+		songTable.setColumnWidth(trackColumn, 50, Style.Unit.PX);
+		songTable.setColumnWidth(durationColumn, 80, Style.Unit.PX);
 	}
 }
