@@ -1,6 +1,9 @@
 package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -10,8 +13,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SingleSelectionModel;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.common.TimeUtils;
+import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -30,6 +35,8 @@ public class AlbumView extends Composite {
 		String trackColumn();
 		String durationColumn();
 	}
+
+	private EventBus eventBus;
 
 	@UiField
 	AlbumViewStyle style;
@@ -53,6 +60,14 @@ public class AlbumView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		initSongTable();
+	}
+
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+
+	public void setEventBus(EventBus aEventBus) {
+		eventBus = aEventBus;
 	}
 
 	public AlbumSongsDto getAlbum() {
@@ -93,6 +108,21 @@ public class AlbumView extends Composite {
 		songTable.addColumn(trackColumn);
 		songTable.addColumn(nameColumn);
 		songTable.addColumn(durationColumn);
+
+		final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+
+		songTable.setSelectionModel(selectionModel);
+		songTable.addDomHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+
+				SongDto song = selectionModel.getSelectedObject();
+
+				if (song != null) {
+					getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, song));
+				}
+			}
+		}, DoubleClickEvent.getType());
 	}
 
 	private void updateAlbum() {

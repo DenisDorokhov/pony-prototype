@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -19,6 +20,8 @@ public class AlbumListView extends Composite {
 
 	private static AlbumListViewUiBinder uiBinder = GWT.create(AlbumListViewUiBinder.class);
 
+	private EventBus eventBus;
+
 	@UiField
 	Label artistNameLabel;
 
@@ -33,6 +36,14 @@ public class AlbumListView extends Composite {
 
 	public AlbumListView() {
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+
+	public void setEventBus(EventBus aEventBus) {
+		eventBus = aEventBus;
 	}
 
 	public ArtistDto getArtist() {
@@ -90,6 +101,7 @@ public class AlbumListView extends Composite {
 					albumView = new AlbumView();
 				}
 
+				albumView.setEventBus(getEventBus());
 				albumView.setAlbum(album);
 
 				albumList.add(albumView);

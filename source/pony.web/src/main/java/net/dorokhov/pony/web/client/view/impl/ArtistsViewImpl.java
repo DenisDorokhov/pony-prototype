@@ -70,7 +70,10 @@ public class ArtistsViewImpl extends Composite implements ArtistsView {
 	}
 
 	public void setEventBus(EventBus aEventBus) {
+
 		eventBus = aEventBus;
+
+		albumsView.setEventBus(aEventBus);
 	}
 
 	@Override
