@@ -10,7 +10,7 @@
 
 	<g:DockLayoutPanel unit="PX" styleName="{style.rootContainer}">
 
-		<g:north size="100">
+		<g:north size="112">
 			<g:DockLayoutPanel unit="PX">
 
 				<g:west size="200">

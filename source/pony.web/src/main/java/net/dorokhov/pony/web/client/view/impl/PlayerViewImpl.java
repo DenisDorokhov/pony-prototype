@@ -12,9 +12,8 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 public class PlayerViewImpl extends Widget implements PlayerView {
 
-	private static final String PLAYER_DIV_ID = "PlayerViewImpl";
-
-	private JavaScriptObject playerControl;
+	private static final String PLAYER_DIV_ID = "jquery_jplayer_1";
+	private static final String SKIN_DIV_ID = "jp_container_1";
 
 	private State state;
 
@@ -27,7 +26,11 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 	private SongDto song;
 
 	public PlayerViewImpl() {
-		init();
+
+		setElement(Document.get().createDivElement());
+
+		getElement().appendChild(createPlayer());
+		getElement().appendChild(createSkin());
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		volume = aVolume;
 
-		updateVolume(volume);
+		updateVolume(PLAYER_DIV_ID, volume);
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		position = aPosition;
 
-		updatePosition(aPosition);
+		updatePosition(PLAYER_DIV_ID, aPosition);
 	}
 
 	@Override
@@ -66,25 +69,33 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		song = aSong;
 
-		updateMedia(aSong.getFileUrl());
-		setPosition(0.0);
+		if (song != null) {
+
+			JSONObject options = new JSONObject();
+
+			options.put("mp3", new JSONString(aSong.getFileUrl()));
+
+			updateMedia(PLAYER_DIV_ID, SKIN_DIV_ID, song.getArtist() + " - " + song.getName(), options.getJavaScriptObject());
+
+			setPosition(0.0);
+		}
 
 		state = State.INACTIVE;
 	}
 
 	@Override
 	public void start() {
-		doStart();
+		doStart(PLAYER_DIV_ID);
 	}
 
 	@Override
 	public void pause() {
-		doPause();
+		doPause(PLAYER_DIV_ID);
 	}
 
 	@Override
 	public void resume() {
-		doResume();
+		doResume(PLAYER_DIV_ID);
 	}
 
 	@Override
@@ -102,12 +113,10 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 		delegate = aDelegate;
 	}
 
-	private void init() {
+	@Override
+	protected void onLoad() {
 
-		setElement(Document.get().createDivElement());
-
-		getElement().appendChild(createPlayer());
-		getElement().appendChild(createSkin());
+		super.onLoad();
 
 		initPlayer(PLAYER_DIV_ID, createOptions().getJavaScriptObject());
 	}
@@ -125,47 +134,45 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		DivElement skinDivElement = Document.get().createDivElement();
 
-		skinDivElement.setId("jp_container_1");
+		skinDivElement.setId(SKIN_DIV_ID);
 		skinDivElement.setClassName("jp-audio");
 
-		skinDivElement.setInnerHTML("<div id=\"jp_container_1\" class=\"jp-audio\">\n" +
-				"\t<div class=\"jp-type-single\">\n" +
-				"\t\t<div class=\"jp-gui jp-interface\">\n" +
-				"\t\t\t<ul class=\"jp-controls\">\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-play\" tabindex=\"1\">play</a></li>\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-pause\" tabindex=\"1\">pause</a></li>\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-stop\" tabindex=\"1\">stop</a></li>\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-mute\" tabindex=\"1\" title=\"mute\">mute</a></li>\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-unmute\" tabindex=\"1\" title=\"unmute\">unmute</a></li>\n" +
-				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-volume-max\" tabindex=\"1\" title=\"max volume\">max volume</a></li>\n" +
-				"\t\t\t</ul>\n" +
-				"\t\t\t<div class=\"jp-progress\">\n" +
-				"\t\t\t\t<div class=\"jp-seek-bar\">\n" +
-				"\t\t\t\t\t<div class=\"jp-play-bar\"></div>\n" +
-				"\t\t\t\t</div>\n" +
-				"\t\t\t</div>\n" +
-				"\t\t\t<div class=\"jp-volume-bar\">\n" +
-				"\t\t\t\t<div class=\"jp-volume-bar-value\"></div>\n" +
-				"\t\t\t</div>\n" +
-				"\t\t\t<div class=\"jp-time-holder\">\n" +
-				"\t\t\t\t<div class=\"jp-current-time\"></div>\n" +
-				"\t\t\t\t<div class=\"jp-duration\"></div>\n" +
-				"\n" +
-				"\t\t\t\t<ul class=\"jp-toggles\">\n" +
-				"\t\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-repeat\" tabindex=\"1\" title=\"repeat\">repeat</a></li>\n" +
-				"\t\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-repeat-off\" tabindex=\"1\" title=\"repeat off\">repeat off</a></li>\n" +
-				"\t\t\t\t</ul>\n" +
+		skinDivElement.setInnerHTML(
+				"<div class=\"jp-type-single\">\n" +
+				"\t<div class=\"jp-gui jp-interface\">\n" +
+				"\t\t<ul class=\"jp-controls\">\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-play\" tabindex=\"1\">play</a></li>\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-pause\" tabindex=\"1\">pause</a></li>\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-stop\" tabindex=\"1\">stop</a></li>\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-mute\" tabindex=\"1\" title=\"mute\">mute</a></li>\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-unmute\" tabindex=\"1\" title=\"unmute\">unmute</a></li>\n" +
+				"\t\t\t<li><a href=\"javascript:;\" class=\"jp-volume-max\" tabindex=\"1\" title=\"max volume\">max volume</a></li>\n" +
+				"\t\t</ul>\n" +
+				"\t\t<div class=\"jp-progress\">\n" +
+				"\t\t\t<div class=\"jp-seek-bar\">\n" +
+				"\t\t\t\t<div class=\"jp-play-bar\"></div>\n" +
 				"\t\t\t</div>\n" +
 				"\t\t</div>\n" +
-				"\t\t<div class=\"jp-title\">\n" +
-				"\t\t\t<ul>\n" +
-				"\t\t\t\t<li>Cro Magnon Man</li>\n" +
+				"\t\t<div class=\"jp-volume-bar\">\n" +
+				"\t\t\t<div class=\"jp-volume-bar-value\"></div>\n" +
+				"\t\t</div>\n" +
+				"\t\t<div class=\"jp-time-holder\">\n" +
+				"\t\t\t<div class=\"jp-current-time\"></div>\n" +
+				"\t\t\t<div class=\"jp-duration\"></div>\n" +
+				"\t\t\t<ul class=\"jp-toggles\">\n" +
+				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-repeat\" tabindex=\"1\" title=\"repeat\">repeat</a></li>\n" +
+				"\t\t\t\t<li><a href=\"javascript:;\" class=\"jp-repeat-off\" tabindex=\"1\" title=\"repeat off\">repeat off</a></li>\n" +
 				"\t\t\t</ul>\n" +
 				"\t\t</div>\n" +
-				"\t\t<div class=\"jp-no-solution\">\n" +
-				"\t\t\t<span>Update Required</span>\n" +
-				"\t\t\tTo play the media you will need to either update your browser to a recent version or update your <a href=\"http://get.adobe.com/flashplayer/\" target=\"_blank\">Flash plugin</a>.\n" +
-				"\t\t</div>\n" +
+				"\t</div>\n" +
+				"\t<div class=\"jp-title\">\n" +
+				"\t\t<ul>\n" +
+				"\t\t\t<li>&nbsp;</li>\n" +
+				"\t\t</ul>\n" +
+				"\t</div>\n" +
+				"\t<div class=\"jp-no-solution\">\n" +
+				"\t\t<span>Update Required</span>\n" +
+				"\t\tTo play the media you will need to either update your browser to a recent version or update your <a href=\"http://get.adobe.com/flashplayer/\" target=\"_blank\">Flash plugin</a>.\n" +
 				"\t</div>\n" +
 				"</div>");
 
@@ -184,78 +191,53 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 		return options;
 	}
 
-	private native void initPlayer(String aId, JavaScriptObject aOptions) /*-{
+	private native void initPlayer(String aPlayerId, JavaScriptObject aOptions) /*-{
+
+		var instance = this;
 
 		aOptions.volumechange = function(event) {
-			this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onVolumeChange(F)(event.jPlayer.options.volume);
+			instance.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onVolumeChange(F)(event.jPlayer.options.volume);
 		};
 		aOptions.timeupdate = function(event) {
-			this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPositionChange(F)(event.jPlayer.status.currentTime);
+			instance.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPositionChange(F)(event.jPlayer.status.currentTime);
 		};
 		aOptions.play = function(event) {
-			this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPlay()();
+			instance.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPlay()();
 		};
 		aOptions.pause = function(event) {
-			this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPause()();
+			instance.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onPause()();
 		};
 		aOptions.ended = function(event) {
-			this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onEnd()();
+			instance.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::onEnd()();
 		};
 
-		var playerSelector = $wnd.$("#" + aId);
-
-		playerSelector.jPlayer(aOptions);
-
-		this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl = playerSelector.jPlayer.bind(playerSelector);
+		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
 	}-*/;
 
-	private native void updateMedia(String aUrl) /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("setMedia", aUrl);
-
+	private native void updateMedia(String aPlayerId, String aSkinId, String aName, JavaScriptObject aOptions) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("setMedia", aOptions);
+		$wnd.$("#" + aSkinId + " .jp-title ul li").text(aName);
 	}-*/;
 
-	private native void updateVolume(double aVolume) /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("volume", aVolume);
-
+	private native void updateVolume(String aPlayerId, double aVolume) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("volume", aVolume);
 	}-*/;
 
-	private native void updatePosition(double aPosition) /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("play", aPosition);
-
+	private native void updatePosition(String aPlayerId, double aPosition) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("play", aPosition);
 	}-*/;
 
-	public native void doStart() /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("play");
-
+	public native void doStart(String aPlayerId) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("play");
 	}-*/;
 
-	public native void doPause() /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("pause");
-
+	public native void doPause(String aPlayerId) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("pause");
 	}-*/;
 
-	public native void doResume() /*-{
-
-		var playerControl = this.@net.dorokhov.pony.web.client.view.impl.PlayerViewImpl::playerControl;
-
-		playerControl("play");
-
+	public native void doResume(String aPlayerId) /*-{
+		$wnd.$("#" + aPlayerId).jPlayer("play");
 	}-*/;
 
 	private void onVolumeChange(float aValue) {
