@@ -33,4 +33,12 @@ public class ArtistDto extends AbstractEntityDto implements Serializable {
 	public void setArtworkUrl(String aArtworkUrl) {
 		artworkUrl = aArtworkUrl;
 	}
+
+	@Override
+	public String toString() {
+		return "ArtistDto{" +
+				"id=" + getId() +
+				", name='" + name + '\'' +
+				'}';
+	}
 }

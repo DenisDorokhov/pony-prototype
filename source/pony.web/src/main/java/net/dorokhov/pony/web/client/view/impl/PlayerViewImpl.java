@@ -10,10 +10,14 @@ import com.google.gwt.user.client.ui.Widget;
 import net.dorokhov.pony.web.client.view.PlayerView;
 import net.dorokhov.pony.web.shared.SongDto;
 
+import java.util.logging.Logger;
+
 public class PlayerViewImpl extends Widget implements PlayerView {
 
 	private static final String PLAYER_DIV_ID = "jquery_jplayer_1";
 	private static final String SKIN_DIV_ID = "jp_container_1";
+
+	private final Logger log = Logger.getLogger(getClass().getName());
 
 	private State state;
 
@@ -262,6 +266,8 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		state = State.PLAYING;
 
+		log.fine("playback started [" + song + "]");
+
 		if (delegate != null) {
 			delegate.onStart(this);
 		}
@@ -271,6 +277,8 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 
 		state = State.PAUSED;
 
+		log.fine("playback paused [" + song + "]");
+
 		if (delegate != null) {
 			delegate.onPause(this);
 		}
@@ -279,6 +287,8 @@ public class PlayerViewImpl extends Widget implements PlayerView {
 	private void onEnd() {
 
 		state = State.INACTIVE;
+
+		log.fine("playback ended [" + song + "]");
 
 		if (delegate != null) {
 			delegate.onEnd(this);

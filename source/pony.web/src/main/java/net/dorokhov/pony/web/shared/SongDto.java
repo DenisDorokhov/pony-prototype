@@ -283,4 +283,14 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 	public void setAlbumArtworkUrl(String aAlbumArtworkUrl) {
 		albumArtworkUrl = aAlbumArtworkUrl;
 	}
+
+	@Override
+	public String toString() {
+		return "SongDto{" +
+				"id=" + getId() +
+				", artist='" + artist + '\'' +
+				", album='" + album + '\'' +
+				", name='" + name + '\'' +
+				'}';
+	}
 }
