@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:pony="urn:import:net.dorokhov.pony.web.client.view.common"
 			 xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
 	<ui:style type="net.dorokhov.pony.web.client.view.common.AlbumView.AlbumViewStyle">
@@ -44,7 +45,8 @@
 					</g:HorizontalPanel>
 				</g:cell>
 				<g:cell>
-					<c:CellTable ui:field="songTable" width="100%" styleName="{style.songContainer}" />
+					<!--<c:CellTable ui:field="songTable" width="100%" styleName="{style.songContainer}" />-->
+                    <pony:SongListView ui:field="songList"></pony:SongListView>
 				</g:cell>
 			</g:VerticalPanel>
 		</g:cell>

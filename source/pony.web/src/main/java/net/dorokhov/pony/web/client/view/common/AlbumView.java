@@ -9,10 +9,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SingleSelectionModel;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.common.TimeUtils;
@@ -50,8 +47,11 @@ public class AlbumView extends Composite {
 	@UiField
 	Label albumYearLabel;
 
-	@UiField
-	CellTable<SongDto> songTable;
+//	@UiField
+//	CellTable<SongDto> songTable;
+
+    @UiField
+    SongListView songList;
 
 	private AlbumSongsDto album;
 
@@ -59,7 +59,7 @@ public class AlbumView extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		initSongTable();
+		//initSongTable();
 	}
 
 	public EventBus getEventBus() {
@@ -81,49 +81,49 @@ public class AlbumView extends Composite {
 		updateAlbum();
 	}
 
-	private void initSongTable() {
-
-		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return StringUtils.nullSafeToString(aSong.getTrackNumber());
-			}
-		};
-		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getName();
-			}
-		};
-		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
-			}
-		};
-
-		trackColumn.setCellStyleNames(style.trackColumn());
-		durationColumn.setCellStyleNames(style.durationColumn());
-
-		songTable.addColumn(trackColumn);
-		songTable.addColumn(nameColumn);
-		songTable.addColumn(durationColumn);
-
-		final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
-
-		songTable.setSelectionModel(selectionModel);
-		songTable.addDomHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-
-				SongDto song = selectionModel.getSelectedObject();
-
-				if (song != null) {
-					getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, song));
-				}
-			}
-		}, DoubleClickEvent.getType());
-	}
+//	private void initSongTable() {
+//
+//		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return StringUtils.nullSafeToString(aSong.getTrackNumber());
+//			}
+//		};
+//		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return aSong.getName();
+//			}
+//		};
+//		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
+//			}
+//		};
+//
+//		trackColumn.setCellStyleNames(style.trackColumn());
+//		durationColumn.setCellStyleNames(style.durationColumn());
+//
+//		songTable.addColumn(trackColumn);
+//		songTable.addColumn(nameColumn);
+//		songTable.addColumn(durationColumn);
+//
+//		final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+//
+//		songTable.setSelectionModel(selectionModel);
+//		songTable.addDomHandler(new DoubleClickHandler() {
+//			@Override
+//			public void onDoubleClick(DoubleClickEvent event) {
+//
+//				SongDto song = selectionModel.getSelectedObject();
+//
+//				if (song != null) {
+//					getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, song));
+//				}
+//			}
+//		}, DoubleClickEvent.getType());
+//	}
 
 	private void updateAlbum() {
 
@@ -137,6 +137,6 @@ public class AlbumView extends Composite {
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
 
-		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
+        songList.setSongList(album != null ? album.getSongs() : new ArrayList<SongDto>());
 	}
 }
