@@ -1,0 +1,28 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style type="net.dorokhov.pony.web.client.view.common.SongListItem.SongListItemStyle">
+        .songListItem {
+            clear: both;
+            overflow: auto;
+        }
+        .trackNumber {
+            float: left;
+            width: 50px;
+            text-align: center;
+        }
+        .songName {
+            float: left;
+        }
+        .songDuration {
+            float: right;
+        }
+    </ui:style>
+
+    <g:FlowPanel ui:field="songItemPanel" styleName="{style.songListItem}">
+        <g:Label ui:field="trackNumberLabel" styleName="{style.trackNumber}"></g:Label>
+        <g:Label ui:field="songNameLabel" styleName="{style.songName}"></g:Label>
+        <g:Label ui:field="songDurationLabel" styleName="{style.songDuration}"></g:Label>
+    </g:FlowPanel>
+
+</ui:UiBinder>
