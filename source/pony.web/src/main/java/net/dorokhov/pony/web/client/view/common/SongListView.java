@@ -3,6 +3,7 @@ package net.dorokhov.pony.web.client.view.common;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class SongListView  extends Composite {
     interface SongListUiBinder extends UiBinder<Widget, SongListView> {}
 
     private static SongListUiBinder uiBinder = GWT.create(SongListUiBinder.class);
+
+    private EventBus eventBus;
 
     @UiField
     Label songListCaption;
@@ -35,6 +39,14 @@ public class SongListView  extends Composite {
 
     public SongListView() {
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void setEventBus(EventBus aEventBus) {
+        eventBus = aEventBus;
     }
 
     public ArrayList<SongDto> getSongList() {
@@ -75,15 +87,8 @@ public class SongListView  extends Composite {
                 for (SongDto song : column) {
                     SongListItem songItem = new SongListItem(song);
 
+                    songItem.setEventBus(getEventBus());
                     songsColumnPanel.add(songItem);
-
-                    songItem.addClickHandler(new ClickHandler() {
-
-                        @Override
-                        public void onClick(ClickEvent event) {
-                            Window.alert("click!");
-                        }
-                    });
                 }
 
                 songListPanel.add(songsColumnPanel);

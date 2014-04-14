@@ -1,19 +1,12 @@
 package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.SingleSelectionModel;
 import net.dorokhov.pony.web.client.common.StringUtils;
-import net.dorokhov.pony.web.client.common.TimeUtils;
-import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -137,6 +130,7 @@ public class AlbumView extends Composite {
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
 
+        songList.setEventBus(getEventBus());
         songList.setSongList(album != null ? album.getSongs() : new ArrayList<SongDto>());
 	}
 }

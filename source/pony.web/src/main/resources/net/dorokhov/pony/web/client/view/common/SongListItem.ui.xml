@@ -5,10 +5,12 @@
         .songListItem {
             clear: both;
             overflow: auto;
+            cursor: pointer;
         }
         .trackNumber {
             float: left;
             width: 50px;
+            min-height: 1em;
             text-align: center;
         }
         .songName {
@@ -19,10 +21,12 @@
         }
     </ui:style>
 
-    <g:FlowPanel ui:field="songItemPanel" styleName="{style.songListItem}">
-        <g:Label ui:field="trackNumberLabel" styleName="{style.trackNumber}"></g:Label>
-        <g:Label ui:field="songNameLabel" styleName="{style.songName}"></g:Label>
-        <g:Label ui:field="songDurationLabel" styleName="{style.songDuration}"></g:Label>
-    </g:FlowPanel>
+    <g:FocusPanel ui:field="songItemPanel" styleName="{style.songListItem}">
+        <g:FlowPanel styleName="{style.songListItem}">
+            <g:Label ui:field="trackNumberLabel" styleName="{style.trackNumber}"></g:Label>
+            <g:Label ui:field="songNameLabel" styleName="{style.songName}"></g:Label>
+            <g:Label ui:field="songDurationLabel" styleName="{style.songDuration}"></g:Label>
+        </g:FlowPanel>
+    </g:FocusPanel>
 
 </ui:UiBinder>

@@ -2,19 +2,21 @@ package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import com.google.web.bindery.event.shared.EventBus;
+import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.common.TimeUtils;
+import net.dorokhov.pony.web.client.event.SongListItemSelectEvent;
+import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 
-public class SongListItem extends Composite implements HasClickHandlers {
+public class SongListItem extends Composite {
 
     interface SongListItemUiBinder extends UiBinder<Widget, SongListItem> {}
 
@@ -27,8 +29,10 @@ public class SongListItem extends Composite implements HasClickHandlers {
         String songDuration();
     }
 
+    private EventBus eventBus;
+
     @UiField
-    FlowPanel songItemPanel;
+    FocusPanel songItemPanel;
 
     @UiField
     Label trackNumberLabel;
@@ -54,6 +58,14 @@ public class SongListItem extends Composite implements HasClickHandlers {
         updateWidget();
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void setEventBus(EventBus aEventBus) {
+        eventBus = aEventBus;
+    }
+
     public void setSong(SongDto aSong) {
         song = aSong;
 
@@ -64,14 +76,20 @@ public class SongListItem extends Composite implements HasClickHandlers {
         return song;
     }
 
-    @Override
-    public HandlerRegistration addClickHandler(ClickHandler clickHandler) {
-        return songItemPanel.addHandler(clickHandler, ClickEvent.getType());
+    @UiHandler("songItemPanel")
+    void onSongListItemClick(ClickEvent aEvent) {
+        SongDto selectedSong = getSong();
+
+        getEventBus().fireEvent(new SongListItemSelectEvent(SongListItemSelectEvent.SONG_ITEM_SELECTED, this));
+
+        if (selectedSong != null) {
+            getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, selectedSong));
+        }
     }
 
     private void updateWidget() {
         if (song != null) {
-            trackNumberLabel.setText(song.getTrackNumber().toString());
+            trackNumberLabel.setText(StringUtils.nullSafeToString(song.getTrackNumber()));
             songNameLabel.setText(song.getName());
             songDurationLabel.setText(TimeUtils.secondsToMinutes(song.getDuration()));
         }
