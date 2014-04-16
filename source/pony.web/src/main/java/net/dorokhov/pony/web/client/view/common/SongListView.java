@@ -15,6 +15,7 @@ import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SongListView  extends Composite {
@@ -38,7 +39,18 @@ public class SongListView  extends Composite {
     private ArrayList<SongDto> songs;
 
     public SongListView() {
+        this(null, null);
+    }
+
+    public SongListView(ArrayList<SongDto> aSongs) {
+        this(aSongs, null);
+    }
+
+    public SongListView(ArrayList<SongDto> aSongs, String aCaption) {
         initWidget(uiBinder.createAndBindUi(this));
+
+        setCaption(aCaption);
+        setSongList(aSongs);
     }
 
     public EventBus getEventBus() {
@@ -47,6 +59,8 @@ public class SongListView  extends Composite {
 
     public void setEventBus(EventBus aEventBus) {
         eventBus = aEventBus;
+
+        updateChildrenEventBus();
     }
 
     public ArrayList<SongDto> getSongList() {
@@ -92,6 +106,23 @@ public class SongListView  extends Composite {
                 }
 
                 songListPanel.add(songsColumnPanel);
+            }
+        }
+    }
+
+    private void updateChildrenEventBus() {
+        Iterator<Widget> childWidgets = songListPanel.iterator();
+
+        while (childWidgets.hasNext()) {
+            FlowPanel songColumn = (FlowPanel)childWidgets.next();
+            Iterator<Widget> columnChildWidgets = songColumn.iterator();
+
+            while (columnChildWidgets.hasNext()) {
+                Widget widget = columnChildWidgets.next();
+
+                if (widget instanceof SongListItem) {
+                    ((SongListItem)widget).setEventBus(getEventBus());
+                }
             }
         }
     }

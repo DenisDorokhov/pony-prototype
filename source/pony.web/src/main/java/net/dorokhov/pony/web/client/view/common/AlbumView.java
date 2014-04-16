@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.client.view.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -10,7 +11,7 @@ import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class AlbumView extends Composite {
 
@@ -40,11 +41,8 @@ public class AlbumView extends Composite {
 	@UiField
 	Label albumYearLabel;
 
-//	@UiField
-//	CellTable<SongDto> songTable;
-
     @UiField
-    SongListView songList;
+    FlowPanel songListPanel;
 
 	private AlbumSongsDto album;
 
@@ -130,7 +128,32 @@ public class AlbumView extends Composite {
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
 
-        songList.setEventBus(getEventBus());
-        songList.setSongList(album != null ? album.getSongs() : new ArrayList<SongDto>());
+        Map<Integer, ArrayList<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
+
+        for (Map.Entry<Integer, ArrayList<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
+            Integer discNumber = albumDiscEntry.getKey();
+            ArrayList<SongDto> songList = albumDiscEntry.getValue();
+
+            SongListView songListView =
+                    new SongListView(songList, discNumber != null ? "Disc " + discNumber : null);
+
+            songListView.setEventBus(getEventBus());
+
+            songListPanel.add(songListView);
+        }
 	}
+
+    private Map<Integer, ArrayList<SongDto>> splitIntoDiscs(ArrayList<SongDto> aSongs) {
+        Map<Integer, ArrayList<SongDto>> result = new HashMap<Integer, ArrayList<SongDto>>();
+
+        for (SongDto song : aSongs) {
+            if (result.get(song.getDiscNumber()) == null) {
+                result.put(song.getDiscNumber(), new ArrayList<SongDto>());
+            }
+
+            result.get(song.getDiscNumber()).add(song);
+        }
+
+        return result;
+    }
 }
