@@ -128,6 +128,8 @@ public class AlbumView extends Composite {
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
 
+        songListPanel.clear();
+
         Map<Integer, ArrayList<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
 
         for (Map.Entry<Integer, ArrayList<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
