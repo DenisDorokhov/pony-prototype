@@ -81,7 +81,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 			"INNER JOIN FETCH s.file " +
 			"INNER JOIN FETCH s.album a " +
 			"INNER JOIN FETCH a.artist " +
-			"WHERE s.id = ?1")
+			"WHERE s.file.id = ?1")
 	public Song findByFileId(Integer aSongFileId);
 
 	/**
