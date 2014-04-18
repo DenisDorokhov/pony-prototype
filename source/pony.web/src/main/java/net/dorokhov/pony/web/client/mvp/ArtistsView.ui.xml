@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:SplitLayoutPanel>
+		<g:west size="250">
+			<g:SimpleLayoutPanel ui:field="artistListContainer" />
+		</g:west>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="albumListContainer" />
+		</g:center>
+	</g:SplitLayoutPanel>
+
+</ui:UiBinder>

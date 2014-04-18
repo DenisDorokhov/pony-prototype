@@ -1,0 +1,28 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:DeckLayoutPanel ui:field="deck">
+
+		<g:Label ui:field="loadingLabel" text="Loading..." />
+
+		<g:Label ui:field="errorLabel" text="Error!" />
+
+		<g:DockLayoutPanel ui:field="content">
+
+			<g:north size="50">
+				<g:HTMLPanel>
+					<h1><g:Label ui:field="artistNameLabel" /></h1>
+				</g:HTMLPanel>
+			</g:north>
+
+			<g:center>
+				<g:ScrollPanel>
+					<g:VerticalPanel ui:field="albumsPanel" width="100%" />
+				</g:ScrollPanel>
+			</g:center>
+
+		</g:DockLayoutPanel>
+
+	</g:DeckLayoutPanel>
+
+</ui:UiBinder>

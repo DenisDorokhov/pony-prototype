@@ -1,0 +1,17 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+
+	<g:DeckLayoutPanel ui:field="deck">
+
+		<g:Label ui:field="loadingLabel" text="Loading..." />
+
+		<g:Label ui:field="errorLabel" text="Error!" />
+
+		<g:ScrollPanel ui:field="scroller">
+			<c:CellList ui:field="list" />
+		</g:ScrollPanel>
+
+	</g:DeckLayoutPanel>
+
+</ui:UiBinder>
