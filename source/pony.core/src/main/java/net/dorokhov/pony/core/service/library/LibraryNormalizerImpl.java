@@ -353,6 +353,8 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 					if (albumsWithArtwork.size() > 0) {
 
+						Collections.sort(albumsWithArtwork);
+
 						Album album = albumsWithArtwork.get((int)Math.floor(albumsWithArtwork.size() / 2.0));
 
 						artist.setArtwork(album.getArtwork());
