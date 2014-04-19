@@ -39,7 +39,7 @@ public class PlayListImpl implements PlayList {
 		}
 
 		if (currentSong != null) {
-			log.info("playlist switched to song " + currentSong);
+			log.fine("playlist switched to song " + currentSong);
 		}
 
 		aCallback.onSuccess(currentSong);

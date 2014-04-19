@@ -124,6 +124,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 					if (aResult != null) {
 						getView().play();
+					} else {
+						log.fine("end of playlist");
 					}
 				}
 
