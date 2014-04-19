@@ -32,7 +32,7 @@ public class InstallationController {
 		}
 
 		String redirectPath = "/";
-		if (aRequest.getQueryString().length() > 0) {
+		if (aRequest.getQueryString() != null) {
 			redirectPath += "?" + aRequest.getQueryString();
 		}
 		

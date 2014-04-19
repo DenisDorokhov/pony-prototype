@@ -146,7 +146,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 				log.warning("could not find artist [" + aArtist + "]");
 			}
 
-			if (artistToSelect == null) {
+			if (getView().getSelectedArtist() == null) {
 				getView().setSelectedArtist(artists.get(0));
 			}
 		}

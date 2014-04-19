@@ -2,8 +2,9 @@ package net.dorokhov.pony.core.service.library;
 
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
+import net.dorokhov.pony.core.service.LibraryNormalizer;
 import net.dorokhov.pony.core.service.LibraryScanner;
-import net.dorokhov.pony.core.service.LibraryService;
+import net.dorokhov.pony.core.service.LibraryImporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,18 @@ public class LibraryScannerImpl implements LibraryScanner {
 	private final AtomicReference<ExecutorService> executorServiceReference = new AtomicReference<ExecutorService>();
 	private final AtomicLong processedFilesCountReference = new AtomicLong();
 
-	private LibraryService libraryService;
+	private LibraryImporter libraryImporter;
+
+	private LibraryNormalizer libraryNormalizer;
 
 	@Autowired
-	public void setLibraryService(LibraryService aLibraryService) {
-		libraryService = aLibraryService;
+	public void setLibraryImporter(LibraryImporter aLibraryImporter) {
+		libraryImporter = aLibraryImporter;
+	}
+
+	@Autowired
+	public void setLibraryNormalizer(LibraryNormalizer aLibraryNormalizer) {
+		libraryNormalizer = aLibraryNormalizer;
 	}
 
 	@Override
@@ -191,7 +199,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 
 		log.info("normalizing songs...");
-		libraryService.normalizeSongs(aTargetFiles, new LibraryService.ProgressHandler() {
+		libraryNormalizer.normalizeSongs(aTargetFiles, new LibraryNormalizer.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingSongs", aProgress, 3));
@@ -199,7 +207,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		});
 
 		log.info("normalizing stored files...");
-		libraryService.normalizeStoredFiles(new LibraryService.ProgressHandler() {
+		libraryNormalizer.normalizeStoredFiles(new LibraryNormalizer.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingStoredFiles", aProgress, 4));
@@ -207,7 +215,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		});
 
 		log.info("normalizing albums...");
-		libraryService.normalizeAlbums(new LibraryService.ProgressHandler() {
+		libraryNormalizer.normalizeAlbums(new LibraryNormalizer.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingAlbums", aProgress, 5));
@@ -215,7 +223,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		});
 
 		log.info("normalizing artists...");
-		libraryService.normalizeArtists(new LibraryService.ProgressHandler() {
+		libraryNormalizer.normalizeArtists(new LibraryNormalizer.ProgressHandler() {
 			@Override
 			public void handleProgress(double aProgress) {
 				statusReference.set(new LibraryScannerStatus(aTargetFiles, "normalizingArtists", aProgress, 6));
@@ -371,7 +379,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			SongFile songFile = null;
 
 			try {
-				songFile = libraryService.importSong(file);
+				songFile = libraryImporter.importSong(file);
 			} catch (Exception e) {}
 
 			if (songFile != null) {

@@ -1,30 +1,14 @@
 package net.dorokhov.pony.core.service;
 
-import net.dorokhov.pony.core.domain.SongFile;
-
 import java.io.File;
 import java.util.List;
 
 /**
- * Library service.
+ * Library normalization service.
  *
- * Operations are supposed to be called in the following order:
- *
- * 1) Import song files. It will save song entities for a song in the file system.
- * 2) Normalize song files. It will validate song entities.
- * 3) Normalize stored files. It will validate stored file entities.
- * 4) Normalize albums. It will validate album entities.
- * 5) Normalize artists. It will validate artist entities.
+ * Validates library entities and fixes data inconsistencies.
  */
-public interface LibraryService {
-
-	/**
-	 * Imports song files creating new song entities and updating existing.
-	 *
-	 * @param aFile song file to import
-	 * @return imported song file
-	 */
-	public SongFile importSong(File aFile);
+public interface LibraryNormalizer {
 
 	/**
 	 * Normalizes song files.
