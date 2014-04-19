@@ -42,8 +42,8 @@ public class ApplicationModule extends AbstractPresenterModule {
 		bindSingletonPresenterWidget(ArtistListPresenter.class, ArtistListPresenter.MyView.class, ArtistListView.class);
 		bindSingletonPresenterWidget(AlbumListPresenter.class, AlbumListPresenter.MyView.class, AlbumListView.class);
 
-		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.TOKEN_ARTISTS);
-		bindConstant().annotatedWith(ErrorPlace.class).to(NameTokens.TOKEN_ARTISTS);
-		bindConstant().annotatedWith(UnauthorizedPlace.class).to(NameTokens.TOKEN_ARTISTS);
+		bindConstant().annotatedWith(DefaultPlace.class).to(PlaceTokens.TOKEN_ARTISTS);
+		bindConstant().annotatedWith(ErrorPlace.class).to(PlaceTokens.TOKEN_ARTISTS);
+		bindConstant().annotatedWith(UnauthorizedPlace.class).to(PlaceTokens.TOKEN_ARTISTS);
 	}
 }

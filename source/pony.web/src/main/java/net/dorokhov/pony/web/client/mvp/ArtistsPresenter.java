@@ -6,16 +6,20 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
-import net.dorokhov.pony.web.client.NameTokens;
+import net.dorokhov.pony.web.client.PlaceTokens;
+import net.dorokhov.pony.web.client.common.StringUtils;
+import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.mvp.artist.AlbumListPresenter;
 import net.dorokhov.pony.web.client.mvp.artist.ArtistListPresenter;
+import net.dorokhov.pony.web.shared.ArtistDto;
 
-public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, ArtistsPresenter.MyProxy> {
+public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, ArtistsPresenter.MyProxy> implements ArtistEvent.Handler {
 
 	@ProxyStandard
-	@NameToken(NameTokens.TOKEN_ARTISTS)
+	@NameToken(PlaceTokens.TOKEN_ARTISTS)
 	public interface MyProxy extends ProxyPlace<ArtistsPresenter> {}
 
 	public interface MyView extends View {}
@@ -23,14 +27,18 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 	public static final Object SLOT_ARTISTS = new Object();
 	public static final Object SLOT_ALBUMS = new Object();
 
+	private final PlaceManager placeManager;
+
 	private final ArtistListPresenter artistListPresenter;
 	private final AlbumListPresenter albumListPresenter;
 
 	@Inject
-	public ArtistsPresenter(EventBus aEventBus, MyView aView, MyProxy aProxy,
+	public ArtistsPresenter(EventBus aEventBus, MyView aView, MyProxy aProxy, PlaceManager aPlaceManager,
 							ArtistListPresenter aArtistListPresenter, AlbumListPresenter aAlbumListPresenter) {
 
 		super(aEventBus, aView, aProxy, ApplicationPresenter.SLOT_CONTENT);
+
+		placeManager = aPlaceManager;
 
 		artistListPresenter = aArtistListPresenter;
 		albumListPresenter = aAlbumListPresenter;
@@ -43,6 +51,8 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 
 		setInSlot(SLOT_ARTISTS, artistListPresenter);
 		setInSlot(SLOT_ALBUMS, albumListPresenter);
+
+		addRegisteredHandler(ArtistEvent.SELECTION, this);
 	}
 
 	@Override
@@ -50,13 +60,42 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 
 		super.prepareFromRequest(aRequest);
 
-		artistListPresenter.selectArtist(aRequest.getParameter(NameTokens.PARAM_ARTIST, null));
-
-		albumListPresenter.loadArtist(artistListPresenter.getSelectedArtist());
+		artistListPresenter.selectArtist(aRequest.getParameter(PlaceTokens.PARAM_ARTIST, null));
 	}
 
 	@Override
 	protected void revealInParent() {
 		super.revealInParent();
+	}
+
+	@Override
+	public void onArtistEvent(ArtistEvent aEvent) {
+
+		albumListPresenter.loadArtist(aEvent.getArtist());
+
+		goToArtist(aEvent.getArtist());
+	}
+
+	private void goToArtist(ArtistDto aArtist) {
+
+		String artistName = aArtist != null ? aArtist.getName() : null;
+
+		PlaceRequest currentPlaceRequest = placeManager.getCurrentPlaceRequest();
+
+		boolean nameTokenChanged = !StringUtils.nullSafeNormalizedEquals(
+				currentPlaceRequest.getNameToken(), PlaceTokens.TOKEN_ARTISTS);
+		boolean artistChanged = !StringUtils.nullSafeNormalizedEquals(
+				currentPlaceRequest.getParameter(PlaceTokens.PARAM_ARTIST, null), artistName);
+
+		if (nameTokenChanged || artistChanged) {
+
+			PlaceRequest.Builder builder = new PlaceRequest.Builder().nameToken(PlaceTokens.TOKEN_ARTISTS);
+
+			if (artistName != null) {
+				builder.with(PlaceTokens.PARAM_ARTIST, artistName.trim().toLowerCase());
+			}
+
+			placeManager.revealPlace(builder.build());
+		}
 	}
 }

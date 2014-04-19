@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.client;
 
-public class NameTokens {
+public class PlaceTokens {
 
 	public static final String TOKEN_ARTISTS = "artists";
 

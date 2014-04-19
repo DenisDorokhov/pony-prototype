@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.common.TimeUtils;
+import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -29,9 +29,9 @@ public class AlbumView extends Composite {
 
 	public interface Delegate {
 
-		public void onSongSelected(SongDto aSong);
+		public void onSongSelection(SongDto aSong);
 
-		public void onSongActivated(SongDto aSong);
+		public void onSongPlaybackRequest(SongDto aSong);
 
 	}
 
@@ -105,7 +105,7 @@ public class AlbumView extends Composite {
 		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
 			@Override
 			public String getValue(SongDto aSong) {
-				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
+				return aSong.getDuration() != null ? StringUtils.secondsToMinutes(aSong.getDuration()) : null;
 			}
 		};
 
@@ -122,7 +122,7 @@ public class AlbumView extends Composite {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				if (getDelegate() != null) {
-					getDelegate().onSongSelected(selectionModel.getSelectedObject());
+					getDelegate().onSongSelection(selectionModel.getSelectedObject());
 				}
 			}
 		});
@@ -135,7 +135,7 @@ public class AlbumView extends Composite {
 				SongDto song = selectionModel.getSelectedObject();
 
 				if (song != null && getDelegate() != null) {
-					getDelegate().onSongActivated(song);
+					getDelegate().onSongPlaybackRequest(song);
 				}
 			}
 		}, DoubleClickEvent.getType());

@@ -1,12 +1,10 @@
 package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.DeckLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -17,7 +15,9 @@ import java.util.List;
 
 public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, AlbumView.Delegate {
 
-	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
+	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {
+
+	}
 
 	private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
@@ -35,6 +35,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	@UiField
 	Label artistNameLabel;
+
+	@UiField
+	ScrollPanel scroller;
 
 	@UiField
 	VerticalPanel albumsPanel;
@@ -89,13 +92,13 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public void onSongSelected(SongDto aSong) {
-		getUiHandlers().onSongSelected(aSong);
+	public void onSongSelection(SongDto aSong) {
+		getUiHandlers().onSongSelection(aSong);
 	}
 
 	@Override
-	public void onSongActivated(SongDto aSong) {
-		getUiHandlers().onSongActivated(aSong);
+	public void onSongPlaybackRequest(SongDto aSong) {
+		getUiHandlers().onSongActivation(aSong);
 	}
 
 	private void updateArtist() {
@@ -128,7 +131,16 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 				break;
 
 			case LOADED:
+
 				deck.showWidget(content);
+
+				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+					@Override
+					public void execute() {
+						scroller.scrollToTop();
+					}
+				});
+
 				break;
 
 			default:

@@ -11,7 +11,7 @@ import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
+import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
@@ -104,15 +104,18 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	}
 
 	@Override
-	public void onSongSelected(SongDto aSong) {
+	public void onSongSelection(SongDto aSong) {
+
 		log.fine("song " + aSong + " selected");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.SELECTION, aSong));
 	}
 
 	@Override
-	public void onSongActivated(SongDto aSong) {
+	public void onSongActivation(SongDto aSong) {
 
-		log.fine("song " + aSong + " activated");
+		log.fine("song " + aSong + " playback requested");
 
-		getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, aSong));
+		getEventBus().fireEvent(new SongEvent(SongEvent.PLAYBACK_REQUESTED, aSong));
 	}
 }

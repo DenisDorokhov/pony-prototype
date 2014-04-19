@@ -8,11 +8,9 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
-import net.dorokhov.pony.web.client.NameTokens;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
+import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
@@ -38,8 +36,6 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private final PlaceManager placeManager;
-
 	private final ArtistServiceAsync artistService;
 
 	private final HashMap<String, ArtistDto> artistMap = new HashMap<String, ArtistDto>();
@@ -49,18 +45,13 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 	private Request currentRequest;
 
 	@Inject
-	public ArtistListPresenter(EventBus aEventBus, MyView aView, PlaceManager aPlaceManager, ArtistServiceAsync aArtistService) {
+	public ArtistListPresenter(EventBus aEventBus, MyView aView, ArtistServiceAsync aArtistService) {
 
 		super(aEventBus, aView);
 
-		placeManager = aPlaceManager;
 		artistService = aArtistService;
 
 		getView().setUiHandlers(this);
-	}
-
-	public ArtistDto getSelectedArtist() {
-		return getView().getSelectedArtist();
 	}
 
 	public void selectArtist(String aArtist) {
@@ -120,7 +111,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 	@Override
 	public void onArtistSelection(ArtistDto aArtist) {
-		goToArtist(aArtist);
+		getEventBus().fireEvent(new ArtistEvent(ArtistEvent.SELECTION, aArtist));
 	}
 
 	private void doUpdateArtists(List<ArtistDto> aArtists) {
@@ -132,7 +123,6 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 				artistMap.put(artist.getName().trim().toLowerCase(), artist);
 			}
 		}
-		// Identifier has higher priority, name keys must be rewritten
 		for (ArtistDto artist : aArtists) {
 			if (artist.getId() != null) {
 				artistMap.put(artist.getId().toString(), artist);
@@ -156,8 +146,8 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 				log.warning("could not find artist [" + aArtist + "]");
 			}
 
-			if (getView().getSelectedArtist() == null) {
-				goToArtist(artists.get(0));
+			if (artistToSelect == null) {
+				getView().setSelectedArtist(artists.get(0));
 			}
 		}
 	}
@@ -172,16 +162,5 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 		}
 
 		return null;
-	}
-
-	private void goToArtist(ArtistDto aArtist) {
-
-		PlaceRequest.Builder builder = new PlaceRequest.Builder().nameToken(NameTokens.TOKEN_ARTISTS);
-
-		if (aArtist != null && aArtist.getName() != null) {
-			builder.with(NameTokens.PARAM_ARTIST, aArtist.getName().trim().toLowerCase());
-		}
-
-		placeManager.revealPlace(builder.build());
 	}
 }

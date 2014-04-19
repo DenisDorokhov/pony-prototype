@@ -5,12 +5,12 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
-import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
+import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.logging.Logger;
 
-public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> implements PlayerUiHandlers, SongPlaybackEvent.Handler {
+public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> implements PlayerUiHandlers, SongEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<PlayerUiHandlers> {
 
@@ -52,22 +52,31 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		super.onBind();
 
-		addRegisteredHandler(SongPlaybackEvent.PLAYBACK_REQUESTED, this);
+		addRegisteredHandler(SongEvent.PLAYBACK_REQUESTED, this);
 	}
 
 	@Override
 	public void onStart() {
-		log.fine("playback started [" + getView().getSong() + "]");
+
+		log.fine("song " + getView().getSong() + " playback started");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.PLAYBACK_STARTED, getView().getSong()));
 	}
 
 	@Override
 	public void onPause() {
-		log.fine("playback paused [" + getView().getSong() + "]");
+
+		log.fine("song " + getView().getSong() + " playback paused");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.PLAYBACK_PAUSED, getView().getSong()));
 	}
 
 	@Override
 	public void onEnd() {
-		log.fine("playback ended [" + getView().getSong() + "]");
+
+		log.fine("song " + getView().getSong() + " playback ended");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.PLAYBACK_ENDED, getView().getSong()));
 	}
 
 	@Override
@@ -77,7 +86,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public void onVolumeChange() {}
 
 	@Override
-	public void onSongPlayback(SongPlaybackEvent aEvent) {
+	public void onSongEvent(SongEvent aEvent) {
 
 		getView().setSong(aEvent.getSong());
 
