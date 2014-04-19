@@ -4,7 +4,7 @@
 
 	<ui:style>
 		.rootContainer {
-			min-width: 600px;
+			min-width: 825px;
 			min-height: 400px;
 		}
 	</ui:style>

@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.ioc;
+package net.dorokhov.pony.web.client;
 
 import com.google.inject.Singleton;
 import com.gwtplatform.mvp.client.annotations.DefaultPlace;
@@ -7,7 +7,6 @@ import com.gwtplatform.mvp.client.annotations.UnauthorizedPlace;
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
 import com.gwtplatform.mvp.client.gin.DefaultModule;
 import com.gwtplatform.mvp.client.proxy.DefaultPlaceManager;
-import net.dorokhov.pony.web.client.NameTokens;
 import net.dorokhov.pony.web.client.mvp.ApplicationPresenter;
 import net.dorokhov.pony.web.client.mvp.ApplicationView;
 import net.dorokhov.pony.web.client.mvp.ArtistsPresenter;
@@ -19,7 +18,7 @@ import net.dorokhov.pony.web.client.mvp.artist.ArtistListView;
 import net.dorokhov.pony.web.client.mvp.common.*;
 import net.dorokhov.pony.web.client.service.*;
 
-public class ClientModule extends AbstractPresenterModule {
+public class ApplicationModule extends AbstractPresenterModule {
 
 	@Override
 	protected void configure() {

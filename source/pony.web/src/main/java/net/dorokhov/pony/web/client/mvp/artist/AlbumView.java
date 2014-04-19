@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import net.dorokhov.pony.web.client.common.StringUtils;
+import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.TimeUtils;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -93,7 +93,7 @@ public class AlbumView extends Composite {
 		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
 			@Override
 			public String getValue(SongDto aSong) {
-				return StringUtils.nullSafeToString(aSong.getTrackNumber());
+				return ObjectUtils.nullSafeToString(aSong.getTrackNumber());
 			}
 		};
 		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
@@ -151,7 +151,7 @@ public class AlbumView extends Composite {
 		albumImage.setUrl(imageUrl);
 
 		albumNameLabel.setText(album != null ? album.getName() : null);
-		albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
+		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);
 
 		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
 	}

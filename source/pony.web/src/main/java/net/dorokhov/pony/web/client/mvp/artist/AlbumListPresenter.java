@@ -10,6 +10,7 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
+import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -53,49 +54,52 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	public void loadArtist(ArtistDto aArtist) {
 
-		getView().setArtist(aArtist);
+		if (!ObjectUtils.nullSafeEquals(getView().getArtist(), aArtist)) {
 
-		log.fine("updating albums of artist " + aArtist + "...");
+			getView().setArtist(aArtist);
 
-		getView().setContentState(ContentState.LOADING);
+			log.fine("updating albums of artist " + aArtist + "...");
 
-		if (currentRequest != null) {
+			getView().setContentState(ContentState.LOADING);
 
-			currentRequest.cancel();
+			if (currentRequest != null) {
 
-			log.fine("active albums request cancelled");
-		}
+				currentRequest.cancel();
 
-		if (aArtist != null && aArtist.getId() != null) {
+				log.fine("active albums request cancelled");
+			}
 
-			currentRequest = albumService.getByArtist(aArtist.getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
+			if (aArtist != null && aArtist.getId() != null) {
 
-				@Override
-				public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
+				currentRequest = albumService.getByArtist(aArtist.getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
 
-					currentRequest = null;
+					@Override
+					public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
 
-					getView().setAlbums(aResult);
-					getView().setContentState(ContentState.LOADED);
+						currentRequest = null;
 
-					log.fine("albums updated");
-				}
+						getView().setAlbums(aResult);
+						getView().setContentState(ContentState.LOADED);
 
-				@Override
-				public void onFailure(Throwable aCaught) {
+						log.fine("albums updated");
+					}
 
-					currentRequest = null;
+					@Override
+					public void onFailure(Throwable aCaught) {
 
-					getView().setContentState(ContentState.ERROR);
+						currentRequest = null;
 
-					log.log(Level.SEVERE, "could not update albums", aCaught);
+						getView().setContentState(ContentState.ERROR);
 
-					Window.alert(aCaught.getMessage());
-				}
-			});
+						log.log(Level.SEVERE, "could not update albums", aCaught);
 
-		} else {
-			log.fine("albums cleared");
+						Window.alert(aCaught.getMessage());
+					}
+				});
+
+			} else {
+				log.fine("albums cleared");
+			}
 		}
 	}
 

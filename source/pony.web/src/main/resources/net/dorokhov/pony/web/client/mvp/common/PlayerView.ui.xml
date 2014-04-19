@@ -5,9 +5,16 @@
 	<ui:with field="playerId" type="java.lang.String" />
 	<ui:with field="containerId" type="java.lang.String" />
 
-	<g:SimplePanel ui:field="rootPanel">
+	<ui:style>
+		.htmlPanel {
+			width: 420px;
+			margin: 0 auto;
+		}
+	</ui:style>
 
-		<g:HTMLPanel>
+	<g:SimpleLayoutPanel ui:field="rootPanel">
+
+		<g:HTMLPanel styleName="{style.htmlPanel}">
 
 			<div id="{playerId}" class="jp-jplayer" />
 
@@ -53,6 +60,6 @@
 
 		</g:HTMLPanel>
 
-	</g:SimplePanel>
+	</g:SimpleLayoutPanel>
 
 </ui:UiBinder>

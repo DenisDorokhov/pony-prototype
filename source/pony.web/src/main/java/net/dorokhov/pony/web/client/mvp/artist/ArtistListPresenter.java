@@ -129,7 +129,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		for (ArtistDto artist : aArtists) {
 			if (artist.getName() != null) {
-				artistMap.put(artist.getName().toLowerCase(), artist);
+				artistMap.put(artist.getName().trim().toLowerCase(), artist);
 			}
 		}
 		// Identifier has higher priority, name keys must be rewritten
@@ -166,7 +166,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		if (aArtist != null) {
 
-			String artistName = aArtist.toLowerCase();
+			String artistName = aArtist.trim().toLowerCase();
 
 			return artistMap.get(artistName);
 		}
@@ -178,8 +178,8 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		PlaceRequest.Builder builder = new PlaceRequest.Builder().nameToken(NameTokens.TOKEN_ARTISTS);
 
-		if (aArtist != null) {
-			builder.with(NameTokens.PARAM_ARTIST, aArtist.getName());
+		if (aArtist != null && aArtist.getName() != null) {
+			builder.with(NameTokens.PARAM_ARTIST, aArtist.getName().trim().toLowerCase());
 		}
 
 		placeManager.revealPlace(builder.build());
