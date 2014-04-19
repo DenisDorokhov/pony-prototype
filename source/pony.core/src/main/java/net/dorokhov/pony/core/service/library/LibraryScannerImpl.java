@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.service.impl;
+package net.dorokhov.pony.core.service.library;
 
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;

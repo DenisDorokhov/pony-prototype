@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.service.impl;
+package net.dorokhov.pony.core.service.common;
 
 import net.dorokhov.pony.core.service.ExternalArtworkService;
 import org.apache.commons.io.FilenameUtils;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,6 +100,9 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 			}
 
 			if (artwork == null && allowedFiles.length > 0) {
+
+				Arrays.sort(allowedFiles);
+
 				artwork = allowedFiles[0];
 			}
 		}

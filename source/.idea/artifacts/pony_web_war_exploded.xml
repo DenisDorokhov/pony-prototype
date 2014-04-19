@@ -80,6 +80,7 @@
           <element id="library" level="project" name="Maven: javax.el:el-api:2.2" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.28" />
           <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
+          <element id="library" level="project" name="Maven: org.imgscalr:imgscalr-lib:4.2" />
           <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.6.0" />
           <element id="library" level="project" name="Maven: com.google.gwt.inject:gin:2.1.2" />
           <element id="library" level="project" name="Maven: com.google.inject:guice:3.0" />

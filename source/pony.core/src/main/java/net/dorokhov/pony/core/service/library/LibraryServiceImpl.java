@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.service.impl;
+package net.dorokhov.pony.core.service.library;
 
 import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.*;
@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -55,6 +55,11 @@ public class LibraryServiceImpl implements LibraryService {
 	private ChecksumService checksumService;
 
 	private MimeTypeService mimeTypeService;
+
+	private ImageScalingService imageScalingService;
+
+	private int artworkWidth = -1;
+	private int artworkHeight = -1;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -104,6 +109,32 @@ public class LibraryServiceImpl implements LibraryService {
 	@Autowired
 	public void setMimeTypeService(MimeTypeService aMimeTypeService) {
 		mimeTypeService = aMimeTypeService;
+	}
+
+	@Autowired
+	public void setImageScalingService(ImageScalingService aImageScalingService) {
+		imageScalingService = aImageScalingService;
+	}
+
+	@Value("${library.artworkSize}")
+	public void setArtworkSize(String aArtworkSize) {
+
+		String[] stringDimensions = aArtworkSize.split(",");
+
+		if (stringDimensions.length == 2) {
+
+			Integer[] dimensions = new Integer[2];
+
+			for (int i = 0; i < stringDimensions.length; i++) {
+				dimensions[i] = Integer.valueOf(stringDimensions[i].trim());
+			}
+
+			artworkWidth = dimensions[0];
+			artworkHeight = dimensions[1];
+
+		} else {
+			throw new RuntimeException("Incorrect artwork size value [" + aArtworkSize + "]");
+		}
 	}
 
 	@Override
@@ -658,13 +689,19 @@ public class LibraryServiceImpl implements LibraryService {
 		return new EntityModification<Song>(song, shouldSave);
 	}
 
-	private StorageTask songDataToArtworkStorageTask(SongData aSongData) throws IOException {
+	private StorageTask songDataToArtworkStorageTask(SongData aSongData) throws Exception {
 
-		File createdFile = new File(FileUtils.getTempDirectory(), "pony.artwork." + UUID.randomUUID() + ".tmp");
+		File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_INTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-		FileUtils.writeByteArrayToFile(createdFile, aSongData.getArtwork().getBinaryData());
+		if (artworkWidth > 0 && artworkHeight > 0) {
+			imageScalingService.scaleImage(aSongData.getArtwork().getBinaryData(),
+					mimeTypeService.getFileExtension(aSongData.getArtwork().getMimeType()),
+					file, artworkWidth, artworkHeight);
+		} else {
+			FileUtils.writeByteArrayToFile(file, aSongData.getArtwork().getBinaryData());
+		}
 
-		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, createdFile);
+		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
 
 		storageTask.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
 		storageTask.setMimeType(aSongData.getArtwork().getMimeType());
@@ -674,7 +711,7 @@ public class LibraryServiceImpl implements LibraryService {
 		return storageTask;
 	}
 
-	private void fetchAlbumArtwork(Album aAlbum) throws IOException {
+	private void fetchAlbumArtwork(Album aAlbum) throws Exception {
 
 		List<Song> songList = aAlbum.getSongs();
 
@@ -715,7 +752,7 @@ public class LibraryServiceImpl implements LibraryService {
 		}
 	}
 
-	private void fetchAlbumArtwork(Album aAlbum, Song aSong, File aFolder) throws IOException {
+	private void fetchAlbumArtwork(Album aAlbum, Song aSong, File aFolder) throws Exception {
 
 		File artworkFile = externalArtworkService.fetchArtwork(aFolder);
 
@@ -731,7 +768,19 @@ public class LibraryServiceImpl implements LibraryService {
 
 				if (mimeType != null) {
 
-					StorageTask storageTask = new StorageTask(StorageTask.Type.COPY, artworkFile);
+					StorageTask storageTask;
+
+					if (artworkWidth > 0 && artworkHeight > 0) {
+
+						File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_EXTERNAL + "." + UUID.randomUUID() + ".tmp");
+
+						imageScalingService.scaleImage(artworkFile, mimeTypeService.getFileExtension(mimeType), file, artworkWidth, artworkHeight);
+
+						storageTask = new StorageTask(StorageTask.Type.MOVE, file);
+
+					} else {
+						storageTask = new StorageTask(StorageTask.Type.COPY, artworkFile);
+					}
 
 					storageTask.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
 					storageTask.setMimeType(mimeType);

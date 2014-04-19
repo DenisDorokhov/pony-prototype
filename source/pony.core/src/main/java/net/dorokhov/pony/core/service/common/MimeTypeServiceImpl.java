@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.service.impl;
+package net.dorokhov.pony.core.service.common;
 
 import net.dorokhov.pony.core.service.MimeTypeService;
 import org.springframework.stereotype.Service;

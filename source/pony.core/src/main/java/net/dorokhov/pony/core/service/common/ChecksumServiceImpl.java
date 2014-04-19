@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.service.impl;
+package net.dorokhov.pony.core.service.common;
 
 import net.dorokhov.pony.core.service.ChecksumService;
 import org.apache.commons.codec.digest.DigestUtils;
