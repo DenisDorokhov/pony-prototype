@@ -1,5 +1,6 @@
 package net.dorokhov.pony.web.client.mvp.common;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -7,7 +8,6 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.playlist.PlayList;
@@ -16,7 +16,7 @@ import net.dorokhov.pony.web.shared.SongDto;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> implements PlayerUiHandlers, PlayListEvent.Handler {
+public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> implements PlayerUiHandlers, PlayListEvent.Handler, Window.ClosingHandler {
 
 	public interface MyView extends View, HasUiHandlers<PlayerUiHandlers> {
 
@@ -45,16 +45,14 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private final PlaceManager placeManager;
-
 	private PlayList playList;
 
+	private HandlerRegistration closingWindowRegistration;
+
 	@Inject
-	public PlayerPresenter(EventBus aEventBus, MyView aView, PlaceManager aPlaceManager) {
+	public PlayerPresenter(EventBus aEventBus, MyView aView) {
 
 		super(aEventBus, aView);
-
-		placeManager = aPlaceManager;
 
 		getView().setUiHandlers(this);
 	}
@@ -68,11 +66,25 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	}
 
 	@Override
+	protected void onReveal() {
+
+		super.onReveal();
+
+		closingWindowRegistration = Window.addWindowClosingHandler(this);
+	}
+
+	@Override
+	protected void onHide() {
+
+		super.onHide();
+
+		closingWindowRegistration.removeHandler();
+	}
+
+	@Override
 	public void onPlay() {
 
 		log.fine("song " + getView().getSong() + " playback started");
-
-		placeManager.setOnLeaveConfirmation("Playback will be stopped!");
 
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_STARTED, getView().getSong()));
 	}
@@ -81,8 +93,6 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public void onPause() {
 
 		log.fine("song " + getView().getSong() + " playback paused");
-
-		placeManager.setOnLeaveConfirmation(null);
 
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_PAUSED, getView().getSong()));
 	}
@@ -109,6 +119,13 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		playList = aEvent.getPlayList();
 
 		startNextSong();
+	}
+
+	@Override
+	public void onWindowClosing(Window.ClosingEvent aEvent) {
+		if (getView().getState() == MyView.State.PLAYING) {
+			aEvent.setMessage("Playback will be stopped!");
+		}
 	}
 
 	private void startNextSong() {
