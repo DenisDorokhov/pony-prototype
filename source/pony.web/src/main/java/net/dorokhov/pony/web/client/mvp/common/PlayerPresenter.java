@@ -7,6 +7,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.playlist.PlayList;
@@ -44,12 +45,16 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
+	private final PlaceManager placeManager;
+
 	private PlayList playList;
 
 	@Inject
-	public PlayerPresenter(EventBus aEventBus, MyView aView) {
+	public PlayerPresenter(EventBus aEventBus, MyView aView, PlaceManager aPlaceManager) {
 
 		super(aEventBus, aView);
+
+		placeManager = aPlaceManager;
 
 		getView().setUiHandlers(this);
 	}
@@ -67,6 +72,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		log.fine("song " + getView().getSong() + " playback started");
 
+		placeManager.setOnLeaveConfirmation("Playback will be stopped!");
+
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_STARTED, getView().getSong()));
 	}
 
@@ -74,6 +81,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public void onPause() {
 
 		log.fine("song " + getView().getSong() + " playback paused");
+
+		placeManager.setOnLeaveConfirmation(null);
 
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_PAUSED, getView().getSong()));
 	}
