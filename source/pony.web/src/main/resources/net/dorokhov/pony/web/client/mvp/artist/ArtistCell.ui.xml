@@ -3,6 +3,6 @@
 	<ui:with field="artist" type="net.dorokhov.pony.web.shared.ArtistDto" />
 	<ui:with field="artworkUrl" type="java.lang.String" />
 
-	<span><img src="{artworkUrl}" width="30" height="30" /><ui:text from="{artist.getName}" /></span>
+	<span><img src="{artworkUrl}" width="40" height="40" /><ui:text from="{artist.getName}" /></span>
 
 </ui:UiBinder>

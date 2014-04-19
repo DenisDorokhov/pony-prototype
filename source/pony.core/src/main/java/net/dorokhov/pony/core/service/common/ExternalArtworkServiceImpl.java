@@ -80,7 +80,7 @@ public class ExternalArtworkServiceImpl implements ExternalArtworkService {
 
 				String extension = FilenameUtils.getExtension(aFile.getName()).toLowerCase();
 
-				return externalArtworkExtensions.contains(extension);
+				return !aFile.getName().startsWith(".") && externalArtworkExtensions.contains(extension);
 			}
 		});
 

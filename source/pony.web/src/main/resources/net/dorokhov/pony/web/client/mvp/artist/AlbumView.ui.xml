@@ -4,8 +4,8 @@
 
 	<ui:style type="net.dorokhov.pony.web.client.mvp.artist.AlbumView.AlbumViewStyle">
 		.albumImage {
-			max-width: 100px;
-			max-height: 100px;
+			max-width: 140px;
+			max-height: 140px;
 		}
 		.nameContainer {
 			max-width: 800px;
@@ -24,7 +24,7 @@
 	</ui:style>
 
 	<g:HorizontalPanel width="100%">
-		<g:cell width="100px">
+		<g:cell width="140px">
 			<g:Image ui:field="albumImage" styleName="{style.albumImage}" />
 		</g:cell>
 		<g:cell>
