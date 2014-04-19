@@ -35,7 +35,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		public void setSong(SongDto aSong);
 
-		public void start();
+		public void play();
 		public void pause();
 
 		public State getState();
@@ -63,7 +63,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	}
 
 	@Override
-	public void onStart() {
+	public void onPlay() {
 
 		log.fine("song " + getView().getSong() + " playback started");
 
@@ -113,7 +113,9 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 					getView().setSong(aResult);
 
-					getView().start();
+					if (aResult != null) {
+						getView().play();
+					}
 				}
 
 				@Override

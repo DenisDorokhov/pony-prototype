@@ -107,8 +107,8 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}
 
 	@Override
-	public void start() {
-		doStart(PLAYER_ID);
+	public void play() {
+		doPlay(PLAYER_ID);
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		$wnd.$("#" + aPlayerId).jPlayer("play", aPosition);
 	}-*/;
 
-	public native void doStart(String aPlayerId) /*-{
+	public native void doPlay(String aPlayerId) /*-{
 		$wnd.$("#" + aPlayerId).jPlayer("play");
 	}-*/;
 
@@ -196,7 +196,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		state = State.PLAYING;
 
-		getUiHandlers().onStart();
+		getUiHandlers().onPlay();
 	}
 
 	private void onPause() {

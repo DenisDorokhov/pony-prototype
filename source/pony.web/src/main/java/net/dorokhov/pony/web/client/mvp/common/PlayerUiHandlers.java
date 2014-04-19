@@ -4,7 +4,7 @@ import com.gwtplatform.mvp.client.UiHandlers;
 
 public interface PlayerUiHandlers extends UiHandlers {
 
-	public void onStart();
+	public void onPlay();
 	public void onPause();
 	public void onEnd();
 
