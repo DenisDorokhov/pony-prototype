@@ -111,7 +111,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 	@Override
 	public void onArtistSelection(ArtistDto aArtist) {
-		getEventBus().fireEvent(new ArtistEvent(ArtistEvent.SELECTION, aArtist));
+		getEventBus().fireEvent(new ArtistEvent(ArtistEvent.ARTIST_SELECTED, aArtist));
 	}
 
 	private void doUpdateArtists(List<ArtistDto> aArtists) {

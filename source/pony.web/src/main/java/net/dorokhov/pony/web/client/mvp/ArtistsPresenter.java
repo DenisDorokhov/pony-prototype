@@ -53,7 +53,7 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 		setInSlot(SLOT_ARTISTS, artistListPresenter);
 		setInSlot(SLOT_ALBUMS, albumListPresenter);
 
-		addRegisteredHandler(ArtistEvent.SELECTION, this);
+		addRegisteredHandler(ArtistEvent.ARTIST_SELECTED, this);
 	}
 
 	@Override

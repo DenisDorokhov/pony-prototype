@@ -10,7 +10,7 @@ public class ArtistEvent extends AbstractEvent<ArtistEvent.Handler> {
 		public void onArtistEvent(ArtistEvent aEvent);
 	}
 
-	public static final Type<Handler> SELECTION = new Type<Handler>();
+	public static final Type<Handler> ARTIST_SELECTED = new Type<Handler>();
 
 	private ArtistDto artist;
 

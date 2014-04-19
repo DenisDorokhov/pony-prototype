@@ -11,7 +11,10 @@ import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
+import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
+import net.dorokhov.pony.web.client.playlist.PlayList;
+import net.dorokhov.pony.web.client.playlist.PlayListImpl;
 import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
@@ -108,7 +111,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		log.fine("song " + aSong + " selected");
 
-		getEventBus().fireEvent(new SongEvent(SongEvent.SELECTION, aSong));
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_SELECTED, aSong));
 	}
 
 	@Override
@@ -116,6 +119,14 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		log.fine("song " + aSong + " playback requested");
 
-		getEventBus().fireEvent(new SongEvent(SongEvent.PLAYBACK_REQUESTED, aSong));
+		List<SongDto> songs = new ArrayList<SongDto>();
+
+		for (AlbumSongsDto album : getView().getAlbums()) {
+			songs.addAll(album.getSongs());
+		}
+
+		PlayList playList = new PlayListImpl(songs, songs.indexOf(aSong));
+
+		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYBACK_REQUESTED, playList));
 	}
 }
