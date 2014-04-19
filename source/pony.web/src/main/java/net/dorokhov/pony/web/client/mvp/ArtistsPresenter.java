@@ -10,6 +10,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import net.dorokhov.pony.web.client.PlaceTokens;
+import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.mvp.artist.AlbumListPresenter;
@@ -79,13 +80,19 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 	private void goToArtist(ArtistDto aArtist) {
 
 		String artistName = aArtist != null ? aArtist.getName() : null;
+		String artistId = aArtist != null ? ObjectUtils.nullSafeToString(aArtist.getId()) : null;
 
 		PlaceRequest currentPlaceRequest = placeManager.getCurrentPlaceRequest();
 
 		boolean nameTokenChanged = !StringUtils.nullSafeNormalizedEquals(
 				currentPlaceRequest.getNameToken(), PlaceTokens.TOKEN_ARTISTS);
-		boolean artistChanged = !StringUtils.nullSafeNormalizedEquals(
-				currentPlaceRequest.getParameter(PlaceTokens.PARAM_ARTIST, null), artistName);
+
+		boolean artistChanged =
+				!StringUtils.nullSafeNormalizedEquals(
+						currentPlaceRequest.getParameter(PlaceTokens.PARAM_ARTIST, null), artistName)
+				&&
+				!StringUtils.nullSafeNormalizedEquals(
+						currentPlaceRequest.getParameter(PlaceTokens.PARAM_ARTIST, null), artistId);
 
 		if (nameTokenChanged || artistChanged) {
 
