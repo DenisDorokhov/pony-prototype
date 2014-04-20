@@ -183,17 +183,30 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		$wnd.$("#" + aPlayerId).jPlayer("play", aPosition);
 	}-*/;
 
-	public native void doPlay(String aPlayerId) /*-{
+	private native void doPlay(String aPlayerId) /*-{
 		$wnd.$("#" + aPlayerId).jPlayer("play");
 	}-*/;
 
-	public native void doPause(String aPlayerId) /*-{
+	private native void doPause(String aPlayerId) /*-{
 		$wnd.$("#" + aPlayerId).jPlayer("pause");
 	}-*/;
 
-	public native void sendUnityState(boolean aIsPlaying) /*-{
+	private void sendUnityState(boolean aIsPlaying) {
+
+		String artworkUrl = getSong().getAlbumArtworkUrl();
+		if (artworkUrl == null) {
+			artworkUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+		}
+
+		doSendUnityState(aIsPlaying, getSong().getName(), getSong().getArtistName(), artworkUrl);
+	}
+
+	private native void doSendUnityState(boolean aIsPlaying, String aName, String aArtist, String aArtwork) /*-{
 		$wnd.UnityMusicShim().sendState({
-			playing: aIsPlaying
+			playing: aIsPlaying,
+			title: aName,
+			artist: aArtist,
+			albumArt: aArtwork
 		});
 	}-*/;
 
