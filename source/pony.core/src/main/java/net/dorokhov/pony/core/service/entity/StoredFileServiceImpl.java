@@ -24,7 +24,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 @Service
-public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Integer, StoredFileDao> implements StoredFileService {
+public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Long, StoredFileDao> implements StoredFileService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Object lock = new Object();
@@ -68,7 +68,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 	@Override
 	@Transactional(readOnly = true)
-	public File load(Integer aId) throws FileNotFoundException {
+	public File load(Long aId) throws FileNotFoundException {
 		return load(getById(aId));
 	}
 
@@ -159,7 +159,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Int
 
 	@Override
 	@Transactional
-	public void deleteById(Integer aId) {
+	public void deleteById(Long aId) {
 
 		StoredFile storedFile = getById(aId);
 

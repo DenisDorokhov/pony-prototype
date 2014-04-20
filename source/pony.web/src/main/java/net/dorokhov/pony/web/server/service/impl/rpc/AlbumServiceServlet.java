@@ -18,12 +18,12 @@ public class AlbumServiceServlet extends AbstractServiceServlet implements Album
 	}
 
 	@Override
-	public Long getCountByArtist(Integer aArtistId) {
+	public Long getCountByArtist(Long aArtistId) {
 		return albumServiceFacade.getCountByArtist(aArtistId);
 	}
 
 	@Override
-	public ArrayList<AlbumSongsDto> getByArtist(Integer aArtistId) {
+	public ArrayList<AlbumSongsDto> getByArtist(Long aArtistId) {
 		return albumServiceFacade.getByArtist(aArtistId);
 	}
 
@@ -38,7 +38,7 @@ public class AlbumServiceServlet extends AbstractServiceServlet implements Album
 	}
 
 	@Override
-	public AlbumSongsDto getById(Integer aId) {
+	public AlbumSongsDto getById(Long aId) {
 		return albumServiceFacade.getById(aId);
 	}
 

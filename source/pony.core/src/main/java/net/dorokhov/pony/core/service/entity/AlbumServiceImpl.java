@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, AlbumDao> implements AlbumService {
+public class AlbumServiceImpl extends AbstractEntityService<Album, Long, AlbumDao> implements AlbumService {
 
 	private static final int MAX_SEARCH_RESULTS = 10;
 
@@ -26,25 +26,25 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
-	public long getCountByArtist(Integer aArtistId) {
+	public long getCountByArtist(Long aArtistId) {
 		return dao.countByArtistId(aArtistId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public long getCountByArtwork(Integer aStoredFileId) {
+	public long getCountByArtwork(Long aStoredFileId) {
 		return dao.countByArtworkId(aStoredFileId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Album getById(Integer aId) {
+	public Album getById(Long aId) {
 		return dao.findById(aId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Album> getByArtwork(Integer aStoredFileId) {
+	public List<Album> getByArtwork(Long aStoredFileId) {
 
 		List<Album> result = dao.findByArtworkId(aStoredFileId, new Sort("artist", "year", "name"));
 
@@ -55,7 +55,7 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Album> getByArtist(Integer aArtistId) {
+	public List<Album> getByArtist(Long aArtistId) {
 
 		List<Album> result = dao.findByArtistId(aArtistId, new Sort("year", "name"));
 
@@ -71,7 +71,7 @@ public class AlbumServiceImpl extends AbstractEntityService<Album, Integer, Albu
 
 	@Override
 	@Transactional(readOnly = true)
-	public Album getByArtistAndName(Integer aArtistId, String aName) {
+	public Album getByArtistAndName(Long aArtistId, String aName) {
 		return dao.findByArtistIdAndName(aArtistId, aName.trim());
 	}
 

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Song DAO.
  */
-public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
+public interface SongDao extends PagingAndSortingRepository<Song, Long> {
 
 	/**
 	 * Retrieves number of songs by album ID.
@@ -20,7 +20,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * @param aAlbumId album ID
 	 * @return number of songs with the given album ID
 	 */
-	public long countByAlbumId(Integer aAlbumId);
+	public long countByAlbumId(Long aAlbumId);
 
 	/**
 	 * Retrieves number of songs by artist ID.
@@ -28,7 +28,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	 * @param aArtistId artist ID
 	 * @return number of songs with the given artist ID
 	 */
-	public long countByAlbumArtistId(Integer aArtistId);
+	public long countByAlbumArtistId(Long aArtistId);
 
 	/**
 	 * Finds song by ID.
@@ -41,7 +41,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 			"INNER JOIN FETCH s.album a " +
 			"INNER JOIN FETCH a.artist " +
 			"WHERE s.id = ?1")
-	public Song findById(Integer aId);
+	public Song findById(Long aId);
 
 	/**
 	 * Finds songs by album ID.
@@ -55,7 +55,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 			"INNER JOIN FETCH s.album a " +
 			"INNER JOIN FETCH a.artist " +
 			"WHERE a.id = ?1")
-	public List<Song> findByAlbumId(Integer aAlbumId, Sort aSort);
+	public List<Song> findByAlbumId(Long aAlbumId, Sort aSort);
 
 	/**
 	 * Finds songs by artist ID.
@@ -69,7 +69,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 			"INNER JOIN FETCH s.album a " +
 			"INNER JOIN FETCH a.artist " +
 			"WHERE a.artist.id = ?1")
-	public List<Song> findByAlbumArtistId(Integer aArtistId, Sort aSort);
+	public List<Song> findByAlbumArtistId(Long aArtistId, Sort aSort);
 
 	/**
 	 * Finds song by song file ID.
@@ -82,7 +82,7 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 			"INNER JOIN FETCH s.album a " +
 			"INNER JOIN FETCH a.artist " +
 			"WHERE s.file.id = ?1")
-	public Song findByFileId(Integer aSongFileId);
+	public Song findByFileId(Long aSongFileId);
 
 	/**
 	 * Deletes song by song file ID.
@@ -92,6 +92,6 @@ public interface SongDao extends PagingAndSortingRepository<Song, Integer> {
 	@Transactional
 	@Modifying
 	@Query("DELETE FROM Song s WHERE s.file.id = ?1")
-	public void deleteByFileId(Integer aSongFileId);
+	public void deleteByFileId(Long aSongFileId);
 
 }

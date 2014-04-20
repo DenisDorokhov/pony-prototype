@@ -51,7 +51,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public ArtistDto getById(Integer aId) {
+	public ArtistDto getById(Long aId) {
 
 		Artist artist = artistService.getById(aId);
 
@@ -74,7 +74,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 		ArtistDto artist = null;
 
 		if (StringUtils.isNumeric(aIdOrName)) {
-			artist = getById(NumberUtils.toInt(aIdOrName));
+			artist = getById(NumberUtils.toLong(aIdOrName));
 		}
 
 		if (artist == null) {

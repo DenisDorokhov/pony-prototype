@@ -10,13 +10,13 @@ import java.util.ArrayList;
 @RemoteServiceRelativePath("rpc/albumService")
 public interface AlbumService extends RemoteService {
 
-	public Long getCountByArtist(Integer aArtistId);
+	public Long getCountByArtist(Long aArtistId);
 
-	public ArrayList<AlbumSongsDto> getByArtist(Integer aArtistId);
+	public ArrayList<AlbumSongsDto> getByArtist(Long aArtistId);
 	public ArrayList<AlbumSongsDto> getByArtistIdOrName(String aIdOrName);
 
 	public ArrayList<AlbumDto> search(String aQuery);
 
-	public AlbumSongsDto getById(Integer aId);
+	public AlbumSongsDto getById(Long aId);
 
 }

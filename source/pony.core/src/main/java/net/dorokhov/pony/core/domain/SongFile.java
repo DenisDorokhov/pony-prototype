@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "song_file")
-public class SongFile extends AbstractEntity<Integer> {
+public class SongFile extends AbstractEntity<Long> {
 
 	private String path;
 

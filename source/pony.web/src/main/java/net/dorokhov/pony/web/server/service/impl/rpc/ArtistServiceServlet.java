@@ -32,7 +32,7 @@ public class ArtistServiceServlet extends AbstractServiceServlet implements Arti
 	}
 
 	@Override
-	public ArtistDto getById(Integer aId) {
+	public ArtistDto getById(Long aId) {
 		return artistServiceFacade.getById(aId);
 	}
 

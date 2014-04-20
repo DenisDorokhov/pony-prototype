@@ -17,15 +17,15 @@ public interface StoredFileService {
 	public Page<StoredFile> getByTag(String aTag, Pageable aPageable);
 	public List<StoredFile> getByChecksum(String aChecksum);
 
-	public StoredFile getById(Integer aId);
+	public StoredFile getById(Long aId);
 	public StoredFile getByTagAndChecksum(String aTag, String aChecksum);
 
-	public File load(Integer aId) throws FileNotFoundException;
+	public File load(Long aId) throws FileNotFoundException;
 	public File load(StoredFile aStoredFile) throws FileNotFoundException;
 
 	public StoredFile save(StorageTask aTask) throws FileNotFoundException;
 
-	public void deleteById(Integer aId);
+	public void deleteById(Long aId);
 	public void deleteAll();
 
 }

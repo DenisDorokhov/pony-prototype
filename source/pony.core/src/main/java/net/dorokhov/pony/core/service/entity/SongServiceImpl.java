@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDao> implements SongService {
+public class SongServiceImpl extends AbstractEntityService<Song, Long, SongDao> implements SongService {
 
 	private static final int MAX_SEARCH_RESULTS = 10;
 
@@ -26,25 +26,25 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public long getCountByAlbum(Integer aAlbumId) {
+	public long getCountByAlbum(Long aAlbumId) {
 		return dao.countByAlbumId(aAlbumId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public long getCountByArtist(Integer aArtistId) {
+	public long getCountByArtist(Long aArtistId) {
 		return dao.countByAlbumArtistId(aArtistId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Song getById(Integer aId) {
+	public Song getById(Long aId) {
 		return dao.findById(aId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Song> getByAlbum(Integer aAlbumId) {
+	public List<Song> getByAlbum(Long aAlbumId) {
 
 		List<Song> result = dao.findByAlbumId(aAlbumId, new Sort("file.discNumber", "file.trackNumber", "file.name"));
 
@@ -55,7 +55,7 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Song> getByArtist(Integer aArtistId) {
+	public List<Song> getByArtist(Long aArtistId) {
 
 		List<Song> result = dao.findByAlbumArtistId(aArtistId, new Sort("album.year", "album.name", "file.discNumber", "file.trackNumber", "file.name"));
 
@@ -72,13 +72,13 @@ public class SongServiceImpl extends AbstractEntityService<Song, Integer, SongDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public Song getByFile(Integer aSongFileId) {
+	public Song getByFile(Long aSongFileId) {
 		return dao.findByFileId(aSongFileId);
 	}
 
 	@Override
 	@Transactional
-	public void deleteByFileId(Integer aSongFileId) {
+	public void deleteByFileId(Long aSongFileId) {
 		dao.deleteByFileId(aSongFileId);
 	}
 }

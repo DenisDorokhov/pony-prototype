@@ -25,7 +25,7 @@ public interface ArtistService {
 	 * @param aStoredFileId artwork stored file ID.
 	 * @return number of artists with the given artwork stored file ID.
 	 */
-	public long getCountByArtwork(Integer aStoredFileId);
+	public long getCountByArtwork(Long aStoredFileId);
 
 	/**
 	 * Gets all artists.
@@ -40,7 +40,7 @@ public interface ArtistService {
 	 * @param aStoredFileId artwork stored file ID
 	 * @return list of artists with the given artwork stored file ID
 	 */
-	public List<Artist> getByArtwork(Integer aStoredFileId);
+	public List<Artist> getByArtwork(Long aStoredFileId);
 
 	/**
 	 * Gets all artists with pagination option.
@@ -64,7 +64,7 @@ public interface ArtistService {
 	 * @param aId artist ID
 	 * @return artist with the given ID or null if none found
 	 */
-	public Artist getById(Integer aId);
+	public Artist getById(Long aId);
 
 	/**
 	 * Gets artist by name.
@@ -88,7 +88,7 @@ public interface ArtistService {
 	 *
 	 * @param aId artist ID
 	 */
-	public void deleteById(Integer aId);
+	public void deleteById(Long aId);
 
 	/**
 	 * Validates artist.

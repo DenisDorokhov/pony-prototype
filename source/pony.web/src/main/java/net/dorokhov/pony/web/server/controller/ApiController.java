@@ -124,7 +124,7 @@ public class ApiController {
 
 	@RequestMapping(value = "/album/{albumId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseWithResult<AlbumSongsDto> getAlbum(@PathVariable("albumId") Integer aAlbumId) {
+	public ResponseWithResult<AlbumSongsDto> getAlbum(@PathVariable("albumId") Long aAlbumId) {
 
 		try {
 			return new ResponseWithResult<AlbumSongsDto>(albumServiceFacade.getById(aAlbumId));
@@ -137,7 +137,7 @@ public class ApiController {
 
 	@RequestMapping(value = "/song/{songId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseWithResult<SongDto> getSong(@PathVariable("songId") Integer aSongId) {
+	public ResponseWithResult<SongDto> getSong(@PathVariable("songId") Long aSongId) {
 
 		try {
 			return new ResponseWithResult<SongDto>(songServiceFacade.getById(aSongId));
@@ -195,7 +195,7 @@ public class ApiController {
 
 	@RequestMapping(value = "/songFile/{songFileId}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getSongFile(@PathVariable("songFileId") Integer aSongFileId) {
+	public Object getSongFile(@PathVariable("songFileId") Long aSongFileId) {
 
 		try {
 
@@ -229,7 +229,7 @@ public class ApiController {
 
 	@RequestMapping(value = "/storedFile/{storedFileId}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getStoredFile(@PathVariable("storedFileId") Integer aStoredFileId) {
+	public Object getStoredFile(@PathVariable("storedFileId") Long aStoredFileId) {
 
 		try {
 

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Stored file DAO.
  */
-public interface StoredFileDao extends PagingAndSortingRepository<StoredFile, Integer> {
+public interface StoredFileDao extends PagingAndSortingRepository<StoredFile, Long> {
 
 	/**
 	 * Finds stored files by tag.

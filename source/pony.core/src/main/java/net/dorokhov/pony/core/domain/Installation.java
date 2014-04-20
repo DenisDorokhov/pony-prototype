@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "installation")
-public class Installation extends AbstractEntity<Integer> {
+public class Installation extends AbstractEntity<Long> {
 
 	private String version;
 

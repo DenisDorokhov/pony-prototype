@@ -5,7 +5,7 @@ import java.util.Date;
 
 public abstract class AbstractEntityDto implements Serializable {
 
-	private Integer id;
+	private Long id;
 
 	private Date creationDate;
 
@@ -13,11 +13,11 @@ public abstract class AbstractEntityDto implements Serializable {
 
 	private Long generation;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer aId) {
+	public void setId(Long aId) {
 		id = aId;
 	}
 

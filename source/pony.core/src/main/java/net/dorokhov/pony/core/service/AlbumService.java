@@ -18,7 +18,7 @@ public interface AlbumService {
 	 * @param aArtistId artist ID
 	 * @return number of albums with the given artist ID
 	 */
-	public long getCountByArtist(Integer aArtistId);
+	public long getCountByArtist(Long aArtistId);
 
 	/**
 	 * Gets number of albums by artwork stored file ID.
@@ -26,7 +26,7 @@ public interface AlbumService {
 	 * @param aStoredFileId artwork stored file ID.
 	 * @return number of albums with the given artwork stored file ID.
 	 */
-	public long getCountByArtwork(Integer aStoredFileId);
+	public long getCountByArtwork(Long aStoredFileId);
 
 	/**
 	 * Gets all albums with pagination option.
@@ -42,7 +42,7 @@ public interface AlbumService {
 	 * @param aStoredFileId artwork stored file ID
 	 * @return list of albums with the given artwork stored file ID.
 	 */
-	public List<Album> getByArtwork(Integer aStoredFileId);
+	public List<Album> getByArtwork(Long aStoredFileId);
 
 	/**
 	 * Gets albums by artist ID.
@@ -50,7 +50,7 @@ public interface AlbumService {
 	 * @param aArtistId artist ID
 	 * @return list of albums with the given artist ID.
 	 */
-	public List<Album> getByArtist(Integer aArtistId);
+	public List<Album> getByArtist(Long aArtistId);
 
 	/**
 	 * Searches for albums.
@@ -66,7 +66,7 @@ public interface AlbumService {
 	 * @param aId album ID.
 	 * @return album with the given ID or null if none found
 	 */
-	public Album getById(Integer aId);
+	public Album getById(Long aId);
 
 	/**
 	 * Get album by artist ID and album name.
@@ -75,7 +75,7 @@ public interface AlbumService {
 	 * @param aName album name
 	 * @return album with the given artist ID and album name or null if none found
 	 */
-	public Album getByArtistAndName(Integer aArtistId, String aName);
+	public Album getByArtistAndName(Long aArtistId, String aName);
 
 	/**
 	 * Saves album.
@@ -91,7 +91,7 @@ public interface AlbumService {
 	 *
 	 * @param aId album ID.
 	 */
-	public void deleteById(Integer aId);
+	public void deleteById(Long aId);
 
 	/**
 	 * Validates song.

@@ -17,22 +17,22 @@ public class SongServiceServlet extends AbstractServiceServlet implements SongSe
 	}
 
 	@Override
-	public Long getCountByAlbum(Integer aAlbumId) {
+	public Long getCountByAlbum(Long aAlbumId) {
 		return songServiceFacade.getCountByAlbum(aAlbumId);
 	}
 
 	@Override
-	public Long getCountByArtist(Integer aArtistId) {
+	public Long getCountByArtist(Long aArtistId) {
 		return songServiceFacade.getCountByArtist(aArtistId);
 	}
 
 	@Override
-	public ArrayList<SongDto> getByAlbum(Integer aAlbumId) {
+	public ArrayList<SongDto> getByAlbum(Long aAlbumId) {
 		return songServiceFacade.getByAlbum(aAlbumId);
 	}
 
 	@Override
-	public ArrayList<SongDto> getByArtist(Integer aArtistId) {
+	public ArrayList<SongDto> getByArtist(Long aArtistId) {
 		return songServiceFacade.getByArtist(aArtistId);
 	}
 
@@ -42,7 +42,7 @@ public class SongServiceServlet extends AbstractServiceServlet implements SongSe
 	}
 
 	@Override
-	public SongDto getById(Integer aId) {
+	public SongDto getById(Long aId) {
 		return songServiceFacade.getById(aId);
 	}
 

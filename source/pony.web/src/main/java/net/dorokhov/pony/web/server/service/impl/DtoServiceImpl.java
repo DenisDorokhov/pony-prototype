@@ -162,15 +162,15 @@ public class DtoServiceImpl implements DtoService {
 		}
 	}
 
-	private String getStoredFileUrl(Integer aId) {
+	private String getStoredFileUrl(Long aId) {
 		return getApiRelatedUrl(aId, "storedFile");
 	}
 
-	private String getSongFileUrl(Integer aId) {
+	private String getSongFileUrl(Long aId) {
 		return getApiRelatedUrl(aId, "songFile");
 	}
 
-	private String getApiRelatedUrl(Integer aId, String aCall) {
+	private String getApiRelatedUrl(Long aId, String aCall) {
 
 		String url = null;
 

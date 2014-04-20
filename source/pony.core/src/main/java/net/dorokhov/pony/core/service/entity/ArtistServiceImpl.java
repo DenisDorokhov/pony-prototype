@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, ArtistDao> implements ArtistService {
+public class ArtistServiceImpl extends AbstractEntityService<Artist, Long, ArtistDao> implements ArtistService {
 
 	private static final int MAX_SEARCH_RESULTS = 10;
 
@@ -27,7 +27,7 @@ public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, Ar
 
 	@Override
 	@Transactional(readOnly = true)
-	public long getCountByArtwork(Integer aStoredFileId) {
+	public long getCountByArtwork(Long aStoredFileId) {
 		return dao.countByArtworkId(aStoredFileId);
 	}
 
@@ -44,7 +44,7 @@ public class ArtistServiceImpl extends AbstractEntityService<Artist, Integer, Ar
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Artist> getByArtwork(Integer aStoredFileId) {
+	public List<Artist> getByArtwork(Long aStoredFileId) {
 
 		List<Artist> result = dao.findByArtworkId(aStoredFileId, new Sort("name"));
 

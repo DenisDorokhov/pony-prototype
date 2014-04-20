@@ -26,7 +26,7 @@ public class ImageScalingServiceImpl implements ImageScalingService {
 
 		if (stringDimensions.length == 2) {
 
-			Integer[] dimensions = new Integer[2];
+			int[] dimensions = {0, 0};
 
 			for (int i = 0; i < stringDimensions.length; i++) {
 				dimensions[i] = Integer.valueOf(stringDimensions[i].trim());

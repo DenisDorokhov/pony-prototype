@@ -8,14 +8,14 @@ import java.util.ArrayList;
 
 public interface SongServiceAsync {
 
-	public Request getCountByAlbum(Integer aAlbumId, AsyncCallback<Long> aCallback);
-	public Request getCountByArtist(Integer aArtistId, AsyncCallback<Long> aCallback);
+	public Request getCountByAlbum(Long aAlbumId, AsyncCallback<Long> aCallback);
+	public Request getCountByArtist(Long aArtistId, AsyncCallback<Long> aCallback);
 
-	public Request getByAlbum(Integer aAlbumId, AsyncCallback<ArrayList<SongDto>> aCallback);
-	public Request getByArtist(Integer aArtistId, AsyncCallback<ArrayList<SongDto>> aCallback);
+	public Request getByAlbum(Long aAlbumId, AsyncCallback<ArrayList<SongDto>> aCallback);
+	public Request getByArtist(Long aArtistId, AsyncCallback<ArrayList<SongDto>> aCallback);
 
 	public Request search(String aQuery, AsyncCallback<ArrayList<SongDto>> aCallback);
 
-	public Request getById(Integer aId, AsyncCallback<SongDto> aCallback);
+	public Request getById(Long aId, AsyncCallback<SongDto> aCallback);
 
 }

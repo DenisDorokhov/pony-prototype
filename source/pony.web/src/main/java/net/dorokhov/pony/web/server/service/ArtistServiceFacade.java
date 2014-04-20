@@ -12,7 +12,7 @@ public interface ArtistServiceFacade {
 
 	public ArrayList<ArtistDto> search(String aQuery);
 
-	public ArtistDto getById(Integer aId);
+	public ArtistDto getById(Long aId);
 	public ArtistDto getByName(String aName);
 	public ArtistDto getByIdOrName(String aNameOrId);
 

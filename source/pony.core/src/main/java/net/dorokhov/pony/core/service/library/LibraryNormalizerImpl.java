@@ -93,7 +93,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeSongs(List<File> aTargetFiles, LibraryNormalizer.ProgressHandler aHandler) {
 
-		List<Integer> itemsToDelete = new ArrayList<Integer>();
+		List<Long> itemsToDelete = new ArrayList<Long>();
 
 		long processedItems = 0;
 
@@ -139,7 +139,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 		} while (page != null);
 
-		for (Integer id : itemsToDelete) {
+		for (Long id : itemsToDelete) {
 			songService.deleteByFileId(id);
 			songFileService.deleteById(id);
 		}
@@ -152,7 +152,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeStoredFiles(ProgressHandler aHandler) {
 
-		List<Integer> itemsToDelete = new ArrayList<Integer>();
+		List<Long> itemsToDelete = new ArrayList<Long>();
 
 		long processedItems = 0;
 
@@ -216,7 +216,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 		} while (pageExternal != null);
 
-		for (Integer id : itemsToDelete) {
+		for (Long id : itemsToDelete) {
 
 			for (Album album : albumService.getByArtwork(id)) {
 
@@ -242,7 +242,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeAlbums(ProgressHandler aHandler) {
 
-		List<Integer> itemsToDelete = new ArrayList<Integer>();
+		List<Long> itemsToDelete = new ArrayList<Long>();
 
 		long processedItems = 0;
 		long updatedArtworks = 0;
@@ -306,7 +306,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 		} while (page != null);
 
-		for (Integer id : itemsToDelete) {
+		for (Long id : itemsToDelete) {
 			albumService.deleteById(id);
 		}
 
@@ -324,7 +324,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void normalizeArtists(ProgressHandler aHandler) {
 
-		List<Integer> itemsToDelete = new ArrayList<Integer>();
+		List<Long> itemsToDelete = new ArrayList<Long>();
 
 		long processedItems = 0;
 		long updatedArtworks = 0;
@@ -378,7 +378,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 		} while (page != null);
 
-		for (Integer id : itemsToDelete) {
+		for (Long id : itemsToDelete) {
 			artistService.deleteById(id);
 		}
 

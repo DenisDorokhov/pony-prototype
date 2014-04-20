@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "song")
 @Indexed
-public class Song extends AbstractEntity<Integer> implements Comparable<Song> {
+public class Song extends AbstractEntity<Long> implements Comparable<Song> {
 
 	private SongFile file;
 

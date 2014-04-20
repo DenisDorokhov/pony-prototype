@@ -7,21 +7,21 @@ import java.util.List;
 
 public interface SongService {
 
-	public long getCountByAlbum(Integer aAlbumId);
-	public long getCountByArtist(Integer aArtistId);
+	public long getCountByAlbum(Long aAlbumId);
+	public long getCountByArtist(Long aArtistId);
 
-	public List<Song> getByAlbum(Integer aAlbumId);
-	public List<Song> getByArtist(Integer aArtistId);
+	public List<Song> getByAlbum(Long aAlbumId);
+	public List<Song> getByArtist(Long aArtistId);
 
 	public List<Song> search(String aQuery);
 
-	public Song getById(Integer aId);
-	public Song getByFile(Integer aSongFileId);
+	public Song getById(Long aId);
+	public Song getByFile(Long aSongFileId);
 
 	public Song save(Song aSong) throws ConstraintViolationException;
 
-	public void deleteById(Integer aId);
-	public void deleteByFileId(Integer aSongFileId);
+	public void deleteById(Long aId);
+	public void deleteByFileId(Long aSongFileId);
 
 	public void validate(Song aSong) throws ConstraintViolationException;
 

@@ -31,25 +31,25 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Long getCountByAlbum(Integer aAlbumId) {
+	public Long getCountByAlbum(Long aAlbumId) {
 		return songService.getCountByAlbum(aAlbumId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Long getCountByArtist(Integer aArtistId) {
+	public Long getCountByArtist(Long aArtistId) {
 		return songService.getCountByArtist(aArtistId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public ArrayList<SongDto> getByAlbum(Integer aAlbumId) {
+	public ArrayList<SongDto> getByAlbum(Long aAlbumId) {
 		return songListToDto(songService.getByAlbum(aAlbumId));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public ArrayList<SongDto> getByArtist(Integer aArtistId) {
+	public ArrayList<SongDto> getByArtist(Long aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
@@ -61,7 +61,7 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 
 	@Override
 	@Transactional(readOnly = true)
-	public SongDto getById(Integer aId) {
+	public SongDto getById(Long aId) {
 
 		Song song = songService.getById(aId);
 
