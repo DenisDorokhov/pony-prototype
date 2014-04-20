@@ -5,9 +5,9 @@ CREATE TABLE installation (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
-	version VARCHAR(255) NOT NULL,
+	system_version VARCHAR(255) NOT NULL,
 
 	PRIMARY KEY (id)
 
@@ -20,7 +20,7 @@ CREATE TABLE configuration (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	value TEXT,
 
@@ -35,7 +35,7 @@ CREATE TABLE stored_file (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	mime_type VARCHAR(255) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE song_file (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	path VARCHAR(255) NOT NULL,
 	format VARCHAR(255) NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE artist (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	artwork_stored_file_id BIGINT,
@@ -121,7 +121,7 @@ CREATE TABLE album (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	year INT,
@@ -147,7 +147,7 @@ CREATE TABLE song (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	song_file_id BIGINT NOT NULL,
 	album_id BIGINT NOT NULL,
@@ -160,4 +160,4 @@ CREATE TABLE song (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-INSERT INTO installation (creation_date, update_date, generation, version) VALUES (NOW(), NOW(), '0', '1.0');
+INSERT INTO installation (creation_date, update_date, version, system_version) VALUES (NOW(), NOW(), '0', '1.0');

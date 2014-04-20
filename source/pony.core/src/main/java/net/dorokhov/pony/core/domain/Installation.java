@@ -13,22 +13,22 @@ import javax.persistence.Table;
 @Table(name = "installation")
 public class Installation extends AbstractEntity<Long> {
 
-	private String version;
+	private String systemVersion;
 
-	@Column(name = "version")
-	public String getVersion() {
-		return version;
+	@Column(name = "system_version")
+	public String getSystemVersion() {
+		return systemVersion;
 	}
 
-	public void setVersion(String aVersion) {
-		version = aVersion;
+	public void setSystemVersion(String aVersion) {
+		systemVersion = aVersion;
 	}
 
 	@Override
 	public String toString() {
 		return "Installation{" +
 				"id=" + getId() +
-				", version='" + version + '\'' +
+				", version='" + systemVersion + '\'' +
 				'}';
 	}
 }

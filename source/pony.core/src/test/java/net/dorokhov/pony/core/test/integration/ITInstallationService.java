@@ -39,7 +39,7 @@ public class ITInstallationService {
 		Installation installation = installationService.getInstallation();
 
 		Assert.assertNotNull(installation);
-		Assert.assertNotNull(installation.getVersion());
+		Assert.assertNotNull(installation.getSystemVersion());
 
 		installationService.uninstall();
 
