@@ -155,6 +155,16 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
+		var unity = $wnd.UnityMusicShim();
+
+		unity.setSupports({
+			playpause: true
+		});
+		unity.setCallbackObject({
+			pause: function() {
+				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
+			}
+		});
 	}-*/;
 
 	private native void updateMedia(String aPlayerId, String aSkinId, String aName, JavaScriptObject aOptions) /*-{
@@ -178,6 +188,12 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		$wnd.$("#" + aPlayerId).jPlayer("pause");
 	}-*/;
 
+	public native void sendUnityState(boolean aIsPlaying) /*-{
+		$wnd.UnityMusicShim().sendState({
+			playing: aIsPlaying
+		});
+	}-*/;
+
 	private void onVolumeChange(float aValue) {
 
 		volume = aValue;
@@ -196,12 +212,16 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		state = State.PLAYING;
 
+		sendUnityState(true);
+
 		getUiHandlers().onPlay();
 	}
 
 	private void onPause() {
 
 		state = State.PAUSED;
+
+		sendUnityState(false);
 
 		getUiHandlers().onPause();
 	}
@@ -211,6 +231,14 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		state = State.INACTIVE;
 
 		getUiHandlers().onEnd();
+	}
+
+	private void onPlayPause() {
+		if (state == State.PAUSED) {
+			play();
+		} else if (state == State.PLAYING) {
+			pause();
+		}
 	}
 
 }
