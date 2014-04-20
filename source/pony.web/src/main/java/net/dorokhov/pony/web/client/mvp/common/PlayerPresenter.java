@@ -10,7 +10,7 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
-import net.dorokhov.pony.web.client.playlist.PlayList;
+import net.dorokhov.pony.web.client.service.PlayList;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.logging.Level;

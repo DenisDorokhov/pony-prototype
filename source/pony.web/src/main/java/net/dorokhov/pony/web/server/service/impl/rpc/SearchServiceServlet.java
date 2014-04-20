@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.SearchService;
+import net.dorokhov.pony.web.client.service.rpc.SearchService;
 import net.dorokhov.pony.web.server.service.SearchServiceFacade;
 import net.dorokhov.pony.web.shared.SearchDto;
 import org.springframework.web.context.WebApplicationContext;

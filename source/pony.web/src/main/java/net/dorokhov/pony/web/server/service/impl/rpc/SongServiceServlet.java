@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.SongService;
+import net.dorokhov.pony.web.client.service.rpc.SongService;
 import net.dorokhov.pony.web.server.service.SongServiceFacade;
 import net.dorokhov.pony.web.shared.SongDto;
 import org.springframework.web.context.WebApplicationContext;

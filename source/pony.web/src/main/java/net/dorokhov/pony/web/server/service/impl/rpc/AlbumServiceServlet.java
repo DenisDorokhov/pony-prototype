@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.AlbumService;
+import net.dorokhov.pony.web.client.service.rpc.AlbumService;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;

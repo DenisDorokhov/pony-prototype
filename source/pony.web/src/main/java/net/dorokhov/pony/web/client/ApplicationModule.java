@@ -16,7 +16,7 @@ import net.dorokhov.pony.web.client.mvp.artist.AlbumListView;
 import net.dorokhov.pony.web.client.mvp.artist.ArtistListPresenter;
 import net.dorokhov.pony.web.client.mvp.artist.ArtistListView;
 import net.dorokhov.pony.web.client.mvp.common.*;
-import net.dorokhov.pony.web.client.service.*;
+import net.dorokhov.pony.web.client.service.rpc.*;
 
 public class ApplicationModule extends AbstractPresenterModule {
 
@@ -35,7 +35,7 @@ public class ApplicationModule extends AbstractPresenterModule {
 
 		bindSingletonPresenterWidget(LogoPresenter.class, LogoPresenter.MyView.class, LogoView.class);
 		bindSingletonPresenterWidget(PlayerPresenter.class, PlayerPresenter.MyView.class, PlayerView.class);
-		bindSingletonPresenterWidget(SearchPresenter.class, SearchPresenter.MyView.class, SearchView.class);
+		bindSingletonPresenterWidget(ToolbarPresenter.class, ToolbarPresenter.MyView.class, ToolbarView.class);
 
 		bindPresenter(ArtistsPresenter.class, ArtistsPresenter.MyView.class, ArtistsView.class, ArtistsPresenter.MyProxy.class);
 

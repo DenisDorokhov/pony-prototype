@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.ArtistService;
+import net.dorokhov.pony.web.client.service.rpc.ArtistService;
 import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import org.springframework.web.context.WebApplicationContext;

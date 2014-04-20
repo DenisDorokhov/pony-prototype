@@ -2,7 +2,7 @@ package net.dorokhov.pony.web.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import net.dorokhov.pony.web.client.common.AbstractEvent;
-import net.dorokhov.pony.web.client.playlist.PlayList;
+import net.dorokhov.pony.web.client.service.PlayList;
 
 public class PlayListEvent extends AbstractEvent<PlayListEvent.Handler> {
 

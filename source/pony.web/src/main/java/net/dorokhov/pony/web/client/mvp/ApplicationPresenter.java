@@ -11,7 +11,7 @@ import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import net.dorokhov.pony.web.client.mvp.common.LogoPresenter;
 import net.dorokhov.pony.web.client.mvp.common.PlayerPresenter;
-import net.dorokhov.pony.web.client.mvp.common.SearchPresenter;
+import net.dorokhov.pony.web.client.mvp.common.ToolbarPresenter;
 
 public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView, ApplicationPresenter.MyProxy> {
 
@@ -29,17 +29,17 @@ public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView,
 
 	private final LogoPresenter logoPresenter;
 	private final PlayerPresenter playerPresenter;
-	private final SearchPresenter searchPresenter;
+	private final ToolbarPresenter toolbarPresenter;
 
 	@Inject
 	public ApplicationPresenter(EventBus aEventBus, MyView aView, MyProxy aProxy,
-								LogoPresenter aLogoPresenter, PlayerPresenter aPlayerPresenter, SearchPresenter aSearchPresenter) {
+								LogoPresenter aLogoPresenter, PlayerPresenter aPlayerPresenter, ToolbarPresenter aToolbarPresenter) {
 
 		super(aEventBus, aView, aProxy, RevealType.RootLayout);
 
 		logoPresenter = aLogoPresenter;
 		playerPresenter = aPlayerPresenter;
-		searchPresenter = aSearchPresenter;
+		toolbarPresenter = aToolbarPresenter;
 	}
 
 	@Override
@@ -49,6 +49,6 @@ public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView,
 
 		setInSlot(SLOT_LOGO, logoPresenter);
 		setInSlot(SLOT_PLAYER, playerPresenter);
-		setInSlot(SLOT_SEARCH, searchPresenter);
+		setInSlot(SLOT_SEARCH, toolbarPresenter);
 	}
 }

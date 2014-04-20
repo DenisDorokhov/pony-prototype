@@ -12,10 +12,11 @@ import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
+import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
-import net.dorokhov.pony.web.client.playlist.PlayList;
-import net.dorokhov.pony.web.client.playlist.PlayListImpl;
-import net.dorokhov.pony.web.client.service.AlbumServiceAsync;
+import net.dorokhov.pony.web.client.service.PlayList;
+import net.dorokhov.pony.web.client.service.PlayListImpl;
+import net.dorokhov.pony.web.client.service.rpc.AlbumServiceAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers {
+public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, RefreshEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<AlbumListUiHandlers>, HasContentState {
 
@@ -56,54 +57,17 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	}
 
 	public void loadArtist(ArtistDto aArtist) {
-
 		if (!ObjectUtils.nullSafeEquals(getView().getArtist(), aArtist)) {
-
-			getView().setArtist(aArtist);
-
-			log.fine("updating albums of artist " + aArtist + "...");
-
-			getView().setContentState(ContentState.LOADING);
-
-			if (currentRequest != null) {
-
-				currentRequest.cancel();
-
-				log.fine("active albums request cancelled");
-			}
-
-			if (aArtist != null && aArtist.getId() != null) {
-
-				currentRequest = albumService.getByArtist(aArtist.getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
-
-					@Override
-					public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
-
-						currentRequest = null;
-
-						getView().setAlbums(aResult);
-						getView().setContentState(ContentState.LOADED);
-
-						log.fine("albums updated");
-					}
-
-					@Override
-					public void onFailure(Throwable aCaught) {
-
-						currentRequest = null;
-
-						getView().setContentState(ContentState.ERROR);
-
-						log.log(Level.SEVERE, "could not update albums", aCaught);
-
-						Window.alert(aCaught.getMessage());
-					}
-				});
-
-			} else {
-				log.fine("albums cleared");
-			}
+			doLoadArtist(aArtist);
 		}
+	}
+
+	@Override
+	protected void onBind() {
+
+		super.onBind();
+
+		addRegisteredHandler(RefreshEvent.REFRESH_SELECTED, this);
 	}
 
 	@Override
@@ -128,5 +92,60 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		PlayList playList = new PlayListImpl(songs, songs.indexOf(aSong));
 
 		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYBACK_REQUESTED, playList));
+	}
+
+	@Override
+	public void onRefreshEvent(RefreshEvent aEvent) {
+		if (getView().getArtist() != null) {
+			doLoadArtist(getView().getArtist());
+		}
+	}
+
+	private void doLoadArtist(ArtistDto aArtist) {
+
+		getView().setArtist(aArtist);
+
+		log.fine("updating albums of artist " + aArtist + "...");
+
+		getView().setContentState(ContentState.LOADING);
+
+		if (currentRequest != null) {
+
+			currentRequest.cancel();
+
+			log.fine("active albums request cancelled");
+		}
+
+		if (aArtist != null && aArtist.getId() != null) {
+
+			currentRequest = albumService.getByArtist(aArtist.getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
+
+				@Override
+				public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
+
+					currentRequest = null;
+
+					getView().setAlbums(aResult);
+					getView().setContentState(ContentState.LOADED);
+
+					log.fine("albums updated");
+				}
+
+				@Override
+				public void onFailure(Throwable aCaught) {
+
+					currentRequest = null;
+
+					getView().setContentState(ContentState.ERROR);
+
+					log.log(Level.SEVERE, "could not update albums", aCaught);
+
+					Window.alert(aCaught.getMessage());
+				}
+			});
+
+		} else {
+			log.fine("albums cleared");
+		}
 	}
 }

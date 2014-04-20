@@ -11,7 +11,8 @@ import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
-import net.dorokhov.pony.web.client.service.ArtistServiceAsync;
+import net.dorokhov.pony.web.client.event.RefreshEvent;
+import net.dorokhov.pony.web.client.service.rpc.ArtistServiceAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyView> implements ArtistListUiHandlers {
+public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyView> implements ArtistListUiHandlers, RefreshEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<ArtistListUiHandlers>, HasContentState {
 
@@ -62,9 +63,32 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 	}
 
 	@Override
+	protected void onBind() {
+
+		super.onBind();
+
+		addRegisteredHandler(RefreshEvent.REFRESH_SELECTED, this);
+	}
+
+	@Override
 	protected void onReveal() {
 
 		super.onReveal();
+
+		loadArtists();
+	}
+
+	@Override
+	public void onArtistSelection(ArtistDto aArtist) {
+		getEventBus().fireEvent(new ArtistEvent(ArtistEvent.ARTIST_SELECTED, aArtist));
+	}
+
+	@Override
+	public void onRefreshEvent(RefreshEvent aEvent) {
+		loadArtists();
+	}
+
+	private void loadArtists() {
 
 		log.fine("updating artists...");
 
@@ -107,11 +131,6 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 				Window.alert(aCaught.getMessage());
 			}
 		});
-	}
-
-	@Override
-	public void onArtistSelection(ArtistDto aArtist) {
-		getEventBus().fireEvent(new ArtistEvent(ArtistEvent.ARTIST_SELECTED, aArtist));
 	}
 
 	private void doUpdateArtists(List<ArtistDto> aArtists) {
