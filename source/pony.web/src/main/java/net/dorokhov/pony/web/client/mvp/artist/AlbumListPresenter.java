@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.http.client.Request;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
@@ -152,8 +151,6 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 					}
 
 					log.log(Level.SEVERE, "could not update albums", aCaught);
-
-					Window.alert("Could not load albums!");
 				}
 			});
 
