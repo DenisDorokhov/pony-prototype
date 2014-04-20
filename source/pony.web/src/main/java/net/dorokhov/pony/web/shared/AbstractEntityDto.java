@@ -1,15 +1,10 @@
 package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public abstract class AbstractEntityDto implements Serializable {
 
 	private Long id;
-
-	private Date creationDate;
-
-	private Date updateDate;
 
 	private Long generation;
 
@@ -19,22 +14,6 @@ public abstract class AbstractEntityDto implements Serializable {
 
 	public void setId(Long aId) {
 		id = aId;
-	}
-
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date aCreationDate) {
-		creationDate = aCreationDate;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date aUpdateDate) {
-		updateDate = aUpdateDate;
 	}
 
 	public Long getGeneration() {

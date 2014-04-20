@@ -45,8 +45,6 @@ public class DtoServiceImpl implements DtoService {
 		ArtistDto dto = new ArtistDto();
 
 		dto.setId(aArtist.getId());
-		dto.setCreationDate(aArtist.getCreationDate());
-		dto.setUpdateDate(aArtist.getUpdateDate());
 		dto.setGeneration(aArtist.getVersion());
 
 		dto.setName(aArtist.getName());
@@ -83,8 +81,6 @@ public class DtoServiceImpl implements DtoService {
 		SongDto dto = new SongDto();
 
 		dto.setId(aSong.getId());
-		dto.setCreationDate(aSong.getCreationDate());
-		dto.setUpdateDate(aSong.getUpdateDate());
 		dto.setGeneration(aSong.getVersion());
 
 		Album album = aSong.getAlbum();
@@ -93,8 +89,7 @@ public class DtoServiceImpl implements DtoService {
 
 			dto.setAlbumId(album.getId());
 			dto.setAlbumName(album.getName());
-			dto.setAlbumArtwork(album.getArtwork() != null ? album.getArtwork().getId() : null);
-			dto.setAlbumArtworkUrl(getStoredFileUrl(dto.getAlbumArtwork()));
+			dto.setAlbumArtworkUrl(getStoredFileUrl(album.getArtwork() != null ? album.getArtwork().getId() : null));
 			dto.setAlbumYear(album.getYear());
 
 			Artist artist = album.getArtist();
@@ -102,8 +97,6 @@ public class DtoServiceImpl implements DtoService {
 			if (artist != null) {
 				dto.setArtistId(artist.getId());
 				dto.setArtistName(artist.getName());
-				dto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
-				dto.setArtistArtworkUrl(getStoredFileUrl(dto.getArtistArtwork()));
 			}
 		}
 
@@ -111,30 +104,15 @@ public class DtoServiceImpl implements DtoService {
 
 		if (file != null) {
 
-			dto.setFile(file.getId());
 			dto.setFileUrl(getSongFileUrl(file.getId()));
 
-			dto.setPath(file.getPath());
-			dto.setFormat(file.getFormat());
-			dto.setMimeType(file.getMimeType());
-			dto.setSize(file.getSize());
 			dto.setDuration(file.getDuration());
-			dto.setBitRate(file.getBitRate());
 
 			dto.setName(file.getName());
 			dto.setArtist(file.getArtist());
-			dto.setAlbumArtist(file.getAlbumArtist());
-			dto.setAlbum(file.getAlbum());
-			dto.setYear(file.getYear());
 
 			dto.setDiscNumber(file.getDiscNumber());
-			dto.setDiscCount(file.getDiscCount());
-
 			dto.setTrackNumber(file.getTrackNumber());
-			dto.setTrackCount(file.getTrackCount());
-
-			dto.setArtwork(file.getArtwork() != null ? file.getArtwork().getId() : null);
-			dto.setArtworkUrl(getStoredFileUrl(dto.getArtwork()));
 		}
 
 		return dto;
@@ -143,22 +121,17 @@ public class DtoServiceImpl implements DtoService {
 	private void initAlbumDto(AlbumDto aDto, Album aAlbum) {
 
 		aDto.setId(aAlbum.getId());
-		aDto.setCreationDate(aAlbum.getCreationDate());
-		aDto.setUpdateDate(aAlbum.getUpdateDate());
 		aDto.setGeneration(aAlbum.getVersion());
 
 		aDto.setName(aAlbum.getName());
 		aDto.setYear(aAlbum.getYear());
-		aDto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
-		aDto.setArtworkUrl(getStoredFileUrl(aDto.getArtwork()));
+		aDto.setArtworkUrl(getStoredFileUrl(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null));
 
 		Artist artist = aAlbum.getArtist();
 
 		if (artist != null) {
 			aDto.setArtistId(artist.getId());
 			aDto.setArtistName(artist.getName());
-			aDto.setArtistArtwork(artist.getArtwork() != null ? artist.getArtwork().getId() : null);
-			aDto.setArtistArtworkUrl(getStoredFileUrl(aDto.getArtistArtwork()));
 		}
 	}
 
