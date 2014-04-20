@@ -153,7 +153,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 					log.log(Level.SEVERE, "could not update albums", aCaught);
 
-					Window.alert(aCaught.getMessage());
+					Window.alert("Could not load albums!");
 				}
 			});
 

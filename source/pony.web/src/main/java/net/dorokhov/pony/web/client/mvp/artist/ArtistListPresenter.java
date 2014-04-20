@@ -141,7 +141,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 				log.log(Level.SEVERE, "could not update artists", aCaught);
 
-				Window.alert(aCaught.getMessage());
+				Window.alert("Could not load artists!");
 			}
 		});
 	}
