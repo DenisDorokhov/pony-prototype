@@ -44,8 +44,10 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	private State state;
 
 	private double volume = 1.0;
-
 	private double position = 0.0;
+
+	private boolean previousSongAvailable;
+	private boolean nextSongAvailable;
 
 	private SongDto song;
 
@@ -103,6 +105,9 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			setPosition(0.0);
 		}
 
+		updateUnityOptions();
+		sendUnityState(false);
+
 		state = State.INACTIVE;
 	}
 
@@ -114,6 +119,32 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	@Override
 	public void pause() {
 		doPause(PLAYER_ID);
+	}
+
+	@Override
+	public boolean isPreviousSongAvailable() {
+		return previousSongAvailable;
+	}
+
+	@Override
+	public void setPreviousSongAvailable(boolean aAvailable) {
+
+		previousSongAvailable = aAvailable;
+
+		updateUnityOptions();
+	}
+
+	@Override
+	public boolean isNextSongAvailable() {
+		return nextSongAvailable;
+	}
+
+	@Override
+	public void setNextSongAvailable(boolean aAvailable) {
+
+		nextSongAvailable = aAvailable;
+
+		updateUnityOptions();
 	}
 
 	@Override
@@ -158,14 +189,15 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
-		var unity = $wnd.UnityMusicShim();
-
-		unity.setSupports({
-			playpause: true
-		});
-		unity.setCallbackObject({
+		$wnd.UnityMusicShim().setCallbackObject({
 			pause: function() {
 				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
+			},
+			next: function() {
+				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onNextRequested()();
+			},
+			previous: function() {
+				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPreviousRequested()();
 			}
 		});
 	}-*/;
@@ -191,14 +223,36 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		$wnd.$("#" + aPlayerId).jPlayer("pause");
 	}-*/;
 
+	private void updateUnityOptions() {
+		doUpdateUnityOptions(getSong() != null, isPreviousSongAvailable(), isNextSongAvailable());
+	}
+
+	private native void doUpdateUnityOptions(boolean aCanPlay, boolean aPreviousSongAvailable, boolean aNextSongAvailable) /*-{
+		$wnd.UnityMusicShim().setSupports({
+			playpause: aCanPlay,
+			next: aNextSongAvailable,
+			previous: aPreviousSongAvailable
+		});
+	}-*/;
+
 	private void sendUnityState(boolean aIsPlaying) {
 
-		String artworkUrl = getSong().getAlbumArtworkUrl();
-		if (artworkUrl == null) {
-			artworkUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+		String name = null;
+		String artist = null;
+		String artworkUrl = null;
+
+		if (getSong() != null) {
+
+			name = getSong().getName();
+			artist = getSong().getArtistName();
+
+			artworkUrl = getSong().getAlbumArtworkUrl();
+			if (artworkUrl == null) {
+				artworkUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+			}
 		}
 
-		doSendUnityState(aIsPlaying, getSong().getName(), getSong().getArtistName(), artworkUrl);
+		doSendUnityState(aIsPlaying, name, artist, artworkUrl);
 	}
 
 	private native void doSendUnityState(boolean aIsPlaying, String aName, String aArtist, String aArtwork) /*-{
@@ -262,6 +316,14 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		} else {
 			play();
 		}
+	}
+
+	private void onPreviousRequested() {
+		getUiHandlers().onPreviousSongRequested();
+	}
+
+	private void onNextRequested() {
+		getUiHandlers().onNextSongRequested();
 	}
 
 }

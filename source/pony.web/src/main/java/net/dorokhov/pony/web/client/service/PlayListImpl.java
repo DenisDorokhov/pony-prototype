@@ -19,11 +19,40 @@ public class PlayListImpl implements PlayList {
 
 		songs = aSongs != null ? new ArrayList<SongDto>(aSongs) : new ArrayList<SongDto>();
 
-		currentIndex = aStartIndex;
+		currentIndex = aStartIndex - 1;
 	}
 
 	public ArrayList<SongDto> getSongs() {
-		return songs;
+		return new ArrayList<SongDto>(songs);
+	}
+
+	@Override
+	public boolean hasPrevious() {
+		return currentIndex > 0 && songs.size() > 1;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return (currentIndex + 1) < songs.size();
+	}
+
+	@Override
+	public void previous(AsyncCallback<SongDto> aCallback) {
+
+		SongDto currentSong = null;
+
+		if (hasPrevious()) {
+
+			currentIndex--;
+
+			currentSong = songs.get(currentIndex);
+		}
+
+		if (currentSong != null) {
+			log.fine("playlist switched to previous song " + currentSong);
+		}
+
+		aCallback.onSuccess(currentSong);
 	}
 
 	@Override
@@ -31,15 +60,15 @@ public class PlayListImpl implements PlayList {
 
 		SongDto currentSong = null;
 
-		if (currentIndex < songs.size()) {
-
-			currentSong = songs.get(currentIndex);
+		if (hasNext()) {
 
 			currentIndex++;
+
+			currentSong = songs.get(currentIndex);
 		}
 
 		if (currentSong != null) {
-			log.fine("playlist switched to song " + currentSong);
+			log.fine("playlist switched to next song " + currentSong);
 		}
 
 		aCallback.onSuccess(currentSong);
@@ -47,6 +76,6 @@ public class PlayListImpl implements PlayList {
 
 	@Override
 	public void reset() {
-		currentIndex = 0;
+		currentIndex = -1;
 	}
 }

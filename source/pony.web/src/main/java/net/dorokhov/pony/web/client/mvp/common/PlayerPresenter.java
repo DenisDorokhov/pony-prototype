@@ -39,6 +39,12 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		public void play();
 		public void pause();
 
+		public boolean isPreviousSongAvailable();
+		public void setPreviousSongAvailable(boolean aAvailable);
+
+		public boolean isNextSongAvailable();
+		public void setNextSongAvailable(boolean aAvailable);
+
 		public State getState();
 
 	}
@@ -119,9 +125,22 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public void onVolumeChange() {}
 
 	@Override
+	public void onPreviousSongRequested() {
+		startPreviousSong();
+	}
+
+	@Override
+	public void onNextSongRequested() {
+		startNextSong();
+	}
+
+	@Override
 	public void onPlayListEvent(PlayListEvent aEvent) {
 
 		playList = aEvent.getPlayList();
+
+		getView().setPreviousSongAvailable(false);
+		getView().setNextSongAvailable(false);
 
 		startNextSong();
 	}
@@ -133,9 +152,40 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		}
 	}
 
+	private void startPreviousSong() {
+
+		if (playList != null && playList.hasPrevious()) {
+
+			playList.previous(new AsyncCallback<SongDto>() {
+
+				@Override
+				public void onSuccess(SongDto aResult) {
+
+					getView().setSong(aResult);
+
+					getView().setPreviousSongAvailable(playList.hasPrevious());
+					getView().setNextSongAvailable(playList.hasNext());
+
+					getView().play();
+				}
+
+				@Override
+				public void onFailure(Throwable aCaught) {
+
+					log.log(Level.SEVERE, "could not fetch next song from playlist", aCaught);
+
+					Window.alert("Could not load previous song!");
+				}
+			});
+
+		} else {
+			log.fine("beginning of playlist");
+		}
+	}
+
 	private void startNextSong() {
 
-		if (playList != null) {
+		if (playList != null && playList.hasNext()) {
 
 			playList.next(new AsyncCallback<SongDto>() {
 
@@ -144,11 +194,10 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 					getView().setSong(aResult);
 
-					if (aResult != null) {
-						getView().play();
-					} else {
-						log.fine("end of playlist");
-					}
+					getView().setPreviousSongAvailable(playList.hasPrevious());
+					getView().setNextSongAvailable(playList.hasNext());
+
+					getView().play();
 				}
 
 				@Override
@@ -156,9 +205,12 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 					log.log(Level.SEVERE, "could not fetch next song from playlist", aCaught);
 
-					Window.alert(aCaught.getMessage());
+					Window.alert("Could not load next song!");
 				}
 			});
+
+		} else {
+			log.fine("end of playlist");
 		}
 	}
 }
