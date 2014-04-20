@@ -12,6 +12,7 @@ import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
+import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.rpc.ArtistServiceAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
@@ -31,7 +32,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		public ArtistDto getSelectedArtist();
 
-		public void setSelectedArtist(ArtistDto aArtist);
+		public void setSelectedArtist(ArtistDto aArtist, boolean aShouldScroll);
 
 	}
 
@@ -59,7 +60,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		artistToSelect = aArtist;
 
-		doSelectArtist(artistToSelect);
+		doSelectArtist(artistToSelect, true);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		super.onReveal();
 
-		loadArtists();
+		loadArtists(true, true);
 	}
 
 	@Override
@@ -85,26 +86,34 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 	@Override
 	public void onRefreshEvent(RefreshEvent aEvent) {
-		loadArtists();
+		loadArtists(false, false);
 	}
 
-	private void loadArtists() {
+	private void loadArtists(boolean aShouldShowLoadingState, final boolean aShouldScroll) {
 
 		log.fine("updating artists...");
 
-		getView().setContentState(ContentState.LOADING);
+		if (aShouldShowLoadingState || getView().getContentState() != ContentState.LOADED) {
+			getView().setContentState(ContentState.LOADING);
+		}
 
 		if (currentRequest != null) {
 
 			currentRequest.cancel();
 
+			BusyIndicator.finishTask();
+
 			log.fine("active artists request cancelled");
 		}
+
+		BusyIndicator.startTask();
 
 		currentRequest = artistService.getAll(new AsyncCallback<ArrayList<ArtistDto>>() {
 
 			@Override
 			public void onSuccess(ArrayList<ArtistDto> aResult) {
+
+				BusyIndicator.finishTask();
 
 				currentRequest = null;
 
@@ -114,17 +123,21 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 				log.fine("artists updated");
 
-				doSelectArtist(artistToSelect);
+				doSelectArtist(artistToSelect, aShouldScroll);
 			}
 
 			@Override
 			public void onFailure(Throwable aCaught) {
 
+				BusyIndicator.finishTask();
+
 				currentRequest = null;
 
 				doUpdateArtists(new ArrayList<ArtistDto>());
 
-				getView().setContentState(ContentState.ERROR);
+				if (getView().getContentState() == ContentState.LOADING) {
+					getView().setContentState(ContentState.ERROR);
+				}
 
 				log.log(Level.SEVERE, "could not update artists", aCaught);
 
@@ -151,7 +164,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 		getView().setArtists(aArtists);
 	}
 
-	private void doSelectArtist(String aArtist) {
+	private void doSelectArtist(String aArtist, boolean aShouldScroll) {
 
 		List<ArtistDto> artists = getView().getArtists();
 
@@ -160,13 +173,13 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 			ArtistDto artistToSelect = findArtist(aArtist);
 
 			if (artistToSelect != null) {
-				getView().setSelectedArtist(artistToSelect);
+				getView().setSelectedArtist(artistToSelect, aShouldScroll);
 			} else if (aArtist != null && !aArtist.trim().equals("")) {
 				log.warning("could not find artist [" + aArtist + "]");
 			}
 
 			if (getView().getSelectedArtist() == null) {
-				getView().setSelectedArtist(artists.get(0));
+				getView().setSelectedArtist(artists.get(0), aShouldScroll);
 			}
 		}
 	}

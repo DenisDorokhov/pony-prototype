@@ -14,6 +14,7 @@ import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
+import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.PlayList;
 import net.dorokhov.pony.web.client.service.PlayListImpl;
 import net.dorokhov.pony.web.client.service.rpc.AlbumServiceAsync;
@@ -58,7 +59,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	public void loadArtist(ArtistDto aArtist) {
 		if (!ObjectUtils.nullSafeEquals(getView().getArtist(), aArtist)) {
-			doLoadArtist(aArtist);
+			doLoadArtist(aArtist, true);
 		}
 	}
 
@@ -97,31 +98,39 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	@Override
 	public void onRefreshEvent(RefreshEvent aEvent) {
 		if (getView().getArtist() != null) {
-			doLoadArtist(getView().getArtist());
+			doLoadArtist(getView().getArtist(), false);
 		}
 	}
 
-	private void doLoadArtist(ArtistDto aArtist) {
+	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
 
 		getView().setArtist(aArtist);
 
 		log.fine("updating albums of artist " + aArtist + "...");
 
-		getView().setContentState(ContentState.LOADING);
+		if (aShouldShowLoadingState || getView().getContentState() != ContentState.LOADED) {
+			getView().setContentState(ContentState.LOADING);
+		}
 
 		if (currentRequest != null) {
 
 			currentRequest.cancel();
+
+			BusyIndicator.finishTask();
 
 			log.fine("active albums request cancelled");
 		}
 
 		if (aArtist != null && aArtist.getId() != null) {
 
+			BusyIndicator.startTask();
+
 			currentRequest = albumService.getByArtist(aArtist.getId(), new AsyncCallback<ArrayList<AlbumSongsDto>>() {
 
 				@Override
 				public void onSuccess(ArrayList<AlbumSongsDto> aResult) {
+
+					BusyIndicator.finishTask();
 
 					currentRequest = null;
 
@@ -134,9 +143,13 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 				@Override
 				public void onFailure(Throwable aCaught) {
 
+					BusyIndicator.finishTask();
+
 					currentRequest = null;
 
-					getView().setContentState(ContentState.ERROR);
+					if (getView().getContentState() == ContentState.LOADING) {
+						getView().setContentState(ContentState.ERROR);
+					}
 
 					log.log(Level.SEVERE, "could not update albums", aCaught);
 

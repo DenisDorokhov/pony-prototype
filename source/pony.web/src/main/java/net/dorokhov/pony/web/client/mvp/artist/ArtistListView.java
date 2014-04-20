@@ -80,11 +80,11 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	}
 
 	@Override
-	public void setSelectedArtist(ArtistDto aArtist) {
+	public void setSelectedArtist(ArtistDto aArtist, boolean aShouldScroll) {
 
 		artistListSelectionModel.setSelected(aArtist, true);
 
-		if (artists != null) {
+		if (aShouldScroll && artists != null) {
 
 			int index = list.getVisibleItems().indexOf(artistListSelectionModel.getSelectedObject());
 

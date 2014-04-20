@@ -49,6 +49,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private ContentState contentState;
 
+	private boolean shouldScrollToTop;
+
 	public AlbumListView() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -61,9 +63,11 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	@Override
 	public void setArtist(ArtistDto aArtist) {
 
+		ArtistDto oldArtist = artist;
+
 		artist = aArtist;
 
-		updateArtist();
+		updateArtist(oldArtist);
 	}
 
 	@Override
@@ -102,8 +106,11 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		getUiHandlers().onSongActivation(aSong);
 	}
 
-	private void updateArtist() {
+	private void updateArtist(ArtistDto aOldArtist) {
+
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
+
+		shouldScrollToTop = (artist != aOldArtist);
 	}
 
 	private void updateAlbums() {
@@ -126,6 +133,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		}
 
 		if (albums != null) {
+
 			for (AlbumSongsDto album : albums) {
 
 				AlbumView albumView = albumViewCache.size() > 0 ? albumViewCache.get(0) : null;
@@ -141,6 +149,18 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 				albumsPanel.add(albumView);
 			}
+
+			if (shouldScrollToTop) {
+
+				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+					@Override
+					public void execute() {
+						scroller.scrollToTop();
+					}
+				});
+
+				shouldScrollToTop = false;
+			}
 		}
 	}
 
@@ -153,16 +173,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 				break;
 
 			case LOADED:
-
 				deck.showWidget(content);
-
-				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-					@Override
-					public void execute() {
-						scroller.scrollToTop();
-					}
-				});
-
 				break;
 
 			default:

@@ -39,12 +39,20 @@ public class AbstractIntegrationCase extends AbstractCase {
 
 		super.baseTearDown();
 
-		if (installationService.getInstallation() != null) {
-			searchService.clearIndex();
-			storedFileService.deleteAll();
+		if (installationService != null && installationService.getInstallation() != null) {
+
+			if (searchService != null) {
+				searchService.clearIndex();
+			}
+			if (storedFileService != null) {
+				storedFileService.deleteAll();
+			}
+
 			installationService.uninstall();
 		}
 
-		context.close();
+		if (context != null) {
+			context.close();
+		}
 	}
 }
