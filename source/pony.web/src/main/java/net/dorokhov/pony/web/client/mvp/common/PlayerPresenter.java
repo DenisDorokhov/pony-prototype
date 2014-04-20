@@ -21,7 +21,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public interface MyView extends View, HasUiHandlers<PlayerUiHandlers> {
 
 		public static enum State {
-			INACTIVE, PLAYING, PAUSED
+			INACTIVE, PLAYING, PAUSED, ERROR
 		}
 
 		public double getVolume();
@@ -105,6 +105,11 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_ENDED, getView().getSong()));
 
 		startNextSong();
+	}
+
+	@Override
+	public void onError() {
+		log.fine("song " + getView().getSong() + " playback failed");
 	}
 
 	@Override

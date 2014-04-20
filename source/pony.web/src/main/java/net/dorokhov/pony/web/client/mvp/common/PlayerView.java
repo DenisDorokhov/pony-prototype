@@ -152,6 +152,9 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		aOptions.ended = function(event) {
 			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onEnd()();
 		};
+		aOptions.error = function(event) {
+			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
+		};
 
 		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
@@ -233,11 +236,18 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		getUiHandlers().onEnd();
 	}
 
+	private void onError() {
+
+		state = State.ERROR;
+
+		getUiHandlers().onError();
+	}
+
 	private void onPlayPause() {
-		if (state == State.PAUSED) {
-			play();
-		} else if (state == State.PLAYING) {
+		if (state == State.PLAYING) {
 			pause();
+		} else {
+			play();
 		}
 	}
 

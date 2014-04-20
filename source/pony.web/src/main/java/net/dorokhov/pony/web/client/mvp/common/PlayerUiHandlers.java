@@ -7,6 +7,7 @@ public interface PlayerUiHandlers extends UiHandlers {
 	public void onPlay();
 	public void onPause();
 	public void onEnd();
+	public void onError();
 
 	public void onPositionChange();
 
