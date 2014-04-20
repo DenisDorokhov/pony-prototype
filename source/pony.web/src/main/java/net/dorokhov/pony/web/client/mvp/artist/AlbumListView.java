@@ -11,13 +11,12 @@ import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, AlbumView.Delegate {
 
-	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {
-
-	}
+	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
 	private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
@@ -41,6 +40,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	@UiField
 	VerticalPanel albumsPanel;
+
+	private List<AlbumView> albumViewCache = new ArrayList<AlbumView>();
 
 	private ArtistDto artist;
 
@@ -107,12 +108,33 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private void updateAlbums() {
 
-		albumsPanel.clear();
+		while (albumsPanel.getWidgetCount() > 0) {
+
+			Widget widget = albumsPanel.getWidget(0);
+
+			if (widget instanceof AlbumView) {
+
+				AlbumView view = (AlbumView) widget;
+
+				view.setAlbum(null);
+				view.setDelegate(null);
+
+				albumViewCache.add(view);
+			}
+
+			albumsPanel.remove(0);
+		}
 
 		if (albums != null) {
 			for (AlbumSongsDto album : albums) {
 
-				AlbumView albumView = new AlbumView();
+				AlbumView albumView = albumViewCache.size() > 0 ? albumViewCache.get(0) : null;
+
+				if (albumView != null) {
+					albumViewCache.remove(0);
+				} else {
+					albumView = new AlbumView();
+				}
 
 				albumView.setAlbum(album);
 				albumView.setDelegate(this);
