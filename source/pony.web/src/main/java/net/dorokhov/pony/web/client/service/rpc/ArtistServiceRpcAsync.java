@@ -6,7 +6,7 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
 
-public interface ArtistServiceAsync {
+public interface ArtistServiceRpcAsync {
 
 	public Request getCount(AsyncCallback<Long> aCallback);
 

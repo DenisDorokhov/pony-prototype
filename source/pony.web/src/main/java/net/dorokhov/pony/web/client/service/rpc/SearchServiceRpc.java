@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import net.dorokhov.pony.web.shared.SearchDto;
 
 @RemoteServiceRelativePath("rpc/searchService")
-public interface SearchService extends RemoteService {
+public interface SearchServiceRpc extends RemoteService {
 
 	public SearchDto search(String aQuery);
 

@@ -16,6 +16,8 @@ import net.dorokhov.pony.web.client.mvp.artist.AlbumListView;
 import net.dorokhov.pony.web.client.mvp.artist.ArtistListPresenter;
 import net.dorokhov.pony.web.client.mvp.artist.ArtistListView;
 import net.dorokhov.pony.web.client.mvp.common.*;
+import net.dorokhov.pony.web.client.service.LibraryScanner;
+import net.dorokhov.pony.web.client.service.LibraryScannerImpl;
 import net.dorokhov.pony.web.client.service.rpc.*;
 
 public class ApplicationModule extends AbstractPresenterModule {
@@ -25,11 +27,13 @@ public class ApplicationModule extends AbstractPresenterModule {
 
 		install(new DefaultModule(DefaultPlaceManager.class));
 
-		bind(ArtistServiceAsync.class).in(Singleton.class);
-		bind(AlbumServiceAsync.class).in(Singleton.class);
-		bind(SongServiceAsync.class).in(Singleton.class);
-		bind(SearchServiceAsync.class).in(Singleton.class);
-		bind(LibraryServiceAsync.class).in(Singleton.class);
+		bind(ArtistServiceRpcAsync.class).in(Singleton.class);
+		bind(AlbumServiceRpcAsync.class).in(Singleton.class);
+		bind(SongServiceRpcAsync.class).in(Singleton.class);
+		bind(SearchServiceRpcAsync.class).in(Singleton.class);
+		bind(LibraryServiceRpcAsync.class).in(Singleton.class);
+
+		bind(LibraryScanner.class).to(LibraryScannerImpl.class).in(Singleton.class);
 
 		bindPresenter(ApplicationPresenter.class, ApplicationPresenter.MyView.class, ApplicationView.class, ApplicationPresenter.MyProxy.class);
 

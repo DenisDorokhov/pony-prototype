@@ -16,7 +16,7 @@ import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.PlayList;
 import net.dorokhov.pony.web.client.service.PlayListImpl;
-import net.dorokhov.pony.web.client.service.rpc.AlbumServiceAsync;
+import net.dorokhov.pony.web.client.service.rpc.AlbumServiceRpcAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -42,12 +42,12 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private final AlbumServiceAsync albumService;
+	private final AlbumServiceRpcAsync albumService;
 
 	private Request currentRequest;
 
 	@Inject
-	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceAsync aAlbumService) {
+	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
 
 		super(aEventBus, aView);
 

@@ -1,13 +1,13 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.rpc.ArtistService;
+import net.dorokhov.pony.web.client.service.rpc.ArtistServiceRpc;
 import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-public class ArtistServiceServlet extends AbstractServiceServlet implements ArtistService {
+public class ArtistServiceRpcServlet extends AbstractServiceRpcServlet implements ArtistServiceRpc {
 
 	private ArtistServiceFacade artistServiceFacade;
 

@@ -9,7 +9,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-public abstract class AbstractServiceServlet extends RemoteServiceServlet {
+public abstract class AbstractServiceRpcServlet extends RemoteServiceServlet {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 

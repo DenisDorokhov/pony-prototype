@@ -177,7 +177,7 @@ public class DtoServiceImpl implements DtoService {
 
 			request = attributes.getRequest();
 
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			log.warn("could not get current request", e);
 		}
 

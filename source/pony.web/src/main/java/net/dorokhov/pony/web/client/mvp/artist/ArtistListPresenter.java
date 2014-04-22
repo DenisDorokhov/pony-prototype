@@ -12,7 +12,7 @@ import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
-import net.dorokhov.pony.web.client.service.rpc.ArtistServiceAsync;
+import net.dorokhov.pony.web.client.service.rpc.ArtistServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private final ArtistServiceAsync artistService;
+	private final ArtistServiceRpcAsync artistService;
 
 	private final HashMap<String, ArtistDto> artistMap = new HashMap<String, ArtistDto>();
 
@@ -46,7 +46,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 	private Request currentRequest;
 
 	@Inject
-	public ArtistListPresenter(EventBus aEventBus, MyView aView, ArtistServiceAsync aArtistService) {
+	public ArtistListPresenter(EventBus aEventBus, MyView aView, ArtistServiceRpcAsync aArtistService) {
 
 		super(aEventBus, aView);
 

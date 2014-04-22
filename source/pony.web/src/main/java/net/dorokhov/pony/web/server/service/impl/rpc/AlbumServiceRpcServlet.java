@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl.rpc;
 
-import net.dorokhov.pony.web.client.service.rpc.AlbumService;
+import net.dorokhov.pony.web.client.service.rpc.AlbumServiceRpc;
 import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
 import net.dorokhov.pony.web.shared.AlbumDto;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -8,7 +8,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-public class AlbumServiceServlet extends AbstractServiceServlet implements AlbumService {
+public class AlbumServiceRpcServlet extends AbstractServiceRpcServlet implements AlbumServiceRpc {
 
 	private AlbumServiceFacade albumServiceFacade;
 

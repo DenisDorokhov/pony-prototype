@@ -8,7 +8,7 @@ import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import java.util.ArrayList;
 
 @RemoteServiceRelativePath("rpc/albumService")
-public interface AlbumService extends RemoteService {
+public interface AlbumServiceRpc extends RemoteService {
 
 	public Long getCountByArtist(Long aArtistId);
 

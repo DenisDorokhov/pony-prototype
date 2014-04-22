@@ -88,7 +88,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		statusReference.set(new LibraryScannerStatus(aTargetFiles, "preparing", 0.0, 1));
 
 		synchronized (lockDelegates) {
-			for (Delegate next : delegates) {
+			for (Delegate next : new ArrayList<Delegate>(delegates)) {
 				try {
 					next.onScanStart();
 				} catch (Exception e) {
@@ -107,7 +107,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			doScan(aTargetFiles, result);
 
 			synchronized (lockDelegates) {
-				for (Delegate next : delegates) {
+				for (Delegate next : new ArrayList<Delegate>(delegates)) {
 					try {
 						next.onScanFinish(result);
 					} catch (Exception e) {
@@ -119,7 +119,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		} catch (Exception processingException) {
 
 			synchronized (lockDelegates) {
-				for (Delegate next : delegates) {
+				for (Delegate next : new ArrayList<Delegate>(delegates)) {
 					try {
 						next.onScanFail(processingException);
 					} catch (Exception e) {
@@ -393,7 +393,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 			statusReference.set(new LibraryScannerStatus(result.getTargetFiles(), "importingSongs", progress, 2));
 
 			synchronized (lockDelegates) {
-				for (Delegate next : delegates) {
+				for (Delegate next : new ArrayList<Delegate>(delegates)) {
 					try {
 						next.onScanProgress(getStatus());
 					} catch (Exception e) {
