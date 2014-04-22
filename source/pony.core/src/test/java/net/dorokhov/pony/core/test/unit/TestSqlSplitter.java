@@ -19,7 +19,7 @@ public class TestSqlSplitter {
 	}
 
 	@Test
-	public void testSplitting() {
+	public void test() {
 		
 		String sqlScript =
 				"-- This is SQL comment with ;;; separator inside \n" +
