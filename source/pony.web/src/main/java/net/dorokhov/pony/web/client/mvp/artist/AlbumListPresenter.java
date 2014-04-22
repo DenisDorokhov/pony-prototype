@@ -67,7 +67,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		super.onBind();
 
-		addRegisteredHandler(RefreshEvent.REFRESH_SELECTED, this);
+		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		PlayList playList = new PlayListImpl(songs, songs.indexOf(aSong));
 
-		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYBACK_REQUESTED, playList));
+		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, playList));
 	}
 
 	@Override

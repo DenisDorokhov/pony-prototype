@@ -25,7 +25,7 @@ public class ToolbarPresenter extends PresenterWidget<ToolbarPresenter.MyView> i
 
 	@Override
 	public void onRefreshRequested() {
-		getEventBus().fireEvent(new RefreshEvent(RefreshEvent.REFRESH_SELECTED));
+		getEventBus().fireEvent(new RefreshEvent(RefreshEvent.REFRESH_REQUESTED));
 	}
 
 	@Override

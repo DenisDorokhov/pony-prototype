@@ -68,7 +68,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		super.onBind();
 
-		addRegisteredHandler(PlayListEvent.PLAYBACK_REQUESTED, this);
+		addRegisteredHandler(PlayListEvent.PLAYLIST_CHANGE, this);
 	}
 
 	@Override

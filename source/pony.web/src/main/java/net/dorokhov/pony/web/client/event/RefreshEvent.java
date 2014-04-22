@@ -9,7 +9,7 @@ public class RefreshEvent extends AbstractEvent<RefreshEvent.Handler> {
 		public void onRefreshEvent(RefreshEvent aEvent);
 	}
 
-	public static final Type<Handler> REFRESH_SELECTED = new Type<Handler>();
+	public static final Type<Handler> REFRESH_REQUESTED = new Type<Handler>();
 
 	public RefreshEvent(Type<Handler> aAssociatedType) {
 		super(aAssociatedType);

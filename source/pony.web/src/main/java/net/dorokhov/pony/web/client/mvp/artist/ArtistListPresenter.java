@@ -67,7 +67,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 		super.onBind();
 
-		addRegisteredHandler(RefreshEvent.REFRESH_SELECTED, this);
+		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 	}
 
 	@Override
