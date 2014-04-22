@@ -7,18 +7,18 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 
-import java.util.logging.Logger;
-
 public class ToolbarPresenter extends PresenterWidget<ToolbarPresenter.MyView> implements ToolbarUiHandlers {
 
 	public interface MyView extends View, HasUiHandlers<ToolbarUiHandlers> {}
 
-	private final Logger log = Logger.getLogger(getClass().getName());
+	private final SettingsPresenter settingsPresenter;
 
 	@Inject
-	public ToolbarPresenter(EventBus aEventBus, MyView aView) {
+	public ToolbarPresenter(EventBus aEventBus, MyView aView, SettingsPresenter aPresenter) {
 
 		super(aEventBus, aView);
+
+		settingsPresenter = aPresenter;
 
 		getView().setUiHandlers(this);
 	}
@@ -30,6 +30,6 @@ public class ToolbarPresenter extends PresenterWidget<ToolbarPresenter.MyView> i
 
 	@Override
 	public void onSettingsRequested() {
-		log.info("settings requested");
+		addToPopupSlot(settingsPresenter);
 	}
 }

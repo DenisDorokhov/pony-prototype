@@ -40,6 +40,7 @@ public class ApplicationModule extends AbstractPresenterModule {
 		bindSingletonPresenterWidget(LogoPresenter.class, LogoPresenter.MyView.class, LogoView.class);
 		bindSingletonPresenterWidget(PlayerPresenter.class, PlayerPresenter.MyView.class, PlayerView.class);
 		bindSingletonPresenterWidget(ToolbarPresenter.class, ToolbarPresenter.MyView.class, ToolbarView.class);
+		bindSingletonPresenterWidget(SettingsPresenter.class, SettingsPresenter.MyView.class, SettingsView.class);
 
 		bindPresenter(ArtistsPresenter.class, ArtistsPresenter.MyView.class, ArtistsView.class, ArtistsPresenter.MyProxy.class);
 
