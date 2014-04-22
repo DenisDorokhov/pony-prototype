@@ -166,19 +166,28 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private void updateContentState() {
 
-		switch (getContentState()) {
+		if (getContentState() == null) {
 
-			case LOADING:
-				deck.showWidget(loadingLabel);
-				break;
+			deck.setVisible(false);
 
-			case LOADED:
-				deck.showWidget(content);
-				break;
+		} else {
 
-			default:
-				deck.showWidget(errorLabel);
-				break;
+			deck.setVisible(true);
+
+			switch (getContentState()) {
+
+				case LOADING:
+					deck.showWidget(loadingLabel);
+					break;
+
+				case LOADED:
+					deck.showWidget(content);
+					break;
+
+				default:
+					deck.showWidget(errorLabel);
+					break;
+			}
 		}
 	}
 }

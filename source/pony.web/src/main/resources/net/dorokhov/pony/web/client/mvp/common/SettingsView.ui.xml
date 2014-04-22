@@ -1,16 +1,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:style>
-		.popup {
-			width: 400px;
-			height: 300px;
-		}
-	</ui:style>
-
 	<g:PopupPanel autoHideOnHistoryEventsEnabled="true" autoHideEnabled="true" glassEnabled="true">
-		<g:HTMLPanel styleName="{style.popup}">
-			Settings
+		<g:HTMLPanel width="400px" height="200px">
+			Current status: <g:InlineLabel ui:field="progressLabel" />
+			<g:Button ui:field="scanButton" text="Scan" />
 		</g:HTMLPanel>
 	</g:PopupPanel>
 

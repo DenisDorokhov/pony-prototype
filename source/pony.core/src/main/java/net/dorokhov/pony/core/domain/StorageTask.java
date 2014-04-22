@@ -34,6 +34,14 @@ public class StorageTask {
 	private String userData;
 
 	public StorageTask(Type aType, File aFile) {
+
+		if (aType == null) {
+			throw new NullPointerException();
+		}
+		if (aFile == null) {
+			throw new NullPointerException();
+		}
+
 		type = aType;
 		file = aFile;
 	}
@@ -92,7 +100,7 @@ public class StorageTask {
 				"type=" + type +
 				", mimeType='" + mimeType + '\'' +
 				", checksum='" + checksum + '\'' +
-				", file=" + (file != null ? file.getAbsolutePath() : null) +
+				", file=" + file.getAbsolutePath() +
 				'}';
 	}
 }
