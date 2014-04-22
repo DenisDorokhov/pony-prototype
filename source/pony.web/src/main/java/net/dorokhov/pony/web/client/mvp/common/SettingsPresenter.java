@@ -72,7 +72,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 		refreshTimer = new Timer() {
 			@Override
 			public void run() {
-				getEventBus().fireEvent(new RefreshEvent(RefreshEvent.REFRESH_REQUESTED));
+				requestRefresh();
 			}
 		};
 		refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
@@ -106,10 +106,16 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 		refreshTimer.cancel();
 
 		refreshTimer = null;
+
+		requestRefresh();
 	}
 
 	@Override
 	public void onScanRequested() {
 		libraryScanner.scan();
+	}
+
+	private void requestRefresh() {
+		getEventBus().fireEvent(new RefreshEvent(RefreshEvent.REFRESH_REQUESTED));
 	}
 }
