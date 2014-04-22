@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class TestMimeTypeServiceImpl {
+public class MimeTypeServiceImplTest {
 
 	private MimeTypeServiceImpl service;
 

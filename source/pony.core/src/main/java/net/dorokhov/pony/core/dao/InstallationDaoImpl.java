@@ -1,22 +1,19 @@
-package net.dorokhov.pony.core.dao.impl;
+package net.dorokhov.pony.core.dao;
 
-import java.io.InputStream;
-import java.sql.DatabaseMetaData;
-
-import javax.persistence.EntityManager;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-
-import net.dorokhov.pony.core.dao.InstallationDao;
-import net.dorokhov.pony.core.utility.SqlSplitter;
 import net.dorokhov.pony.core.domain.Installation;
-
+import net.dorokhov.pony.core.utility.SqlSplitter;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.sql.DatabaseMetaData;
 
 /**
  * Installation DAO - JPA implementation.

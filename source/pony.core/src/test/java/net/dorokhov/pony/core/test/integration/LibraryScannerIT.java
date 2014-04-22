@@ -12,7 +12,7 @@ import java.text.Format;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ITLibraryScanner extends AbstractIntegrationCase {
+public class LibraryScannerIT extends AbstractIntegrationCase {
 
 	private final Format progressFormatter = new DecimalFormat("###.##");
 

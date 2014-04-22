@@ -1,9 +1,10 @@
 package net.dorokhov.pony.core.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import net.dorokhov.pony.core.dao.entity.AbstractEntity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Configuration entity.
@@ -12,7 +13,15 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "configuration")
-public class Configuration extends AbstractEntity<String> {
+public class Configuration implements AbstractEntity<String> {
+
+	private String id;
+
+	private Date creationDate;
+
+	private Date updateDate;
+
+	private Long version;
 
 	private String value;
 
@@ -35,6 +44,55 @@ public class Configuration extends AbstractEntity<String> {
 
 	public Configuration(String aId, boolean aValue) {
 		this(aId, String.valueOf(aValue));
+	}
+
+	@Override
+	@Id
+	@Column(name = "id")
+	@NotNull
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String aId) {
+		id = aId;
+	}
+
+	@Override
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "creation_date")
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	@Override
+	public void setCreationDate(Date aCreationDate) {
+		creationDate = aCreationDate;
+	}
+
+	@Override
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "update_date")
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	@Override
+	public void setUpdateDate(Date aUpdateDate) {
+		updateDate = aUpdateDate;
+	}
+
+	@Override
+	@Version
+	@Column(name = "version")
+	public Long getVersion() {
+		return version;
+	}
+
+	@Override
+	public void setVersion(Long aVersion) {
+		version = aVersion;
 	}
 
 	@Column(name = "value")

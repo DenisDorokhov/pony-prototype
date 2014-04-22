@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "song")
 @Indexed
-public class Song extends AbstractEntity<Long> implements Comparable<Song> {
+public class Song extends BaseEntity<Long> implements Comparable<Song> {
 
 	private SongFile file;
 

@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 
-public class TestChecksumServiceImpl {
+public class ChecksumServiceImplTest {
 
 	private static final File TEST_FILE = new File(FileUtils.getTempDirectory(), "TestChecksumServiceImpl.tmp");
 	private static final String TEST_CONTENT = "test";

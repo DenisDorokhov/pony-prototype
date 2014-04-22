@@ -12,7 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 
-public class TestSongDataReaderImpl {
+public class SongDataReaderImplTest {
 
 	private static final String TEST_FILE_PATH = "mp3/Metallica-Battery-with_artwork.mp3";
 	private static final File TEST_FILE = new File(FileUtils.getTempDirectory(), "TestSongDataReaderImpl.mp3");

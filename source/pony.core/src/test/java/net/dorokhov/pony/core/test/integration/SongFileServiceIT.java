@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ITSongFileService extends AbstractIntegrationCase {
+public class SongFileServiceIT extends AbstractIntegrationCase {
 
 	private SongFileService service;
 
@@ -38,7 +38,7 @@ public class ITSongFileService extends AbstractIntegrationCase {
 
 		checkSongFile(songFile);
 
-		assertEquals((long)service.getCount(), 1L);
+		assertEquals(1L, service.getCount());
 
 		List<SongFile> songFileList = service.getAll(new PageRequest(0, 100)).getContent();
 
@@ -112,23 +112,23 @@ public class ITSongFileService extends AbstractIntegrationCase {
 		assertNotNull(aSongFile.getCreationDate());
 		assertNotNull(aSongFile.getUpdateDate());
 
-		assertEquals(aSongFile.getPath(), "path1");
-		assertEquals(aSongFile.getFormat(), "type1");
-		assertEquals((long)aSongFile.getSize(), 1000L);
+		assertEquals("path1", aSongFile.getPath());
+		assertEquals("type1", aSongFile.getFormat());
+		assertEquals(Long.valueOf(1000), aSongFile.getSize());
 
-		assertEquals((int)aSongFile.getDuration(), 100);
-		assertEquals((long)aSongFile.getBitRate(), 2000L);
+		assertEquals(Integer.valueOf(100), aSongFile.getDuration());
+		assertEquals(Long.valueOf(2000), aSongFile.getBitRate());
 
-		assertEquals((int)aSongFile.getDiscNumber(), 1);
-		assertEquals((int)aSongFile.getDiscCount(), 2);
+		assertEquals(Integer.valueOf(1), aSongFile.getDiscNumber());
+		assertEquals(Integer.valueOf(2), aSongFile.getDiscCount());
 
-		assertEquals((int)aSongFile.getTrackNumber(), 2);
-		assertEquals((int)aSongFile.getTrackCount(), 8);
+		assertEquals(Integer.valueOf(2), aSongFile.getTrackNumber());
+		assertEquals(Integer.valueOf(8), aSongFile.getTrackCount());
 
-		assertEquals(aSongFile.getName(), "name1");
-		assertEquals(aSongFile.getArtist(), "artist1");
-		assertEquals(aSongFile.getAlbum(), "album1");
-		assertEquals((int)aSongFile.getYear(), 1986);
+		assertEquals("name1", aSongFile.getName());
+		assertEquals("artist1", aSongFile.getArtist());
+		assertEquals("album1", aSongFile.getAlbum());
+		assertEquals(Integer.valueOf(1986), aSongFile.getYear());
 	}
 
 }

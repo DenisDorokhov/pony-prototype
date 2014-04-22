@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 @Indexed
-public class Album extends AbstractEntity<Long> implements Comparable<Album> {
+public class Album extends BaseEntity<Long> implements Comparable<Album> {
 
 	private String name;
 
