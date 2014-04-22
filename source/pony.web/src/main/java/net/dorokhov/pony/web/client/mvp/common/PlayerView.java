@@ -319,7 +319,11 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}
 
 	private void onPreviousRequested() {
-		getUiHandlers().onPreviousSongRequested();
+		if (getPosition() >= 3) {
+			setPosition(0.0);
+		} else {
+			getUiHandlers().onPreviousSongRequested();
+		}
 	}
 
 	private void onNextRequested() {
