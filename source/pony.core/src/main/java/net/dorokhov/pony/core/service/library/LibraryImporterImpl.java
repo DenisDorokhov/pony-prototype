@@ -42,7 +42,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 	private SongDataReader songDataReader;
 
-	private ImageScalingService imageScalingService;
+	private ThumbnailService thumbnailService;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -80,8 +80,8 @@ public class LibraryImporterImpl implements LibraryImporter {
 	}
 
 	@Autowired
-	public void setImageScalingService(ImageScalingService aImageScalingService) {
-		imageScalingService = aImageScalingService;
+	public void setThumbnailService(ThumbnailService aThumbnailService) {
+		thumbnailService = aThumbnailService;
 	}
 
 	@Override
@@ -342,7 +342,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 		File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_INTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-		imageScalingService.scaleImage(aSongData.getArtwork().getBinaryData(), file);
+		thumbnailService.makeThumbnail(aSongData.getArtwork().getBinaryData(), file);
 
 		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
 

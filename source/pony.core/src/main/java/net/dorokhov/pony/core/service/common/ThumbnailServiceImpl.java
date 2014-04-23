@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.common;
 
 import net.coobird.thumbnailator.Thumbnails;
-import net.dorokhov.pony.core.service.ImageScalingService;
+import net.dorokhov.pony.core.service.ThumbnailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 @Service
-public class ImageScalingServiceImpl implements ImageScalingService {
+public class ThumbnailServiceImpl implements ThumbnailService {
 
 	private int imageWidth = 100;
 
@@ -65,12 +65,14 @@ public class ImageScalingServiceImpl implements ImageScalingService {
 	}
 
 	@Override
-	public void scaleImage(byte[] aImage, File aOutFile) throws Exception {
-		Thumbnails.of(new ByteArrayInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).toOutputStream(new FileOutputStream(aOutFile));
+	public void makeThumbnail(byte[] aImage, File aOutFile) throws Exception {
+		Thumbnails.of(new ByteArrayInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).
+				toOutputStream(new FileOutputStream(aOutFile)); // using toOutputStream instead of toFile to preserve original image format
 	}
 
 	@Override
-	public void scaleImage(File aImage, File aOutFile) throws Exception {
-		Thumbnails.of(new FileInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).toOutputStream(new FileOutputStream(aOutFile));
+	public void makeThumbnail(File aImage, File aOutFile) throws Exception {
+		Thumbnails.of(new FileInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).
+				toOutputStream(new FileOutputStream(aOutFile)); // using toOutputStream instead of toFile to preserve original image format
 	}
 }

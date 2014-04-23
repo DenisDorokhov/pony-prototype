@@ -43,7 +43,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 	private MimeTypeService mimeTypeService;
 
-	private ImageScalingService imageScalingService;
+	private ThumbnailService thumbnailService;
 
 	@Autowired
 	public void setSongFileService(SongFileService aSongFileService) {
@@ -86,8 +86,8 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	}
 
 	@Autowired
-	public void setImageScalingService(ImageScalingService aImageScalingService) {
-		imageScalingService = aImageScalingService;
+	public void setThumbnailService(ThumbnailService aThumbnailService) {
+		thumbnailService = aThumbnailService;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -449,7 +449,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 					File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_EXTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-					imageScalingService.scaleImage(artworkFile, file);
+					thumbnailService.makeThumbnail(artworkFile, file);
 
 					StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
 
