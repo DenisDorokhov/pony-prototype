@@ -52,7 +52,7 @@ public class ThumbnailServiceImplTest {
 	}
 
 	@Test
-	public void testSizeSettings() {
+	public void testConfiguration() {
 
 		service.setImageSize("23,45");
 

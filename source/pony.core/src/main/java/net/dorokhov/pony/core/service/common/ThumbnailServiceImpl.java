@@ -19,6 +19,22 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 
 	private double imageQuality = 1.0;
 
+	public int getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(int aImageWidth) {
+		imageWidth = aImageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(int aImageHeight) {
+		imageHeight = aImageHeight;
+	}
+
 	@Value("${library.artworkSize}")
 	public void setImageSize(String aArtworkSize) {
 
@@ -38,22 +54,6 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 		} else {
 			throw new RuntimeException("Incorrect artwork size value [" + aArtworkSize + "]");
 		}
-	}
-
-	public int getImageWidth() {
-		return imageWidth;
-	}
-
-	public void setImageWidth(int aImageWidth) {
-		imageWidth = aImageWidth;
-	}
-
-	public int getImageHeight() {
-		return imageHeight;
-	}
-
-	public void setImageHeight(int aImageHeight) {
-		imageHeight = aImageHeight;
 	}
 
 	public double getImageQuality() {

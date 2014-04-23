@@ -37,7 +37,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 	private StoredFileService storedFileService;
 
-	private ExternalArtworkService externalArtworkService;
+	private ArtworkService artworkService;
 
 	private ChecksumService checksumService;
 
@@ -71,8 +71,8 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	}
 
 	@Autowired
-	public void setExternalArtworkService(ExternalArtworkService aExternalArtworkService) {
-		externalArtworkService = aExternalArtworkService;
+	public void setArtworkService(ArtworkService aArtworkService) {
+		artworkService = aArtworkService;
 	}
 
 	@Autowired
@@ -433,7 +433,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 	private void fetchAlbumArtwork(Album aAlbum, Song aSong, File aFolder) throws Exception {
 
-		File artworkFile = externalArtworkService.fetchArtwork(aFolder);
+		File artworkFile = artworkService.discoverArtwork(aFolder);
 
 		if (artworkFile != null) {
 
