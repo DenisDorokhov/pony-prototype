@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 public class ChecksumServiceImplTest {
 
@@ -41,7 +40,6 @@ public class ChecksumServiceImplTest {
 		FileUtils.write(TEST_FILE, TEST_CONTENT);
 
 		Assert.assertEquals(TEST_CHECKSUM, service.calculateChecksum(TEST_FILE));
-		Assert.assertEquals(TEST_CHECKSUM, service.calculateChecksum(new FileInputStream(TEST_FILE)));
 	}
 
 }

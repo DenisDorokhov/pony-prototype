@@ -245,9 +245,9 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 			}
 
 			// Append type extension
-			String mimeType = mimeTypeService.getFileExtension(aTask.getMimeType());
-			if (mimeType != null) {
-				buf.append(".").append(mimeType);
+			String fileExtension = mimeTypeService.getFileExtension(aTask.getMimeType());
+			if (fileExtension != null) {
+				buf.append(".").append(fileExtension);
 			}
 
 			file = new File(buf.toString());
