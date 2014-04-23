@@ -13,11 +13,11 @@ import java.io.FileOutputStream;
 @Service
 public class ImageScalingServiceImpl implements ImageScalingService {
 
-	private static final double IMAGE_QUALITY = 1.0;
-
 	private int imageWidth = 100;
 
 	private int imageHeight = 100;
+
+	private double imageQuality = 1.0;
 
 	@Value("${library.artworkSize}")
 	public void setImageSize(String aArtworkSize) {
@@ -40,13 +40,37 @@ public class ImageScalingServiceImpl implements ImageScalingService {
 		}
 	}
 
-	@Override
-	public void scaleImage(byte[] aImage, String aFormat, File aOutFile) throws Exception {
-		Thumbnails.of(new ByteArrayInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(IMAGE_QUALITY).toOutputStream(new FileOutputStream(aOutFile));
+	public int getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(int aImageWidth) {
+		imageWidth = aImageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(int aImageHeight) {
+		imageHeight = aImageHeight;
+	}
+
+	public double getImageQuality() {
+		return imageQuality;
+	}
+
+	public void setImageQuality(double aImageQuality) {
+		imageQuality = aImageQuality;
 	}
 
 	@Override
-	public void scaleImage(File aImage, String aFormat, File aOutFile) throws Exception {
-		Thumbnails.of(new FileInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(IMAGE_QUALITY).toOutputStream(new FileOutputStream(aOutFile));
+	public void scaleImage(byte[] aImage, File aOutFile) throws Exception {
+		Thumbnails.of(new ByteArrayInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).toOutputStream(new FileOutputStream(aOutFile));
+	}
+
+	@Override
+	public void scaleImage(File aImage, File aOutFile) throws Exception {
+		Thumbnails.of(new FileInputStream(aImage)).size(imageWidth, imageHeight).outputQuality(getImageQuality()).toOutputStream(new FileOutputStream(aOutFile));
 	}
 }

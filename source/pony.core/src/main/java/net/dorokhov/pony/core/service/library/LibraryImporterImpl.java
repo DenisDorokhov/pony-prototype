@@ -42,8 +42,6 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 	private SongDataReader songDataReader;
 
-	private MimeTypeService mimeTypeService;
-
 	private ImageScalingService imageScalingService;
 
 	@Autowired
@@ -79,11 +77,6 @@ public class LibraryImporterImpl implements LibraryImporter {
 	@Autowired
 	public void setSongDataReader(SongDataReader aSongDataReader) {
 		songDataReader = aSongDataReader;
-	}
-
-	@Autowired
-	public void setMimeTypeService(MimeTypeService aMimeTypeService) {
-		mimeTypeService = aMimeTypeService;
 	}
 
 	@Autowired
@@ -349,7 +342,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 		File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_INTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-		imageScalingService.scaleImage(aSongData.getArtwork().getBinaryData(), mimeTypeService.getFileExtension(aSongData.getArtwork().getMimeType()), file);
+		imageScalingService.scaleImage(aSongData.getArtwork().getBinaryData(), file);
 
 		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
 

@@ -449,7 +449,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 					File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_EXTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-					imageScalingService.scaleImage(artworkFile, mimeTypeService.getFileExtension(mimeType), file);
+					imageScalingService.scaleImage(artworkFile, file);
 
 					StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
 

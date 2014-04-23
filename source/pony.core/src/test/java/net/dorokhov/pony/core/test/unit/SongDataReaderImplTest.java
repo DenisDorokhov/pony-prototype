@@ -14,7 +14,7 @@ import java.io.File;
 
 public class SongDataReaderImplTest {
 
-	private static final String TEST_FILE_PATH = "mp3/Metallica-Battery-with_artwork.mp3";
+	private static final String TEST_FILE_PATH = "data/Metallica-Battery-with_artwork.mp3"; // see tags in data/mp3-info.txt
 	private static final File TEST_FILE = new File(FileUtils.getTempDirectory(), "TestSongDataReaderImpl.mp3");
 
 	private SongDataReaderImpl service;
