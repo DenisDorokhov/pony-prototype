@@ -84,7 +84,7 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			Assert.assertEquals(e.getConstraintViolations().size(), 6);
+			Assert.assertEquals(e.getConstraintViolations().size(), 6); // null path, format, mimeType, size, duration, bitRate
 		}
 
 		Assert.assertTrue(isExceptionThrown);

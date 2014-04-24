@@ -86,6 +86,7 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 		Album album = new Album();
 
 		album.setName(null);
+		album.setArtist(null);
 
 		boolean isExceptionThrown = false;
 
@@ -95,7 +96,7 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			Assert.assertEquals(2, e.getConstraintViolations().size());
+			Assert.assertEquals(2, e.getConstraintViolations().size()); // null name, artist
 		}
 
 		Assert.assertTrue(isExceptionThrown);

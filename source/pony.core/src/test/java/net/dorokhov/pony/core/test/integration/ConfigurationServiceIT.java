@@ -50,7 +50,7 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			Assert.assertEquals(1, e.getConstraintViolations().size());
+			Assert.assertEquals(1, e.getConstraintViolations().size()); // null id
 		}
 
 		Assert.assertTrue(isExceptionThrown);

@@ -39,7 +39,6 @@ public class ThumbnailServiceImplTest {
 
 		service.setImageWidth(TEST_TARGET_WIDTH);
 		service.setImageHeight(TEST_TARGET_HEIGHT);
-		service.setImageQuality(0.5);
 
 		File sourceFile = new ClassPathResource(TEST_FILE_PATH).getFile();
 

@@ -76,7 +76,7 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			Assert.assertEquals(1, e.getConstraintViolations().size());
+			Assert.assertEquals(1, e.getConstraintViolations().size()); // null name
 		}
 
 		Assert.assertTrue(isExceptionThrown);

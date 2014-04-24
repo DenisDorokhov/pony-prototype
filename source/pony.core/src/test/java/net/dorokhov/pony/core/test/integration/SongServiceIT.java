@@ -88,7 +88,7 @@ public class SongServiceIT extends AbstractIntegrationCase {
 
 			isExceptionThrown = true;
 
-			Assert.assertEquals(2, e.getConstraintViolations().size());
+			Assert.assertEquals(2, e.getConstraintViolations().size()); // null file, album
 		}
 
 		Assert.assertTrue(isExceptionThrown);
