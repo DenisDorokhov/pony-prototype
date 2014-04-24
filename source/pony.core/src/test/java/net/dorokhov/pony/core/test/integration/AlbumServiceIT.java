@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 
+import javax.validation.ConstraintViolationException;
+
 public class AlbumServiceIT extends AbstractIntegrationCase {
 
 	private static final String TEST_ARTWORK_PATH = "data/image.png";
@@ -76,6 +78,27 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 
 		Assert.assertEquals(1, albumService.getCountByArtwork(artwork.getId()));
 		Assert.assertEquals(album.getId(), albumService.getByArtwork(album.getId()).get(0).getId());
+	}
+
+	@Test
+	public void testValidation() {
+
+		Album album = new Album();
+
+		album.setName(null);
+
+		boolean isExceptionThrown = false;
+
+		try {
+			albumService.validate(album);
+		} catch (ConstraintViolationException e) {
+
+			isExceptionThrown = true;
+
+			Assert.assertEquals(2, e.getConstraintViolations().size());
+		}
+
+		Assert.assertTrue(isExceptionThrown);
 	}
 
 	private void doTestSavingAndReading(Artist aArtist) {

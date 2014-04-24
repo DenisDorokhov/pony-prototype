@@ -6,6 +6,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Song entity.
@@ -22,6 +23,7 @@ public class Song extends BaseEntity<Long> implements Comparable<Song> {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "song_file_id", unique = true)
 	@IndexedEmbedded
+	@NotNull
 	public SongFile getFile() {
 		return file;
 	}
@@ -32,6 +34,7 @@ public class Song extends BaseEntity<Long> implements Comparable<Song> {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "album_id")
+	@NotNull
 	public Album getAlbum() {
 		return album;
 	}

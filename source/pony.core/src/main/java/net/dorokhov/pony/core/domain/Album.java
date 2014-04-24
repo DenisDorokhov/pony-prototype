@@ -7,6 +7,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -68,6 +69,7 @@ public class Album extends BaseEntity<Long> implements Comparable<Album> {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artist_id")
+	@NotNull
 	public Artist getArtist() {
 		return artist;
 	}
