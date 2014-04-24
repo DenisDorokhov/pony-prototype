@@ -12,14 +12,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class InstallationServiceIT {
 
-	private InstallationService installationService;
+	private InstallationService service;
 
 	@Before
 	public void setUp() throws Exception {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
 
-		installationService = context.getBean(InstallationService.class);
+		service = context.getBean(InstallationService.class);
 
 		restore();
 	}
@@ -32,23 +32,45 @@ public class InstallationServiceIT {
 	@Test
 	public void testInstallation() throws Exception {
 
-		Assert.assertNull(installationService.getInstallation());
+		boolean isExceptionThrown;
 
-		installationService.install();
+		Assert.assertNull(service.getInstallation());
 
-		Installation installation = installationService.getInstallation();
+		service.install();
+
+		Installation installation = service.getInstallation();
 
 		Assert.assertNotNull(installation);
 		Assert.assertNotNull(installation.getSystemVersion());
 
-		installationService.uninstall();
+		isExceptionThrown = false;
 
-		Assert.assertNull(installationService.getInstallation());
+		try {
+			service.install();
+		} catch (Exception e) {
+			isExceptionThrown = true;
+		}
+
+		Assert.assertTrue(isExceptionThrown);
+
+		service.uninstall();
+
+		Assert.assertNull(service.getInstallation());
+
+		isExceptionThrown = false;
+
+		try {
+			service.uninstall();
+		} catch (Exception e) {
+			isExceptionThrown = true;
+		}
+
+		Assert.assertTrue(isExceptionThrown);
 	}
 
 	private void restore() throws Exception {
-		if (installationService.getInstallation() != null) {
-			installationService.uninstall();
+		if (service.getInstallation() != null) {
+			service.uninstall();
 		}
 	}
 }

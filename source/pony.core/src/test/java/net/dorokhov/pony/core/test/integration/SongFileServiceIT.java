@@ -1,60 +1,71 @@
 package net.dorokhov.pony.core.test.integration;
 
 import net.dorokhov.pony.core.domain.SongFile;
+import net.dorokhov.pony.core.domain.StorageTask;
+import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.SongFileService;
+import net.dorokhov.pony.core.service.StoredFileService;
 import net.dorokhov.pony.core.test.AbstractIntegrationCase;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import javax.validation.ConstraintViolationException;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class SongFileServiceIT extends AbstractIntegrationCase {
 
-	private SongFileService service;
+	private static final String TEST_ARTWORK_PATH = "data/image.png";
+	private static final String TEST_ARTWORK_MIME_TYPE = "image/png";
+
+	private SongFileService songFileService;
+
+	private StoredFileService storedFileService;
 
 	@Before
 	public void setUp() throws Exception {
-		service = context.getBean(SongFileService.class);
+		songFileService = context.getBean(SongFileService.class);
+		storedFileService = context.getBean(StoredFileService.class);
 	}
 
 	@Test
-	public void testCrud() throws Exception {
+	public void testCrud() {
 
-		SongFile songFile = buildSongFile();
+		doTestSavingReading();
 
-		songFile = service.save(songFile);
+		Assert.assertEquals(2, songFileService.getCount());
 
-		checkSongFile(songFile);
+		Page<SongFile> songFilePage = songFileService.getAll(new PageRequest(0, 100));
 
-		songFile = service.getById(songFile.getId());
+		Assert.assertEquals(songFilePage.getTotalElements(), 2);
 
-		checkSongFile(songFile);
+		SongFile songFile = songFilePage.getContent().get(0);
 
-		songFile = service.getByPath("path1");
+		songFileService.deleteById(songFile.getId());
 
-		checkSongFile(songFile);
+		Assert.assertNull(songFileService.getById(songFile.getId()));
+	}
 
-		assertEquals(1L, service.getCount());
+	@Test
+	public void testArtwork() throws Exception {
 
-		List<SongFile> songFileList = service.getAll(new PageRequest(0, 100)).getContent();
+		StorageTask artworkTask = new StorageTask(StorageTask.Type.COPY, new ClassPathResource(TEST_ARTWORK_PATH).getFile());
 
-		assertEquals(songFileList.size(), 1);
+		artworkTask.setName("artwork");
+		artworkTask.setMimeType(TEST_ARTWORK_MIME_TYPE);
+		artworkTask.setChecksum("someChecksum");
 
-		songFile = songFileList.get(0);
+		StoredFile artwork = storedFileService.save(artworkTask);
 
-		checkSongFile(songFile);
+		SongFile songFile = buildEntity(1);
 
-		service.deleteById(songFile.getId());
+		songFile.setArtwork(artwork);
 
-		songFile = service.getById(songFile.getId());
+		songFileService.save(songFile);
 
-		assertNull(songFile);
-
-		service.save(buildSongFile());
+		Assert.assertEquals(1, songFileService.getCountByArtwork(artwork.getId()));
 	}
 
 	@Test
@@ -68,22 +79,52 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 		boolean isExceptionThrown = false;
 
 		try {
-			service.validate(songFile);
+			songFileService.validate(songFile);
 		} catch (ConstraintViolationException e) {
 
 			isExceptionThrown = true;
 
-			assertEquals(e.getConstraintViolations().size(), 6);
+			Assert.assertEquals(e.getConstraintViolations().size(), 6);
 		}
 
-		assertTrue(isExceptionThrown);
+		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private SongFile buildSongFile() {
+	private void doTestSavingReading() {
+
+		SongFile songFile = buildEntity(1);
+
+		songFile = songFileService.save(songFile);
+
+		checkEntity(songFile, 1);
+
+		songFile = songFileService.getById(songFile.getId());
+
+		checkEntity(songFile, 1);
+
+		songFile = songFileService.getByPath("path1");
+
+		checkEntity(songFile, 1);
+
+		songFile.setYear(1999);
+
+		songFile = songFileService.save(songFile);
+		songFile = songFileService.getById(songFile.getId());
+
+		Assert.assertEquals(Integer.valueOf(1999), songFile.getYear());
+
+		songFile = buildEntity(2);
+
+		songFile = songFileService.save(songFile);
+
+		checkEntity(songFile, 2);
+	}
+
+	private SongFile buildEntity(int aIndex) {
 
 		SongFile songFile = new SongFile();
 
-		songFile.setPath("path1");
+		songFile.setPath("path" + aIndex);
 		songFile.setFormat("type1");
 		songFile.setMimeType("audio/mpeg");
 		songFile.setSize(1000L);
@@ -97,38 +138,38 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 		songFile.setTrackNumber(2);
 		songFile.setTrackCount(8);
 
-		songFile.setName("name1");
-		songFile.setArtist("artist1");
-		songFile.setAlbum("album1");
+		songFile.setName("name" + aIndex);
+		songFile.setArtist("artist" + aIndex);
+		songFile.setAlbum("album" + aIndex);
 		songFile.setYear(1986);
 
 		return songFile;
 	}
 
-	private void checkSongFile(SongFile aSongFile) {
+	private void checkEntity(SongFile aSongFile, int aIndex) {
 
-		assertNotNull(aSongFile.getId());
+		Assert.assertNotNull(aSongFile.getId());
 
-		assertNotNull(aSongFile.getCreationDate());
-		assertNotNull(aSongFile.getUpdateDate());
+		Assert.assertNotNull(aSongFile.getCreationDate());
+		Assert.assertNotNull(aSongFile.getUpdateDate());
 
-		assertEquals("path1", aSongFile.getPath());
-		assertEquals("type1", aSongFile.getFormat());
-		assertEquals(Long.valueOf(1000), aSongFile.getSize());
+		Assert.assertEquals("path" + aIndex, aSongFile.getPath());
+		Assert.assertEquals("type1", aSongFile.getFormat());
+		Assert.assertEquals(Long.valueOf(1000), aSongFile.getSize());
 
-		assertEquals(Integer.valueOf(100), aSongFile.getDuration());
-		assertEquals(Long.valueOf(2000), aSongFile.getBitRate());
+		Assert.assertEquals(Integer.valueOf(100), aSongFile.getDuration());
+		Assert.assertEquals(Long.valueOf(2000), aSongFile.getBitRate());
 
-		assertEquals(Integer.valueOf(1), aSongFile.getDiscNumber());
-		assertEquals(Integer.valueOf(2), aSongFile.getDiscCount());
+		Assert.assertEquals(Integer.valueOf(1), aSongFile.getDiscNumber());
+		Assert.assertEquals(Integer.valueOf(2), aSongFile.getDiscCount());
 
-		assertEquals(Integer.valueOf(2), aSongFile.getTrackNumber());
-		assertEquals(Integer.valueOf(8), aSongFile.getTrackCount());
+		Assert.assertEquals(Integer.valueOf(2), aSongFile.getTrackNumber());
+		Assert.assertEquals(Integer.valueOf(8), aSongFile.getTrackCount());
 
-		assertEquals("name1", aSongFile.getName());
-		assertEquals("artist1", aSongFile.getArtist());
-		assertEquals("album1", aSongFile.getAlbum());
-		assertEquals(Integer.valueOf(1986), aSongFile.getYear());
+		Assert.assertEquals("name" + aIndex, aSongFile.getName());
+		Assert.assertEquals("artist" + aIndex, aSongFile.getArtist());
+		Assert.assertEquals("album" + aIndex, aSongFile.getAlbum());
+		Assert.assertEquals(Integer.valueOf(1986), aSongFile.getYear());
 	}
 
 }

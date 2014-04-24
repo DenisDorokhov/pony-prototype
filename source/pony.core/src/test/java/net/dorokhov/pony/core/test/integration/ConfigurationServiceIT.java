@@ -22,66 +22,16 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testCrud() throws Exception {
 
-		Configuration config = new Configuration();
-
-		config.setId("stringTest");
-		config.setValue("stringValue");
-
-		service.save(config);
-
-		config = service.getById("stringTest");
-
-		Assert.assertEquals("stringTest", config.getId());
-		Assert.assertNotNull(config.getCreationDate());
-		Assert.assertNotNull(config.getUpdateDate());
-		Assert.assertEquals("stringValue", config.getValue());
-
-		Date creationDate = config.getCreationDate();
-		Date updateDate = config.getUpdateDate();
-
-		Thread.sleep(1000);
-
-		config.setValue("stringValueChanged");
-
-		config = service.save(config);
-
-		Assert.assertEquals(creationDate, config.getCreationDate());
-		Assert.assertTrue(updateDate.before(config.getUpdateDate()));
-
-		config = new Configuration();
-
-		config.setId("longTest");
-		config.setLong(10L);
-
-		service.save(config);
-
-		config = new Configuration();
-
-		config.setId("intTest");
-		config.setInteger(100);
-
-		service.save(config);
-
-		config = new Configuration();
-
-		config.setId("doubleTest");
-		config.setDouble(1.1);
-
-		service.save(config);
-
-		config = new Configuration();
-
-		config.setId("booleanTest");
-		config.setBoolean(true);
-
-		service.save(config);
+		doTestSavingReading();
+		doTestTypes();
 
 		Assert.assertEquals(5, service.getCount());
-		Assert.assertEquals(5, service.getAll().size());
 
 		service.deleteById("booleanTest");
 
 		Assert.assertNull(service.getById("booleanTest"));
+
+		Assert.assertEquals(4, service.getAll().size());
 	}
 
 	@Test
@@ -104,6 +54,99 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 		}
 
 		Assert.assertTrue(isExceptionThrown);
+	}
+
+	private void doTestSavingReading() throws Exception {
+
+		Configuration config = buildEntity();
+
+		config = service.save(config);
+
+		checkCreatedEntity(config);
+
+		config = service.getById("stringTest");
+
+		checkCreatedEntity(config);
+
+		Date lastCreationDate = config.getCreationDate();
+		Date lastUpdateDate = config.getUpdateDate();
+
+		Thread.sleep(1000);
+
+		config.setValue("stringValueChanged");
+
+		config = service.save(config);
+
+		checkUpdatedEntity(config, lastCreationDate, lastUpdateDate);
+
+		config = service.getById("stringTest");
+
+		checkUpdatedEntity(config, lastCreationDate, lastUpdateDate);
+	}
+
+	private void doTestTypes() {
+
+		Configuration config = new Configuration();
+
+		config.setId("longTest");
+		config.setLong(10L);
+
+		service.save(config);
+
+		Assert.assertEquals(10L, service.getById("longTest").getLong());
+
+		config = new Configuration();
+
+		config.setId("intTest");
+		config.setInteger(100);
+
+		service.save(config);
+
+		Assert.assertEquals(100, service.getById("intTest").getInteger());
+
+		config = new Configuration();
+
+		config.setId("doubleTest");
+		config.setDouble(1.1);
+
+		service.save(config);
+
+		Assert.assertEquals(1.1, service.getById("doubleTest").getDouble(), 0.01);
+
+		config = new Configuration();
+
+		config.setId("booleanTest");
+		config.setBoolean(true);
+
+		service.save(config);
+
+		Assert.assertTrue(service.getById("booleanTest").getBoolean());
+	}
+
+	private Configuration buildEntity() {
+
+		Configuration config = new Configuration();
+
+		config.setId("stringTest");
+		config.setValue("stringValue");
+
+		return config;
+	}
+
+	private void checkCreatedEntity(Configuration aEntity) {
+
+		Assert.assertEquals("stringTest", aEntity.getId());
+		Assert.assertNotNull(aEntity.getCreationDate());
+		Assert.assertNotNull(aEntity.getUpdateDate());
+		Assert.assertEquals("stringValue", aEntity.getValue());
+	}
+
+	private void checkUpdatedEntity(Configuration aEntity, Date aCreationDate, Date aUpdateDate) {
+
+		Assert.assertEquals("stringTest", aEntity.getId());
+		Assert.assertEquals(aCreationDate, aEntity.getCreationDate());
+		Assert.assertTrue(aEntity.getUpdateDate().after(aUpdateDate));
+		Assert.assertEquals("stringValueChanged", aEntity.getValue());
 	}
 
 }
