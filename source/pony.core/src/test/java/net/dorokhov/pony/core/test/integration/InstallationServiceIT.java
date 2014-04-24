@@ -1,6 +1,8 @@
 package net.dorokhov.pony.core.test.integration;
 
 import net.dorokhov.pony.core.domain.Installation;
+import net.dorokhov.pony.core.exception.AlreadyInstalledException;
+import net.dorokhov.pony.core.exception.NotInstalledException;
 import net.dorokhov.pony.core.service.InstallationService;
 
 import org.junit.After;
@@ -47,7 +49,7 @@ public class InstallationServiceIT {
 
 		try {
 			service.install();
-		} catch (Exception e) {
+		} catch (AlreadyInstalledException e) {
 			isExceptionThrown = true;
 		}
 
@@ -61,7 +63,7 @@ public class InstallationServiceIT {
 
 		try {
 			service.uninstall();
-		} catch (Exception e) {
+		} catch (NotInstalledException e) {
 			isExceptionThrown = true;
 		}
 

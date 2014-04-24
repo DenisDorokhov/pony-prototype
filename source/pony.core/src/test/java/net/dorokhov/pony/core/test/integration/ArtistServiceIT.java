@@ -31,7 +31,7 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testCrud() {
 
-		doTestSavingReading();
+		doTestSavingAndReading();
 
 		Assert.assertEquals(2, artistService.getCount());
 
@@ -82,7 +82,7 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingReading() {
+	private void doTestSavingAndReading() {
 
 		Artist artist = buildEntity(1);
 

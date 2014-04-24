@@ -22,7 +22,7 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testCrud() throws Exception {
 
-		doTestSavingReading();
+		doTestSavingAndReading();
 		doTestTypes();
 
 		Assert.assertEquals(5, service.getCount());
@@ -56,7 +56,7 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingReading() throws Exception {
+	private void doTestSavingAndReading() throws Exception {
 
 		Configuration config = buildEntity();
 

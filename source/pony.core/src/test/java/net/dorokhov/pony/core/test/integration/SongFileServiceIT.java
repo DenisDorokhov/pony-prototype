@@ -33,7 +33,7 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testCrud() {
 
-		doTestSavingReading();
+		doTestSavingAndReading();
 
 		Assert.assertEquals(2, songFileService.getCount());
 
@@ -90,7 +90,7 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingReading() {
+	private void doTestSavingAndReading() {
 
 		SongFile songFile = buildEntity(1);
 
