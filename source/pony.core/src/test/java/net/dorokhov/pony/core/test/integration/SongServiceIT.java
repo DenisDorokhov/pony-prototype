@@ -50,7 +50,40 @@ public class SongServiceIT extends AbstractIntegrationCase {
 
 		albumService.save(album);
 
-		doTestSavingAndReading(album);
+		Song song = buildSong(1, album);
+
+		song = songService.save(song);
+
+		checkSong(song, 1, album);
+
+		song = songService.getById(song.getId());
+
+		checkSong(song, 1, album);
+
+		song = songService.getByFile(song.getFile().getId());
+
+		checkSong(song, 1, album);
+
+		SongFile songFile = buildSongFile(3);
+
+		songFile.setName("nameChanged");
+
+		songFile = songFileService.save(songFile);
+
+		song.setFile(songFile);
+
+		song = songService.save(song);
+		song = songService.getById(song.getId());
+
+		Assert.assertEquals("nameChanged", song.getFile().getName());
+
+		song = buildSong(2, album);
+
+		song = songService.save(song);
+
+		checkSong(song, 2, album);
+
+		Assert.assertEquals(1, songService.search("name2").size());
 
 		Assert.assertEquals(2, songService.getCountByArtist(artist.getId()));
 		Assert.assertEquals(2, songService.getCountByAlbum(album.getId()));
@@ -94,45 +127,7 @@ public class SongServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingAndReading(Album aAlbum) {
-
-		Song song = buildEntity(1, aAlbum);
-
-		song = songService.save(song);
-
-		checkEntity(song, 1, aAlbum);
-
-		song = songService.getById(song.getId());
-
-		checkEntity(song, 1, aAlbum);
-
-		song = songService.getByFile(song.getFile().getId());
-
-		checkEntity(song, 1, aAlbum);
-
-		SongFile songFile = buildSongFile(3);
-
-		songFile.setName("nameChanged");
-
-		songFile = songFileService.save(songFile);
-
-		song.setFile(songFile);
-
-		song = songService.save(song);
-		song = songService.getById(song.getId());
-
-		Assert.assertEquals("nameChanged", song.getFile().getName());
-
-		song = buildEntity(2, aAlbum);
-
-		song = songService.save(song);
-
-		checkEntity(song, 2, aAlbum);
-
-		Assert.assertEquals(1, songService.search("name2").size());
-	}
-
-	private Song buildEntity(int aIndex, Album aAlbum) {
+	private Song buildSong(int aIndex, Album aAlbum) {
 
 		SongFile songFile = buildSongFile(aIndex);
 
@@ -146,10 +141,18 @@ public class SongServiceIT extends AbstractIntegrationCase {
 		return song;
 	}
 
-	private void checkEntity(Song aSong, int aIndex, Album aAlbum) {
-		Assert.assertEquals("path" + aIndex, aSong.getFile().getPath());
-		Assert.assertEquals("name" + aIndex, aSong.getFile().getName());
-		Assert.assertEquals(aAlbum.getId(), aSong.getAlbum().getId());
+	private void checkSong(Song aEntity, int aIndex, Album aAlbum) {
+
+		Assert.assertNotNull(aEntity.getId());
+		Assert.assertNotNull(aEntity.getVersion());
+
+		Assert.assertNotNull(aEntity.getCreationDate());
+		Assert.assertNotNull(aEntity.getUpdateDate());
+
+		Assert.assertEquals("path" + aIndex, aEntity.getFile().getPath());
+		Assert.assertEquals("name" + aIndex, aEntity.getFile().getName());
+
+		Assert.assertEquals(aAlbum.getId(), aEntity.getAlbum().getId());
 	}
 
 	private SongFile buildSongFile(int aIndex) {

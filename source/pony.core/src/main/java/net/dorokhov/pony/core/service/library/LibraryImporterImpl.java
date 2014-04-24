@@ -176,9 +176,9 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 				try {
 
-					StorageTask storageTask = songDataToArtworkStorageTask(aSongData);
+					StoredFileService.SaveCommand saveCommand = songDataToArtworkStorageCommand(aSongData);
 
-					storedFile = storedFileService.save(storageTask);
+					storedFile = storedFileService.save(saveCommand);
 
 					log.debug("artwork stored {}", storedFile);
 
@@ -338,20 +338,20 @@ public class LibraryImporterImpl implements LibraryImporter {
 		return new EntityModification<Song>(song, shouldSave);
 	}
 
-	private StorageTask songDataToArtworkStorageTask(SongData aSongData) throws Exception {
+	private StoredFileService.SaveCommand songDataToArtworkStorageCommand(SongData aSongData) throws Exception {
 
 		File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_INTERNAL + "." + UUID.randomUUID() + ".tmp");
 
 		thumbnailService.makeThumbnail(aSongData.getArtwork().getBinaryData(), file);
 
-		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
+		StoredFileService.SaveCommand saveCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.MOVE, file);
 
-		storageTask.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
-		storageTask.setMimeType(aSongData.getArtwork().getMimeType());
-		storageTask.setChecksum(aSongData.getArtwork().getChecksum());
-		storageTask.setTag(FILE_TAG_ARTWORK_INTERNAL);
+		saveCommand.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
+		saveCommand.setMimeType(aSongData.getArtwork().getMimeType());
+		saveCommand.setChecksum(aSongData.getArtwork().getChecksum());
+		saveCommand.setTag(FILE_TAG_ARTWORK_INTERNAL);
 
-		return storageTask;
+		return saveCommand;
 	}
 
 	private static class EntityModification<T extends BaseEntity> {

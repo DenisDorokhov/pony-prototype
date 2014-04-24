@@ -1,7 +1,6 @@
 package net.dorokhov.pony.core.service.entity;
 
 import net.dorokhov.pony.core.dao.StoredFileDao;
-import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.MimeTypeService;
 import net.dorokhov.pony.core.service.StoredFileService;
@@ -68,18 +67,18 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 
 	@Override
 	@Transactional(readOnly = true)
-	public File load(Long aId) throws FileNotFoundException {
-		return load(getById(aId));
+	public File getFile(Long aId) {
+		return getFile(getById(aId));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public File load(StoredFile aStoredFile) throws FileNotFoundException {
+	public File getFile(StoredFile aStoredFile) {
 
 		File file = new File(filesFolder, aStoredFile.getPath());
 
 		if (!file.exists()) {
-			throw new FileNotFoundException("File [" + file.getAbsolutePath() + "] not found.");
+			throw new RuntimeException(new FileNotFoundException("File [" + file.getAbsolutePath() + "] not found."));
 		}
 
 		return file;
@@ -87,13 +86,13 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 
 	@Override
 	@Transactional
-	public StoredFile save(StorageTask aTask) throws FileNotFoundException {
+	public StoredFile save(SaveCommand aCommand) {
 
-		if (!aTask.getFile().exists()) {
-			throw new FileNotFoundException("File [" + aTask.getFile().getAbsolutePath() + "] not found.");
+		if (!aCommand.getFile().exists()) {
+			throw new RuntimeException(new FileNotFoundException("File [" + aCommand.getFile().getAbsolutePath() + "] not found."));
 		}
-		if (aTask.getFile().isDirectory()) {
-			throw new RuntimeException("File [" + aTask.getFile().getAbsolutePath() + "] is directory.");
+		if (aCommand.getFile().isDirectory()) {
+			throw new RuntimeException("File [" + aCommand.getFile().getAbsolutePath() + "] is directory.");
 		}
 
 		File targetFile = null;
@@ -104,32 +103,32 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 
 			synchronized (lock) {
 
-				relativePath = taskToPath(aTask);
+				relativePath = commandToPath(aCommand);
 
 				targetFile = new File(filesFolder, relativePath);
 
-				switch (aTask.getType()) {
+				switch (aCommand.getType()) {
 
 					case COPY:
-						FileUtils.copyFile(aTask.getFile(), targetFile);
+						FileUtils.copyFile(aCommand.getFile(), targetFile);
 						break;
 
 					case MOVE:
-						FileUtils.moveFile(aTask.getFile(), targetFile);
+						FileUtils.moveFile(aCommand.getFile(), targetFile);
 						break;
 
 					default:
-						throw new RuntimeException("Storage task type cannot be null.");
+						throw new RuntimeException("Storage command type cannot be null.");
 				}
 			}
 
 			StoredFile storedFile = new StoredFile();
 
-			storedFile.setName(targetFile.getName());
-			storedFile.setMimeType(aTask.getMimeType());
-			storedFile.setChecksum(aTask.getChecksum());
-			storedFile.setTag(aTask.getTag());
-			storedFile.setUserData(aTask.getUserData());
+			storedFile.setName(aCommand.getName());
+			storedFile.setMimeType(aCommand.getMimeType());
+			storedFile.setChecksum(aCommand.getChecksum());
+			storedFile.setTag(aCommand.getTag());
+			storedFile.setUserData(aCommand.getUserData());
 			storedFile.setPath(relativePath);
 
 			storedFile = save(storedFile);
@@ -211,7 +210,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 		}
 	}
 
-	private String taskToPath(StorageTask aTask) {
+	private String commandToPath(SaveCommand aCommand) {
 
 		File file;
 
@@ -219,16 +218,16 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 
 		do {
 
-			StringBuilder buf = new StringBuilder(StringUtils.hasText(aTask.getTag()) ? aTask.getTag().trim() + "/" : "");
+			StringBuilder buf = new StringBuilder(StringUtils.hasText(aCommand.getTag()) ? aCommand.getTag().trim() + "/" : "");
 
 			// Don't put too many files into one folder
 			buf.append(RandomStringUtils.random(2, false, true)).append("/")
 					.append(RandomStringUtils.random(2, false, true)).append("/");
 
 			// Append task name or file name
-			if (aTask.getName() != null) {
+			if (aCommand.getName() != null) {
 
-				String name = aTask.getName();
+				String name = aCommand.getName();
 
 				name = name.replaceAll("[^\\p{L}0-9\\s]", "");
 				name = name.replaceAll("\\s+", "-");
@@ -236,7 +235,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 				buf.append(name);
 
 			} else {
-				buf.append(aTask.getFile().getName());
+				buf.append(aCommand.getFile().getName());
 			}
 
 			// Append attempt number (to guarantee file name to be unique)
@@ -245,7 +244,7 @@ public class StoredFileServiceImpl extends AbstractEntityService<StoredFile, Lon
 			}
 
 			// Append type extension
-			String fileExtension = mimeTypeService.getFileExtension(aTask.getMimeType());
+			String fileExtension = mimeTypeService.getFileExtension(aCommand.getMimeType());
 			if (fileExtension != null) {
 				buf.append(".").append(fileExtension);
 			}

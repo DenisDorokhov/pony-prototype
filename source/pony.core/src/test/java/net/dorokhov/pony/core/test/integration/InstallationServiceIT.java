@@ -32,7 +32,7 @@ public class InstallationServiceIT {
 	}
 
 	@Test
-	public void testInstallation() throws Exception {
+	public void test() throws Exception {
 
 		boolean isExceptionThrown;
 
@@ -42,7 +42,10 @@ public class InstallationServiceIT {
 
 		Installation installation = service.getInstallation();
 
-		Assert.assertNotNull(installation);
+		Assert.assertNotNull(installation.getId());
+		Assert.assertNotNull(installation.getVersion());
+		Assert.assertNotNull(installation.getCreationDate());
+		Assert.assertNotNull(installation.getUpdateDate());
 		Assert.assertNotNull(installation.getSystemVersion());
 
 		isExceptionThrown = false;

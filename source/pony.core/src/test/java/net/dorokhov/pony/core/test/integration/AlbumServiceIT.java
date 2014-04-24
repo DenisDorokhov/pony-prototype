@@ -2,7 +2,6 @@ package net.dorokhov.pony.core.test.integration;
 
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.domain.Artist;
-import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.AlbumService;
 import net.dorokhov.pony.core.service.ArtistService;
@@ -43,7 +42,34 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 
 		artistService.save(artist);
 
-		doTestSavingAndReading(artist);
+		Album album = buildAlbum(1, artist);
+
+		album = albumService.save(album);
+
+		checkAlbum(album, 1, artist);
+
+		album = albumService.getById(album.getId());
+
+		checkAlbum(album, 1, artist);
+
+		album = albumService.getByArtistAndName(artist.getId(), "name1");
+
+		checkAlbum(album, 1, artist);
+
+		album.setName("nameChanged");
+
+		album = albumService.save(album);
+		album = albumService.getById(album.getId());
+
+		Assert.assertEquals("nameChanged", album.getName());
+
+		album = buildAlbum(2, artist);
+
+		album = albumService.save(album);
+
+		checkAlbum(album, 2, artist);
+
+		Assert.assertEquals(1, albumService.search("name2").size());
 
 		Assert.assertEquals(2, albumService.getCountByArtist(artist.getId()));
 		Assert.assertEquals(2, albumService.getAll(new PageRequest(0, 100)).getTotalElements());
@@ -62,15 +88,15 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 
 		artistService.save(artist);
 
-		StorageTask artworkTask = new StorageTask(StorageTask.Type.COPY, new ClassPathResource(TEST_ARTWORK_PATH).getFile());
+		StoredFileService.SaveCommand artworkCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.COPY, new ClassPathResource(TEST_ARTWORK_PATH).getFile());
 
-		artworkTask.setName("artwork");
-		artworkTask.setMimeType(TEST_ARTWORK_MIME_TYPE);
-		artworkTask.setChecksum("someChecksum");
+		artworkCommand.setName("artwork");
+		artworkCommand.setMimeType(TEST_ARTWORK_MIME_TYPE);
+		artworkCommand.setChecksum("someChecksum");
 
-		StoredFile artwork = storedFileService.save(artworkTask);
+		StoredFile artwork = storedFileService.save(artworkCommand);
 
-		Album album = buildEntity(1, artist);
+		Album album = buildAlbum(1, artist);
 
 		album.setArtwork(artwork);
 
@@ -102,39 +128,7 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingAndReading(Artist aArtist) {
-
-		Album album = buildEntity(1, aArtist);
-
-		album = albumService.save(album);
-
-		checkEntity(album, 1, aArtist);
-
-		album = albumService.getById(album.getId());
-
-		checkEntity(album, 1, aArtist);
-
-		album = albumService.getByArtistAndName(aArtist.getId(), "name1");
-
-		checkEntity(album, 1, aArtist);
-
-		album.setName("nameChanged");
-
-		album = albumService.save(album);
-		album = albumService.getById(album.getId());
-
-		Assert.assertEquals("nameChanged", album.getName());
-
-		album = buildEntity(2, aArtist);
-
-		album = albumService.save(album);
-
-		checkEntity(album, 2, aArtist);
-
-		Assert.assertEquals(1, albumService.search("name2").size());
-	}
-
-	private Album buildEntity(int aIndex, Artist aArtist) {
+	private Album buildAlbum(int aIndex, Artist aArtist) {
 
 		Album album = new Album();
 
@@ -145,9 +139,17 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 		return album;
 	}
 
-	private void checkEntity(Album aAlbum, int aIndex, Artist aArtist) {
+	private void checkAlbum(Album aAlbum, int aIndex, Artist aArtist) {
+
+		Assert.assertNotNull(aAlbum.getId());
+		Assert.assertNotNull(aAlbum.getVersion());
+
+		Assert.assertNotNull(aAlbum.getCreationDate());
+		Assert.assertNotNull(aAlbum.getUpdateDate());
+
 		Assert.assertEquals("name" + aIndex, aAlbum.getName());
 		Assert.assertEquals(Integer.valueOf(1986), aAlbum.getYear());
+
 		Assert.assertEquals(aArtist.getId(), aAlbum.getArtist().getId());
 	}
 

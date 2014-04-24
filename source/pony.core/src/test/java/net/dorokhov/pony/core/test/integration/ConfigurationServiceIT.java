@@ -58,15 +58,15 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 
 	private void doTestSavingAndReading() throws Exception {
 
-		Configuration config = buildEntity();
+		Configuration config = buildConfig();
 
 		config = service.save(config);
 
-		checkCreatedEntity(config);
+		checkCreatedConfig(config);
 
 		config = service.getById("stringTest");
 
-		checkCreatedEntity(config);
+		checkCreatedConfig(config);
 
 		Date lastCreationDate = config.getCreationDate();
 		Date lastUpdateDate = config.getUpdateDate();
@@ -77,11 +77,11 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 
 		config = service.save(config);
 
-		checkUpdatedEntity(config, lastCreationDate, lastUpdateDate);
+		checkUpdatedConfig(config, lastCreationDate, lastUpdateDate);
 
 		config = service.getById("stringTest");
 
-		checkUpdatedEntity(config, lastCreationDate, lastUpdateDate);
+		checkUpdatedConfig(config, lastCreationDate, lastUpdateDate);
 	}
 
 	private void doTestTypes() {
@@ -123,7 +123,7 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(service.getById("booleanTest").getBoolean());
 	}
 
-	private Configuration buildEntity() {
+	private Configuration buildConfig() {
 
 		Configuration config = new Configuration();
 
@@ -133,19 +133,25 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 		return config;
 	}
 
-	private void checkCreatedEntity(Configuration aEntity) {
+	private void checkCreatedConfig(Configuration aEntity) {
 
 		Assert.assertEquals("stringTest", aEntity.getId());
+		Assert.assertNotNull(aEntity.getVersion());
+
 		Assert.assertNotNull(aEntity.getCreationDate());
 		Assert.assertNotNull(aEntity.getUpdateDate());
+
 		Assert.assertEquals("stringValue", aEntity.getValue());
 	}
 
-	private void checkUpdatedEntity(Configuration aEntity, Date aCreationDate, Date aUpdateDate) {
+	private void checkUpdatedConfig(Configuration aEntity, Date aCreationDate, Date aUpdateDate) {
 
 		Assert.assertEquals("stringTest", aEntity.getId());
+		Assert.assertNotNull(aEntity.getVersion());
+
 		Assert.assertEquals(aCreationDate, aEntity.getCreationDate());
 		Assert.assertTrue(aEntity.getUpdateDate().after(aUpdateDate));
+
 		Assert.assertEquals("stringValueChanged", aEntity.getValue());
 	}
 

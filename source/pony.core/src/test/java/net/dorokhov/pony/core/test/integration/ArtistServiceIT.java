@@ -1,7 +1,6 @@
 package net.dorokhov.pony.core.test.integration;
 
 import net.dorokhov.pony.core.domain.Artist;
-import net.dorokhov.pony.core.domain.StorageTask;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.ArtistService;
 import net.dorokhov.pony.core.service.StoredFileService;
@@ -31,7 +30,34 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testCrud() {
 
-		doTestSavingAndReading();
+		Artist artist = buildArtist(1);
+
+		artist = artistService.save(artist);
+
+		checkArtist(artist, 1);
+
+		artist = artistService.getById(artist.getId());
+
+		checkArtist(artist, 1);
+
+		artist = artistService.getByName("name1");
+
+		checkArtist(artist, 1);
+
+		artist.setName("nameChanged");
+
+		artist = artistService.save(artist);
+		artist = artistService.getById(artist.getId());
+
+		Assert.assertEquals("nameChanged", artist.getName());
+
+		artist = buildArtist(2);
+
+		artist = artistService.save(artist);
+
+		checkArtist(artist, 2);
+
+		Assert.assertEquals(1, artistService.search("name2").size());
 
 		Assert.assertEquals(2, artistService.getCount());
 
@@ -43,15 +69,15 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 	@Test
 	public void testArtwork() throws Exception {
 
-		StorageTask artworkTask = new StorageTask(StorageTask.Type.COPY, new ClassPathResource(TEST_ARTWORK_PATH).getFile());
+		StoredFileService.SaveCommand artworkCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.COPY, new ClassPathResource(TEST_ARTWORK_PATH).getFile());
 
-		artworkTask.setName("artwork");
-		artworkTask.setMimeType(TEST_ARTWORK_MIME_TYPE);
-		artworkTask.setChecksum("someChecksum");
+		artworkCommand.setName("artwork");
+		artworkCommand.setMimeType(TEST_ARTWORK_MIME_TYPE);
+		artworkCommand.setChecksum("someChecksum");
 
-		StoredFile artwork = storedFileService.save(artworkTask);
+		StoredFile artwork = storedFileService.save(artworkCommand);
 
-		Artist artist = buildEntity(1);
+		Artist artist = buildArtist(1);
 
 		artist.setArtwork(artwork);
 
@@ -82,39 +108,7 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 		Assert.assertTrue(isExceptionThrown);
 	}
 
-	private void doTestSavingAndReading() {
-
-		Artist artist = buildEntity(1);
-
-		artist = artistService.save(artist);
-
-		checkEntity(artist, 1);
-
-		artist = artistService.getById(artist.getId());
-
-		checkEntity(artist, 1);
-
-		artist = artistService.getByName("name1");
-
-		checkEntity(artist, 1);
-
-		artist.setName("nameChanged");
-
-		artist = artistService.save(artist);
-		artist = artistService.getById(artist.getId());
-
-		Assert.assertEquals("nameChanged", artist.getName());
-
-		artist = buildEntity(2);
-
-		artist = artistService.save(artist);
-
-		checkEntity(artist, 2);
-
-		Assert.assertEquals(1, artistService.search("name2").size());
-	}
-
-	private Artist buildEntity(int aIndex) {
+	private Artist buildArtist(int aIndex) {
 
 		Artist artist = new Artist();
 
@@ -123,8 +117,15 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 		return artist;
 	}
 
-	private void checkEntity(Artist aArtist, int aIndex) {
-		Assert.assertEquals("name" + aIndex, aArtist.getName());
+	private void checkArtist(Artist aEntity, int aIndex) {
+
+		Assert.assertNotNull(aEntity.getId());
+		Assert.assertNotNull(aEntity.getVersion());
+
+		Assert.assertNotNull(aEntity.getCreationDate());
+		Assert.assertNotNull(aEntity.getUpdateDate());
+
+		Assert.assertEquals("name" + aIndex, aEntity.getName());
 	}
 
 }

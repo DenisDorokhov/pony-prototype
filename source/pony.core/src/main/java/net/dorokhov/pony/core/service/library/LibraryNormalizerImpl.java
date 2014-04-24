@@ -451,15 +451,15 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 					thumbnailService.makeThumbnail(artworkFile, file);
 
-					StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
+					StoredFileService.SaveCommand saveCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.MOVE, file);
 
-					storageTask.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
-					storageTask.setMimeType(mimeType);
-					storageTask.setChecksum(checksum);
-					storageTask.setTag(FILE_TAG_ARTWORK_EXTERNAL);
-					storageTask.setUserData(artworkFile.getAbsolutePath());
+					saveCommand.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
+					saveCommand.setMimeType(mimeType);
+					saveCommand.setChecksum(checksum);
+					saveCommand.setTag(FILE_TAG_ARTWORK_EXTERNAL);
+					saveCommand.setUserData(artworkFile.getAbsolutePath());
 
-					storedFile = storedFileService.save(storageTask);
+					storedFile = storedFileService.save(saveCommand);
 
 					log.debug("external artwork stored {}", storedFile);
 				}
