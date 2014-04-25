@@ -10,14 +10,14 @@ public class BusyIndicator {
 
 	private static int taskCount = 0;
 
-	private static boolean isBusy = false;
+	private static boolean busy = false;
 
 	public static void startTask() {
 
 		taskCount++;
 
 		if (taskCount > 0) {
-			setIsBusy(true);
+			setBusy(true);
 		}
 	}
 
@@ -28,17 +28,21 @@ public class BusyIndicator {
 		}
 
 		if (taskCount == 0) {
-			setIsBusy(false);
+			setBusy(false);
 		}
 	}
 
-	private static void setIsBusy(boolean aIsBusy) {
+	public static boolean isBusy() {
+		return busy;
+	}
 
-		if (isBusy != aIsBusy) {
+	private static void setBusy(boolean aIsBusy) {
 
-			isBusy = aIsBusy;
+		if (busy != aIsBusy) {
 
-			if (isBusy) {
+			busy = aIsBusy;
+
+			if (busy) {
 
 				showWaitCursor();
 

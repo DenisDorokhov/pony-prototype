@@ -237,7 +237,7 @@ public class ApiController {
 
 			if (storedFile != null) {
 
-				File file = storedFileService.load(storedFile);
+				File file = storedFileService.getFile(storedFile);
 
 				if (file != null) {
 

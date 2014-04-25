@@ -15,11 +15,11 @@ public class PlayListImpl implements PlayList {
 
 	private int currentIndex;
 
-	public PlayListImpl(List<SongDto> aSongs, int aStartIndex) {
+	public PlayListImpl(List<SongDto> aSongs, int aNextIndex) {
 
 		songs = aSongs != null ? new ArrayList<SongDto>(aSongs) : new ArrayList<SongDto>();
 
-		currentIndex = aStartIndex - 1;
+		currentIndex = aNextIndex - 1;
 	}
 
 	public ArrayList<SongDto> getSongs() {
