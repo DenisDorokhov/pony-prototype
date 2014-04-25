@@ -40,20 +40,20 @@ public interface PlayList {
 	 *
 	 * @param aCallback song fetching callback, can return null if there is no current song available
 	 */
-	public void current(AsyncCallback<SongDto> aCallback);
+	public void getCurrent(AsyncCallback<SongDto> aCallback);
 
 	/**
 	 * Fetches previous song in play list. Operation can be asynchronous, but some implementations can execute callback immediately.
 	 *
 	 * @param aCallback song fetching callback, can return null if there is no previous song available
 	 */
-	public void previous(Mode aMode, AsyncCallback<SongDto> aCallback);
+	public void getPrevious(Mode aMode, AsyncCallback<SongDto> aCallback);
 
 	/**
 	 * Fetches next song in play list. Operation can be asynchronous, but some implementations can execute callback immediately.
 	 *
 	 * @param aCallback song fetching callback, can return null if there is no next song available
 	 */
-	public void next(Mode aMode, AsyncCallback<SongDto> aCallback);
+	public void getNext(Mode aMode, AsyncCallback<SongDto> aCallback);
 
 }

@@ -215,7 +215,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestCurrentSong(PlayListImpl aPlayList, final Long aId) {
-		aPlayList.current(new AsyncCallback<SongDto>() {
+		aPlayList.getCurrent(new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -229,7 +229,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestCurrentSongNull(PlayListImpl aPlayList) {
-		aPlayList.current(new AsyncCallback<SongDto>() {
+		aPlayList.getCurrent(new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -244,7 +244,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestPreviousSong(PlayListImpl aPlayList, PlayList.Mode aMode, final Long aId) {
-		aPlayList.previous(aMode, new AsyncCallback<SongDto>() {
+		aPlayList.getPrevious(aMode, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -258,7 +258,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestPreviousSongNull(PlayListImpl aPlayList, PlayList.Mode aMode) {
-		aPlayList.previous(aMode, new AsyncCallback<SongDto>() {
+		aPlayList.getPrevious(aMode, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -272,7 +272,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestNextSong(PlayListImpl aPlayList, PlayList.Mode aMode, final Long aId) {
-		aPlayList.next(aMode, new AsyncCallback<SongDto>() {
+		aPlayList.getNext(aMode, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -286,7 +286,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestNextSongNull(PlayListImpl aPlayList, PlayList.Mode aMode) {
-		aPlayList.next(aMode, new AsyncCallback<SongDto>() {
+		aPlayList.getNext(aMode, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -300,7 +300,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestRandomPreviousSong(PlayListImpl aPlayList) {
-		aPlayList.previous(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
+		aPlayList.getPrevious(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {
@@ -314,7 +314,7 @@ public class PlayListImplTest {
 	}
 
 	private void doTestRandomNextSong(PlayListImpl aPlayList) {
-		aPlayList.next(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
+		aPlayList.getNext(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
 
 			@Override
 			public void onSuccess(SongDto aSong) {

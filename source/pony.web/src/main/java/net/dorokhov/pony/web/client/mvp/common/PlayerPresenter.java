@@ -160,7 +160,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		if (currentPlayList != null && currentPlayList.hasCurrent()) {
 
-			currentPlayList.current(new AsyncCallback<SongDto>() {
+			currentPlayList.getCurrent(new AsyncCallback<SongDto>() {
 
 				@Override
 				public void onSuccess(SongDto aResult) {
@@ -189,7 +189,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		if (currentPlayList != null && currentPlayList.hasPrevious(playListMode)) {
 
-			currentPlayList.previous(playListMode, new AsyncCallback<SongDto>() {
+			currentPlayList.getPrevious(playListMode, new AsyncCallback<SongDto>() {
 
 				@Override
 				public void onSuccess(SongDto aResult) {
@@ -218,7 +218,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		if (currentPlayList != null && currentPlayList.hasNext(playListMode)) {
 
-			currentPlayList.next(playListMode, new AsyncCallback<SongDto>() {
+			currentPlayList.getNext(playListMode, new AsyncCallback<SongDto>() {
 
 				@Override
 				public void onSuccess(SongDto aResult) {

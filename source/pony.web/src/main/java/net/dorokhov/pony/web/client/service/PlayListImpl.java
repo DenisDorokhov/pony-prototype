@@ -64,7 +64,7 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
-	public void current(AsyncCallback<SongDto> aCallback) {
+	public void getCurrent(AsyncCallback<SongDto> aCallback) {
 
 		SongDto currentSong = null;
 
@@ -76,7 +76,7 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
-	public void previous(Mode aMode, AsyncCallback<SongDto> aCallback) {
+	public void getPrevious(Mode aMode, AsyncCallback<SongDto> aCallback) {
 
 		SongDto currentSong = null;
 
@@ -120,7 +120,7 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
-	public void next(Mode aMode, AsyncCallback<SongDto> aCallback) {
+	public void getNext(Mode aMode, AsyncCallback<SongDto> aCallback) {
 
 		SongDto currentSong = null;
 

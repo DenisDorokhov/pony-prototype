@@ -45,7 +45,7 @@ public class DtoServiceImpl implements DtoService {
 		ArtistDto dto = new ArtistDto();
 
 		dto.setId(aArtist.getId());
-		dto.setGeneration(aArtist.getVersion());
+		dto.setVersion(aArtist.getVersion());
 
 		dto.setName(aArtist.getName());
 		dto.setArtwork(aArtist.getArtwork() != null ? aArtist.getArtwork().getId() : null);
@@ -81,7 +81,7 @@ public class DtoServiceImpl implements DtoService {
 		SongDto dto = new SongDto();
 
 		dto.setId(aSong.getId());
-		dto.setGeneration(aSong.getVersion());
+		dto.setVersion(aSong.getVersion());
 
 		Album album = aSong.getAlbum();
 
@@ -89,6 +89,7 @@ public class DtoServiceImpl implements DtoService {
 
 			dto.setAlbumId(album.getId());
 			dto.setAlbumName(album.getName());
+			dto.setAlbumArtwork(album.getArtwork() != null ? album.getArtwork().getId() : null);
 			dto.setAlbumArtworkUrl(getStoredFileUrl(album.getArtwork() != null ? album.getArtwork().getId() : null));
 			dto.setAlbumYear(album.getYear());
 
@@ -121,10 +122,11 @@ public class DtoServiceImpl implements DtoService {
 	private void initAlbumDto(AlbumDto aDto, Album aAlbum) {
 
 		aDto.setId(aAlbum.getId());
-		aDto.setGeneration(aAlbum.getVersion());
+		aDto.setVersion(aAlbum.getVersion());
 
 		aDto.setName(aAlbum.getName());
 		aDto.setYear(aAlbum.getYear());
+		aDto.setArtwork(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null);
 		aDto.setArtworkUrl(getStoredFileUrl(aAlbum.getArtwork() != null ? aAlbum.getArtwork().getId() : null));
 
 		Artist artist = aAlbum.getArtist();

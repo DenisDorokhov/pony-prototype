@@ -7,6 +7,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +47,11 @@ public class Artist extends BaseEntity<Long> implements Comparable<Artist> {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "artist")
 	public List<Album> getAlbums() {
+
+		if (albums == null) {
+			albums = new ArrayList<Album>();
+		}
+
 		return albums;
 	}
 

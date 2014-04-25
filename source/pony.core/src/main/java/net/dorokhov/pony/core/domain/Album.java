@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,6 +61,11 @@ public class Album extends BaseEntity<Long> implements Comparable<Album> {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "album")
 	public List<Song> getSongs() {
+
+		if (songs == null) {
+			songs = new ArrayList<Song>();
+		}
+
 		return songs;
 	}
 
