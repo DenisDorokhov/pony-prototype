@@ -5,6 +5,7 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class PlayListImpl implements PlayList {
@@ -15,11 +16,14 @@ public class PlayListImpl implements PlayList {
 
 	private int currentIndex;
 
-	public PlayListImpl(List<SongDto> aSongs, int aNextIndex) {
+	public PlayListImpl(List<SongDto> aSongs, int aCurrentIndex) {
 
 		songs = aSongs != null ? new ArrayList<SongDto>(aSongs) : new ArrayList<SongDto>();
 
-		currentIndex = aNextIndex - 1;
+		aCurrentIndex = Math.max(0, aCurrentIndex);
+		aCurrentIndex = Math.min(songs.size() - 1, aCurrentIndex);
+
+		currentIndex = aCurrentIndex;
 	}
 
 	public ArrayList<SongDto> getSongs() {
@@ -27,25 +31,85 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
-	public boolean hasPrevious() {
-		return currentIndex > 0 && songs.size() > 1;
+	public boolean hasCurrent() {
+		return songs.size() > 0;
 	}
 
 	@Override
-	public boolean hasNext() {
-		return (currentIndex + 1) < songs.size();
+	public boolean hasPrevious(Mode aMode) {
+
+		if (songs.size() > 0) {
+			if (aMode == Mode.NORMAL) {
+				return currentIndex > 0 && songs.size() > 1;
+			} else {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
-	public void previous(AsyncCallback<SongDto> aCallback) {
+	public boolean hasNext(Mode aMode) {
+
+		if (songs.size() > 0) {
+			if (aMode == Mode.NORMAL) {
+				return (currentIndex + 1) < songs.size();
+			} else {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void current(AsyncCallback<SongDto> aCallback) {
 
 		SongDto currentSong = null;
 
-		if (hasPrevious()) {
-
-			currentIndex--;
-
+		if (songs.size() > 0) {
 			currentSong = songs.get(currentIndex);
+		}
+
+		aCallback.onSuccess(currentSong);
+	}
+
+	@Override
+	public void previous(Mode aMode, AsyncCallback<SongDto> aCallback) {
+
+		SongDto currentSong = null;
+
+		if (songs.size() > 0) {
+
+			Integer switchToIndex = null;
+
+			if (aMode == Mode.NORMAL) {
+
+				if (currentIndex > 0 && songs.size() > 1) {
+					switchToIndex = currentIndex - 1;
+				}
+
+			} else if (aMode == Mode.REPEAT_ALL) {
+
+				if (currentIndex <= 0) {
+					switchToIndex = songs.size() - 1;
+				} else {
+					switchToIndex = currentIndex - 1;
+				}
+
+			} else if (aMode == Mode.REPEAT_ONE) {
+				switchToIndex = currentIndex;
+			} else if (aMode == Mode.RANDOM) {
+				switchToIndex = new Random().nextInt(songs.size());
+			}
+
+			if (switchToIndex != null) {
+
+				currentIndex = switchToIndex;
+
+				currentSong = songs.get(switchToIndex);
+			}
 		}
 
 		if (currentSong != null) {
@@ -56,15 +120,40 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
-	public void next(AsyncCallback<SongDto> aCallback) {
+	public void next(Mode aMode, AsyncCallback<SongDto> aCallback) {
 
 		SongDto currentSong = null;
 
-		if (hasNext()) {
+		if (songs.size() > 0) {
 
-			currentIndex++;
+			Integer switchToIndex = null;
 
-			currentSong = songs.get(currentIndex);
+			if (aMode == Mode.NORMAL) {
+
+				if ((currentIndex + 1) < songs.size()) {
+					switchToIndex = currentIndex + 1;
+				}
+
+			} else if (aMode == Mode.REPEAT_ALL) {
+
+				if ((currentIndex + 1) >= songs.size()) {
+					switchToIndex = 0;
+				} else {
+					switchToIndex = currentIndex + 1;
+				}
+
+			} else if (aMode == Mode.REPEAT_ONE) {
+				switchToIndex = currentIndex;
+			} else if (aMode == Mode.RANDOM) {
+				switchToIndex = new Random().nextInt(songs.size());
+			}
+
+			if (switchToIndex != null) {
+
+				currentIndex = switchToIndex;
+
+				currentSong = songs.get(switchToIndex);
+			}
 		}
 
 		if (currentSong != null) {
@@ -72,10 +161,5 @@ public class PlayListImpl implements PlayList {
 		}
 
 		aCallback.onSuccess(currentSong);
-	}
-
-	@Override
-	public void reset() {
-		currentIndex = -1;
 	}
 }

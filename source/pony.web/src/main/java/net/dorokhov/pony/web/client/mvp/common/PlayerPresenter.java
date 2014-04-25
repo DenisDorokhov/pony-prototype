@@ -53,6 +53,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	private PlayList playList;
 
+	private PlayList.Mode playListMode = PlayList.Mode.NORMAL;
+
 	private HandlerRegistration closingWindowRegistration;
 
 	@Inject
@@ -110,7 +112,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_ENDED, getView().getSong()));
 
-		startNextSong();
+		playNextSong();
 	}
 
 	@Override
@@ -126,12 +128,12 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	@Override
 	public void onPreviousSongRequested() {
-		startPreviousSong();
+		playPreviousSong();
 	}
 
 	@Override
 	public void onNextSongRequested() {
-		startNextSong();
+		playNextSong();
 	}
 
 	@Override
@@ -142,7 +144,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		getView().setPreviousSongAvailable(false);
 		getView().setNextSongAvailable(false);
 
-		startNextSong();
+		playCurrentSong();
 	}
 
 	@Override
@@ -152,21 +154,19 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		}
 	}
 
-	private void startPreviousSong() {
+	private void playCurrentSong() {
 
-		if (playList != null && playList.hasPrevious()) {
+		final PlayList currentPlayList = playList;
 
-			playList.previous(new AsyncCallback<SongDto>() {
+		if (currentPlayList != null && currentPlayList.hasCurrent()) {
+
+			currentPlayList.current(new AsyncCallback<SongDto>() {
 
 				@Override
 				public void onSuccess(SongDto aResult) {
-
-					getView().setSong(aResult);
-
-					getView().setPreviousSongAvailable(playList.hasPrevious());
-					getView().setNextSongAvailable(playList.hasNext());
-
-					getView().play();
+					if (currentPlayList == playList) {
+						doPlaySong(aResult);
+					}
 				}
 
 				@Override
@@ -183,21 +183,48 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		}
 	}
 
-	private void startNextSong() {
+	private void playPreviousSong() {
 
-		if (playList != null && playList.hasNext()) {
+		final PlayList currentPlayList = playList;
 
-			playList.next(new AsyncCallback<SongDto>() {
+		if (currentPlayList != null && currentPlayList.hasPrevious(playListMode)) {
+
+			currentPlayList.previous(playListMode, new AsyncCallback<SongDto>() {
 
 				@Override
 				public void onSuccess(SongDto aResult) {
+					if (currentPlayList == playList) {
+						doPlaySong(aResult);
+					}
+				}
 
-					getView().setSong(aResult);
+				@Override
+				public void onFailure(Throwable aCaught) {
 
-					getView().setPreviousSongAvailable(playList.hasPrevious());
-					getView().setNextSongAvailable(playList.hasNext());
+					log.log(Level.SEVERE, "could not fetch next song from playlist", aCaught);
 
-					getView().play();
+					Window.alert("Could not load previous song!");
+				}
+			});
+
+		} else {
+			log.fine("beginning of playlist");
+		}
+	}
+
+	private void playNextSong() {
+
+		final PlayList currentPlayList = playList;
+
+		if (currentPlayList != null && currentPlayList.hasNext(playListMode)) {
+
+			currentPlayList.next(playListMode, new AsyncCallback<SongDto>() {
+
+				@Override
+				public void onSuccess(SongDto aResult) {
+					if (currentPlayList == playList) {
+						doPlaySong(aResult);
+					}
 				}
 
 				@Override
@@ -212,5 +239,15 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		} else {
 			log.fine("end of playlist");
 		}
+	}
+
+	private void doPlaySong(SongDto aSong) {
+
+		getView().setSong(aSong);
+
+		getView().setPreviousSongAvailable(playList.hasPrevious(playListMode));
+		getView().setNextSongAvailable(playList.hasNext(playListMode));
+
+		getView().play();
 	}
 }
