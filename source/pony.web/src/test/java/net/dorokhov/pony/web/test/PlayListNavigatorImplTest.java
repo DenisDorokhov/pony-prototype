@@ -136,6 +136,77 @@ public class PlayListNavigatorImplTest {
 		}
 	}
 
+	@Test
+	public void testModification() {
+
+		PlayListImpl playList = new PlayListImpl();
+
+		for (int i = 0; i < 10; i++) {
+			playList.add(buildSong(i));
+		}
+
+		PlayListNavigatorImpl navigator = new PlayListNavigatorImpl(playList);
+
+		navigator.setCurrentIndex(3);
+
+		playList.add(buildSong(11), 0);
+
+		Assert.assertEquals(Long.valueOf(3), navigator.getCurrent().getId());
+
+		playList.remove(1);
+
+		Assert.assertEquals(Long.valueOf(3), navigator.getCurrent().getId());
+
+		navigator.setCurrentIndex(9);
+
+		playList.remove(9);
+
+		Assert.assertEquals(Long.valueOf(8), navigator.getCurrent().getId());
+
+		playList.move(8, 7);
+
+		Assert.assertEquals(Long.valueOf(8), navigator.getCurrent().getId());
+
+		playList.move(8, 7);
+
+		Assert.assertEquals(Long.valueOf(8), navigator.getCurrent().getId());
+
+		playList.removeAll();
+
+		playList.add(buildSong(20));
+
+		Assert.assertEquals(Long.valueOf(20), navigator.getCurrent().getId());
+
+		playList = new PlayListImpl();
+
+		navigator.setPlayList(playList);
+
+		playList.add(buildSong(20));
+
+		Assert.assertEquals(Long.valueOf(20), navigator.getCurrent().getId());
+	}
+
+	@Test
+	public void testInconsistencies() {
+
+		PlayListNavigatorImpl navigator = new PlayListNavigatorImpl();
+
+		Assert.assertNull(navigator.getCurrent());
+
+		boolean exceptionThrown = false;
+
+		try {
+			navigator.setCurrentIndex(0);
+		} catch (IndexOutOfBoundsException e) {
+			exceptionThrown = true;
+		}
+
+		Assert.assertTrue(exceptionThrown);
+
+		Assert.assertFalse(navigator.hasPrevious());
+		Assert.assertFalse(navigator.hasNext());
+	}
+
 	private SongDto buildSong(int aIndex) {
 
 		SongDto song = new SongDto();

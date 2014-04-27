@@ -94,6 +94,10 @@ public class PlayListImplTest implements PlayList.Delegate {
 		Assert.assertEquals(Long.valueOf(1), playList.get(3).getId());
 		Assert.assertEquals(Long.valueOf(4), playList.get(4).getId());
 		Assert.assertEquals(Long.valueOf(5), playList.get(5).getId());
+
+		playList.removeAll();
+
+		Assert.assertEquals(0, playList.size());
 	}
 
 	@Override

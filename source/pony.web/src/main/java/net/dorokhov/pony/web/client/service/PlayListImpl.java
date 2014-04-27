@@ -77,6 +77,13 @@ public class PlayListImpl implements PlayList {
 	}
 
 	@Override
+	public void removeAll() {
+		while (songList.size() > 0) {
+			remove(0);
+		}
+	}
+
+	@Override
 	public void move(int aOldIndex, int aNewIndex) throws IndexOutOfBoundsException {
 
 		Collections.swap(songList, aOldIndex, aNewIndex);

@@ -28,6 +28,8 @@ public interface PlayList {
 
 	public void remove(int aIndex) throws IndexOutOfBoundsException;
 
+	public void removeAll();
+
 	public void move(int aOldIndex, int aNewIndex) throws IndexOutOfBoundsException;
 
 	public SongDto get(int aIndex) throws IndexOutOfBoundsException;

@@ -185,7 +185,7 @@ public class PlayListNavigatorImpl implements PlayListNavigator, PlayList.Delega
 	public void onPlayListSongRemoved(PlayList aPlayList, SongDto aSong, int aIndex) {
 		if (playList == aPlayList) {
 
-			if (aIndex < currentIndex || (aIndex == currentIndex && currentIndex == (playList.size() - 1))) {
+			if (aIndex < currentIndex || (aIndex == currentIndex && currentIndex == playList.size())) {
 				currentIndex--;
 			}
 		}
