@@ -15,4 +15,6 @@ To make server.web work you will need to define path to your MP3 library by addi
 
 To avoid out of memory errors when running GWT project from IDE, please use the following VM options: -Xmx256m -XX:MaxPermSize=96M
 
-Application supports running with Jetty application container.
+Application supports running in Jetty or Tomcat application containers.
+
+For those who want to use sway.fm media keys support on Mac OS X: you need to install Play Button iTunes Patch available at http://www.thebitguru.com/projects/iTunesPatch.

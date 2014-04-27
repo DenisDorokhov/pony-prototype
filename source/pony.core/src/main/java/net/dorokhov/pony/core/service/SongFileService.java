@@ -24,7 +24,7 @@ public interface SongFileService {
 	 * @param aStoredFileId artwork stored file ID.
 	 * @return number of song files with the given artwork stored file ID.
 	 */
-	public long getCountByArtwork(Integer aStoredFileId);
+	public long getCountByArtwork(Long aStoredFileId);
 
 	/**
 	 * Gets all song files with pagination option.
@@ -40,7 +40,7 @@ public interface SongFileService {
 	 * @param aId song file ID
 	 * @return song file with the given ID or null if none found
 	 */
-	public SongFile getById(Integer aId);
+	public SongFile getById(Long aId);
 
 	/**
 	 * Gets song file by path.
@@ -64,7 +64,7 @@ public interface SongFileService {
 	 *
 	 * @param aId song file ID
 	 */
-	public void deleteById(Integer aId);
+	public void deleteById(Long aId);
 
 	/**
 	 * Validates song file.

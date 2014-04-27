@@ -8,17 +8,11 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	private Integer year;
 
-	private Integer artwork;
-
 	private String artworkUrl;
 
-	private Integer artistId;
+	private Long artistId;
 
 	private String artistName;
-
-	private Integer artistArtwork;
-
-	private String artistArtworkUrl;
 
 	public String getName() {
 		return name;
@@ -36,14 +30,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 		year = aYear;
 	}
 
-	public Integer getArtwork() {
-		return artwork;
-	}
-
-	public void setArtwork(Integer aArtwork) {
-		artwork = aArtwork;
-	}
-
 	public String getArtworkUrl() {
 		return artworkUrl;
 	}
@@ -52,11 +38,11 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 		artworkUrl = aArtworkUrl;
 	}
 
-	public Integer getArtistId() {
+	public Long getArtistId() {
 		return artistId;
 	}
 
-	public void setArtistId(Integer aArtistId) {
+	public void setArtistId(Long aArtistId) {
 		artistId = aArtistId;
 	}
 
@@ -66,22 +52,6 @@ public class AlbumDto extends AbstractEntityDto implements Serializable {
 
 	public void setArtistName(String aArtistName) {
 		artistName = aArtistName;
-	}
-
-	public Integer getArtistArtwork() {
-		return artistArtwork;
-	}
-
-	public void setArtistArtwork(Integer aArtistArtwork) {
-		artistArtwork = aArtistArtwork;
-	}
-
-	public String getArtistArtworkUrl() {
-		return artistArtworkUrl;
-	}
-
-	public void setArtistArtworkUrl(String aArtistArtworkUrl) {
-		artistArtworkUrl = aArtistArtworkUrl;
 	}
 
 	@Override

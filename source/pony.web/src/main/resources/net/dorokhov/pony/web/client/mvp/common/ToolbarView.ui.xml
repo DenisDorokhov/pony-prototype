@@ -1,0 +1,11 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel>
+
+		<g:Button ui:field="refreshButton" text="Refresh" />
+		<g:Button ui:field="settingsButton" text="Settings" />
+
+	</g:HTMLPanel>
+
+</ui:UiBinder>

@@ -15,7 +15,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "stored_file", uniqueConstraints = @UniqueConstraint(columnNames = {"tag", "checksum"}))
-public class StoredFile extends AbstractEntity<Integer> {
+public class StoredFile extends AbstractEntity<Long> {
 
 	private String name;
 

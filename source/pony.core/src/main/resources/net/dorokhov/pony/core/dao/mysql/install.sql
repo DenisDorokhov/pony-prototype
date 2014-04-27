@@ -1,13 +1,13 @@
 CREATE TABLE installation (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
-	version VARCHAR(255) NOT NULL,
+	system_version VARCHAR(255) NOT NULL,
 
 	PRIMARY KEY (id)
 
@@ -20,7 +20,7 @@ CREATE TABLE configuration (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	value TEXT,
 
@@ -30,12 +30,12 @@ CREATE TABLE configuration (
 
 CREATE TABLE stored_file (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	mime_type VARCHAR(255) NOT NULL,
@@ -56,12 +56,12 @@ CREATE INDEX index_stored_file_tag_checksum ON stored_file(tag, checksum);
 
 CREATE TABLE song_file (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	path VARCHAR(255) NOT NULL,
 	format VARCHAR(255) NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE song_file (
 
 	year INT,
 
-	artwork_stored_file_id INT,
+	artwork_stored_file_id BIGINT,
 
 	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
@@ -97,15 +97,15 @@ CREATE INDEX index_song_file_track_number_name ON song_file(disc_number, track_n
 
 CREATE TABLE artist (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
-	artwork_stored_file_id INT,
+	artwork_stored_file_id BIGINT,
 
 	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
@@ -116,18 +116,18 @@ CREATE TABLE artist (
 
 CREATE TABLE album (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	year INT,
-	artwork_stored_file_id INT,
+	artwork_stored_file_id BIGINT,
 
-	artist_id INT NOT NULL,
+	artist_id BIGINT NOT NULL,
 
 	FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (artwork_stored_file_id) REFERENCES stored_file(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -142,15 +142,15 @@ CREATE INDEX index_album_artist_id_year_name ON album(artist_id, year, name);
 
 CREATE TABLE song (
 
-	id INT NOT NULL AUTO_INCREMENT,
+	id BIGINT NOT NULL AUTO_INCREMENT,
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	generation BIGINT NOT NULL,
+	version BIGINT NOT NULL,
 
-	song_file_id INT NOT NULL,
-	album_id INT NOT NULL,
+	song_file_id BIGINT NOT NULL,
+	album_id BIGINT NOT NULL,
 
 	UNIQUE (song_file_id),
 	PRIMARY KEY (id),
@@ -160,4 +160,4 @@ CREATE TABLE song (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-INSERT INTO installation (creation_date, update_date, generation, version) VALUES (NOW(), NOW(), '0', '1.0');
+INSERT INTO installation (creation_date, update_date, version, system_version) VALUES (NOW(), NOW(), '0', '1.0');

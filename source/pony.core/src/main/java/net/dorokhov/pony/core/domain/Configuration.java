@@ -47,6 +47,15 @@ public class Configuration extends AbstractEntity<String> {
 	}
 
 	@Transient
+	public long getLong() {
+		return Long.valueOf(value);
+	}
+
+	public void setLong(long aValue) {
+		value = String.valueOf(aValue);
+	}
+
+	@Transient
 	public int getInteger() {
 		return Integer.valueOf(value);
 	}

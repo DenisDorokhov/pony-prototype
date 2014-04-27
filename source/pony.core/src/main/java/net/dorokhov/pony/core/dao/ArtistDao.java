@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Artist DAO.
  */
-public interface ArtistDao extends PagingAndSortingRepository<Artist, Integer> {
+public interface ArtistDao extends PagingAndSortingRepository<Artist, Long> {
 
 	/**
 	 * Retrieves number of artists by artwork stored file ID.
@@ -17,7 +17,7 @@ public interface ArtistDao extends PagingAndSortingRepository<Artist, Integer> {
 	 * @param aStoredFileId stored file ID
 	 * @return number of artists with the given artwork stored file ID
 	 */
-	public long countByArtworkId(Integer aStoredFileId);
+	public long countByArtworkId(Long aStoredFileId);
 
 	/**
 	 * Finds artists by artwork stored file ID.
@@ -26,7 +26,7 @@ public interface ArtistDao extends PagingAndSortingRepository<Artist, Integer> {
 	 * @param aSort sort option
 	 * @return list of artists with the given artwork stored file ID
 	 */
-	public List<Artist> findByArtworkId(Integer aStoredFileId, Sort aSort);
+	public List<Artist> findByArtworkId(Long aStoredFileId, Sort aSort);
 
 	/**
 	 * Finds artist by name.

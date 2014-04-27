@@ -66,7 +66,7 @@
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial:3.6.2" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spellchecker:3.6.2" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-grouping:3.6.2" />
-          <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
+          <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.4" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-smartcn:3.6.2" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-stempel:3.6.2" />
           <element id="library" level="project" name="Maven: org.apache.avro:avro:1.7.5" />
@@ -80,11 +80,19 @@
           <element id="library" level="project" name="Maven: javax.el:el-api:2.2" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.28" />
           <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
+          <element id="library" level="project" name="Maven: net.coobird:thumbnailator:0.4.7" />
           <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.6.0" />
           <element id="library" level="project" name="Maven: com.google.gwt.inject:gin:2.1.2" />
           <element id="library" level="project" name="Maven: com.google.inject:guice:3.0" />
           <element id="library" level="project" name="Maven: javax.inject:javax.inject:1" />
           <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-assistedinject:3.0" />
+          <element id="library" level="project" name="Maven: com.gwtplatform:gwtp-mvp-client:1.2.1" />
+          <element id="library" level="project" name="Maven: com.gwtplatform:gwtp-clients-common:1.2.1" />
+          <element id="library" level="project" name="Maven: org.apache.maven:maven-artifact:3.1.1" />
+          <element id="library" level="project" name="Maven: org.codehaus.plexus:plexus-utils:3.0.15" />
+          <element id="library" level="project" name="Maven: com.gwtplatform:gwtp-mvp-shared:1.2.1" />
+          <element id="library" level="project" name="Maven: org.apache.velocity:velocity:1.7" />
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.1" />
         </element>
       </element>
       <element id="gwt-compiler-output" facet="pony.web/gwt/GWT" />

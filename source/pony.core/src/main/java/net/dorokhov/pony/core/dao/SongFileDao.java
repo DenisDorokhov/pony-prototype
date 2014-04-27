@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Song file DAO.
  */
-public interface SongFileDao extends PagingAndSortingRepository<SongFile, Integer> {
+public interface SongFileDao extends PagingAndSortingRepository<SongFile, Long> {
 
 	/**
 	 * Retrieves number of song files by artwork stored file ID.
@@ -14,7 +14,7 @@ public interface SongFileDao extends PagingAndSortingRepository<SongFile, Intege
 	 * @param aStoredFileId stored file ID
 	 * @return number of song files with the given artwork stored file ID
 	 */
-	public long countByArtworkId(Integer aStoredFileId);
+	public long countByArtworkId(Long aStoredFileId);
 
 	/**
 	 * Finds song file by file path.

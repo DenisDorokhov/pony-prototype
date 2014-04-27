@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 @Indexed
-public class Album extends AbstractEntity<Integer> implements Comparable<Album> {
+public class Album extends AbstractEntity<Long> implements Comparable<Album> {
 
 	private String name;
 

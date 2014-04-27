@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "artist")
 @Indexed
-public class Artist extends AbstractEntity<Integer> implements Comparable<Artist> {
+public class Artist extends AbstractEntity<Long> implements Comparable<Artist> {
 
     private String name;
 

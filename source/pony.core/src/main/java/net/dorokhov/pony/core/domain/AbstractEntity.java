@@ -18,7 +18,7 @@ public abstract class AbstractEntity<T extends Serializable> {
 
 	private Date updateDate;
 
-	private Long generation;
+	private Long version;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,13 +52,13 @@ public abstract class AbstractEntity<T extends Serializable> {
 	}
 
 	@Version
-	@Column(name = "generation")
-	public Long getGeneration() {
-		return generation;
+	@Column(name = "version")
+	public Long getVersion() {
+		return version;
 	}
 
-	public void setGeneration(Long aGeneration) {
-		generation = aGeneration;
+	public void setVersion(Long aGeneration) {
+		version = aGeneration;
 	}
 	
 	@Override
