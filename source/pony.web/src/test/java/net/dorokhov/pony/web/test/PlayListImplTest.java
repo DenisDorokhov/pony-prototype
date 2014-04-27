@@ -1,6 +1,5 @@
 package net.dorokhov.pony.web.test;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.dorokhov.pony.web.client.service.PlayList;
 import net.dorokhov.pony.web.client.service.PlayListImpl;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -10,321 +9,124 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayListImplTest {
+public class PlayListImplTest implements PlayList.Delegate {
+
+	private PlayListImpl playList;
+
+	private boolean didCallSongAdded;
+	private boolean didCallSongRemoved;
+	private boolean didCallSongMoved;
 
 	@Test
-	public void testInconsistency() {
+	public void test() {
 
-		doTestEmpty(PlayList.Mode.NORMAL);
-		doTestEmpty(PlayList.Mode.REPEAT_ALL);
-		doTestEmpty(PlayList.Mode.REPEAT_ONE);
-		doTestEmpty(PlayList.Mode.RANDOM);
+		playList = new PlayListImpl();
+
+		playList.addDelegate(this);
+
+		playList.add(buildSong(0));
+
+		Assert.assertTrue(didCallSongAdded);
+
+		playList.removeDelegate(this);
+
+		didCallSongAdded = false;
+
+		playList.add(buildSong(1));
+
+		Assert.assertFalse(didCallSongAdded);
+
+		playList.add(buildSong(2));
+		playList.add(buildSong(1));
+		playList.add(playList.get(0));
+
+		playList.add(buildSong(3), 0);
 
 		List<SongDto> songList = new ArrayList<SongDto>();
 
-		for (int i = 0; i < 10; i++) {
-			songList.add(buildSong(i));
-		}
+		songList.add(buildSong(4));
+		songList.add(buildSong(5));
 
-		PlayListImpl playList = new PlayListImpl(songList, 10);
+		playList.add(songList);
 
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 9L);
+		Assert.assertEquals(Long.valueOf(3), playList.get(0).getId());
+		Assert.assertEquals(Long.valueOf(0), playList.get(1).getId());
+		Assert.assertEquals(Long.valueOf(1), playList.get(2).getId());
+		Assert.assertEquals(Long.valueOf(2), playList.get(3).getId());
+		Assert.assertEquals(Long.valueOf(1), playList.get(4).getId());
+		Assert.assertEquals(Long.valueOf(0), playList.get(5).getId());
+		Assert.assertEquals(Long.valueOf(4), playList.get(6).getId());
+		Assert.assertEquals(Long.valueOf(5), playList.get(7).getId());
 
-		playList = new PlayListImpl(songList, -1);
+		Assert.assertEquals(8, playList.size());
 
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 0L);
+		playList.addDelegate(this);
+
+		playList.remove(2);
+
+		Assert.assertTrue(didCallSongRemoved);
+
+		playList.removeDelegate(this);
+
+		didCallSongRemoved = false;
+
+		playList.remove(0);
+
+		Assert.assertFalse(didCallSongRemoved);
+
+		playList.addDelegate(this);
+
+		playList.move(2, 3);
+
+		Assert.assertTrue(didCallSongMoved);
+
+		playList.removeDelegate(this);
+
+		didCallSongMoved = false;
+
+		playList.move(0, 1);
+
+		Assert.assertFalse(didCallSongMoved);
+
+		Assert.assertEquals(Long.valueOf(2), playList.get(0).getId());
+		Assert.assertEquals(Long.valueOf(0), playList.get(1).getId());
+		Assert.assertEquals(Long.valueOf(0), playList.get(2).getId());
+		Assert.assertEquals(Long.valueOf(1), playList.get(3).getId());
+		Assert.assertEquals(Long.valueOf(4), playList.get(4).getId());
+		Assert.assertEquals(Long.valueOf(5), playList.get(5).getId());
 	}
 
-	@Test
-	public void testNormal() {
+	@Override
+	public void onPlayListSongAdded(PlayList aPlayList, SongDto aSong, int aIndex) {
 
-		List<SongDto> songList = new ArrayList<SongDto>();
+		didCallSongAdded = true;
 
-		for (int i = 0; i < 10; i++) {
-			songList.add(buildSong(i));
-		}
+		Assert.assertTrue(playList == aPlayList);
 
-		PlayList.Mode mode = PlayList.Mode.NORMAL;
-
-		PlayListImpl playList = new PlayListImpl(songList, 9);
-
-		Assert.assertEquals(songList, playList.getSongs());
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 9L);
-
-		Assert.assertFalse(playList.hasNext(mode));
-		doTestNextSongNull(playList, mode);
-
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 8L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 7L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 6L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 5L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 4L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 3L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 2L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 1L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 0L);
-
-		Assert.assertFalse(playList.hasPrevious(mode));
-		doTestPreviousSongNull(playList, mode);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 1L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 2L);
-
-		playList = new PlayListImpl(songList, 0);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 0L);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 1L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 2L);
+		Assert.assertEquals(Long.valueOf(0), aSong.getId());
+		Assert.assertEquals(0, aIndex);
 	}
 
-	@Test
-	public void testRepeatAll() {
+	@Override
+	public void onPlayListSongRemoved(PlayList aPlayList, SongDto aSong, int aIndex) {
 
-		List<SongDto> songList = new ArrayList<SongDto>();
+		didCallSongRemoved = true;
 
-		for (int i = 0; i < 10; i++) {
-			songList.add(buildSong(i));
-		}
+		Assert.assertTrue(playList == aPlayList);
 
-		PlayList.Mode mode = PlayList.Mode.REPEAT_ALL;
-
-		PlayListImpl playList = new PlayListImpl(songList, 9);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 9L);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 0L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 1L);
-
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 0L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 9L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 8L);
-
-		playList = new PlayListImpl(songList, 0);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 0L);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 1L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 2L);
+		Assert.assertEquals(Long.valueOf(1), aSong.getId());
+		Assert.assertEquals(2, aIndex);
 	}
 
-	@Test
-	public void testRepeatOne() {
+	@Override
+	public void onPlayListSongMoved(PlayList aPlayList, int aOldIndex, int aNewIndex) {
 
-		List<SongDto> songList = new ArrayList<SongDto>();
+		didCallSongMoved = true;
 
-		for (int i = 0; i < 10; i++) {
-			songList.add(buildSong(i));
-		}
+		Assert.assertTrue(playList == aPlayList);
 
-		PlayList.Mode mode = PlayList.Mode.REPEAT_ONE;
-
-		PlayListImpl playList = new PlayListImpl(songList, 0);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 0L);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 0L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 0L);
-
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 0L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 0L);
-
-		playList = new PlayListImpl(songList, 9);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 9L);
-
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 9L);
-		Assert.assertTrue(playList.hasNext(mode));
-		doTestNextSong(playList, mode, 9L);
-
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 9L);
-		Assert.assertTrue(playList.hasPrevious(mode));
-		doTestPreviousSong(playList, mode, 9L);
-	}
-
-	@Test
-	public void testRandom() {
-
-		List<SongDto> songList = new ArrayList<SongDto>();
-
-		for (int i = 0; i < 10; i++) {
-			songList.add(buildSong(i));
-		}
-
-		PlayListImpl playList = new PlayListImpl(songList, 0);
-
-		Assert.assertTrue(playList.hasCurrent());
-		doTestCurrentSong(playList, 0L);
-
-		doTestRandomNextSong(playList);
-		doTestRandomNextSong(playList);
-		doTestRandomNextSong(playList);
-
-		doTestRandomPreviousSong(playList);
-		doTestRandomPreviousSong(playList);
-		doTestRandomPreviousSong(playList);
-	}
-
-	private void doTestEmpty(PlayList.Mode aMode) {
-
-		PlayListImpl playList = new PlayListImpl(new ArrayList<SongDto>(), 9);
-
-		Assert.assertFalse(playList.hasCurrent());
-		doTestCurrentSongNull(playList);
-
-		Assert.assertFalse(playList.hasNext(aMode));
-		doTestNextSongNull(playList, aMode);
-
-		Assert.assertFalse(playList.hasPrevious(aMode));
-		doTestPreviousSongNull(playList, aMode);
-	}
-
-	private void doTestCurrentSong(PlayListImpl aPlayList, final Long aId) {
-		aPlayList.getCurrent(new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertEquals(aId, aSong.getId());
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestCurrentSongNull(PlayListImpl aPlayList) {
-		aPlayList.getCurrent(new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertNull(aSong);
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {
-			}
-
-		});
-	}
-
-	private void doTestPreviousSong(PlayListImpl aPlayList, PlayList.Mode aMode, final Long aId) {
-		aPlayList.getPrevious(aMode, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertEquals(aId, aSong.getId());
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestPreviousSongNull(PlayListImpl aPlayList, PlayList.Mode aMode) {
-		aPlayList.getPrevious(aMode, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertNull(aSong);
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestNextSong(PlayListImpl aPlayList, PlayList.Mode aMode, final Long aId) {
-		aPlayList.getNext(aMode, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertEquals(aId, aSong.getId());
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestNextSongNull(PlayListImpl aPlayList, PlayList.Mode aMode) {
-		aPlayList.getNext(aMode, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertNull(aSong);
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestRandomPreviousSong(PlayListImpl aPlayList) {
-		aPlayList.getPrevious(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertNotNull(aSong);
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
-	}
-
-	private void doTestRandomNextSong(PlayListImpl aPlayList) {
-		aPlayList.getNext(PlayList.Mode.RANDOM, new AsyncCallback<SongDto>() {
-
-			@Override
-			public void onSuccess(SongDto aSong) {
-				Assert.assertNotNull(aSong);
-			}
-
-			@Override
-			public void onFailure(Throwable aCaught) {}
-
-		});
+		Assert.assertEquals(2, aOldIndex);
+		Assert.assertEquals(3, aNewIndex);
 	}
 
 	private SongDto buildSong(int aIndex) {

@@ -1,165 +1,102 @@
 package net.dorokhov.pony.web.client.service;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PlayListImpl implements PlayList {
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private ArrayList<SongDto> songs;
+	private final List<Delegate> delegates = new ArrayList<Delegate>();
 
-	private int currentIndex;
+	private final List<SongDto> songList = new ArrayList<SongDto>();
 
-	public PlayListImpl(List<SongDto> aSongs, int aCurrentIndex) {
-
-		songs = aSongs != null ? new ArrayList<SongDto>(aSongs) : new ArrayList<SongDto>();
-
-		aCurrentIndex = Math.max(0, aCurrentIndex);
-		aCurrentIndex = Math.min(songs.size() - 1, aCurrentIndex);
-
-		currentIndex = aCurrentIndex;
+	public PlayListImpl() {
+		this(new ArrayList<SongDto>());
 	}
 
-	public ArrayList<SongDto> getSongs() {
-		return new ArrayList<SongDto>(songs);
+	public PlayListImpl(List<SongDto> aSongList) {
+		add(aSongList);
 	}
 
 	@Override
-	public boolean hasCurrent() {
-		return songs.size() > 0;
+	public void addDelegate(Delegate aDelegate) {
+		if (!delegates.contains(aDelegate)) {
+			delegates.add(aDelegate);
+		}
 	}
 
 	@Override
-	public boolean hasPrevious(Mode aMode) {
-
-		if (songs.size() > 0) {
-			if (aMode == Mode.NORMAL) {
-				return currentIndex > 0 && songs.size() > 1;
-			} else {
-				return true;
-			}
-		}
-
-		return false;
+	public void removeDelegate(Delegate aDelegate) {
+		delegates.remove(aDelegate);
 	}
 
 	@Override
-	public boolean hasNext(Mode aMode) {
-
-		if (songs.size() > 0) {
-			if (aMode == Mode.NORMAL) {
-				return (currentIndex + 1) < songs.size();
-			} else {
-				return true;
-			}
+	public void add(List<SongDto> aSongs) {
+		for (SongDto song : aSongs) {
+			add(song);
 		}
-
-		return false;
 	}
 
 	@Override
-	public void getCurrent(AsyncCallback<SongDto> aCallback) {
-
-		SongDto currentSong = null;
-
-		if (songs.size() > 0) {
-			currentSong = songs.get(currentIndex);
-		}
-
-		aCallback.onSuccess(currentSong);
+	public void add(SongDto aSong) {
+		add(aSong, songList.size());
 	}
 
 	@Override
-	public void getPrevious(Mode aMode, AsyncCallback<SongDto> aCallback) {
+	public void add(SongDto aSong, int aIndex) throws IndexOutOfBoundsException {
 
-		SongDto currentSong = null;
+		songList.add(aIndex, aSong);
 
-		if (songs.size() > 0) {
-
-			Integer switchToIndex = null;
-
-			if (aMode == Mode.NORMAL) {
-
-				if (currentIndex > 0 && songs.size() > 1) {
-					switchToIndex = currentIndex - 1;
-				}
-
-			} else if (aMode == Mode.REPEAT_ALL) {
-
-				if (currentIndex <= 0) {
-					switchToIndex = songs.size() - 1;
-				} else {
-					switchToIndex = currentIndex - 1;
-				}
-
-			} else if (aMode == Mode.REPEAT_ONE) {
-				switchToIndex = currentIndex;
-			} else if (aMode == Mode.RANDOM) {
-				switchToIndex = new Random().nextInt(songs.size());
-			}
-
-			if (switchToIndex != null) {
-
-				currentIndex = switchToIndex;
-
-				currentSong = songs.get(switchToIndex);
+		for (Delegate nextDelegate : new ArrayList<Delegate>(delegates)) {
+			try {
+				nextDelegate.onPlayListSongAdded(this, aSong, aIndex);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "exception thrown when delegating onPlayListSongAdded to " + nextDelegate, e);
 			}
 		}
-
-		if (currentSong != null) {
-			log.fine("playlist switched to previous song " + currentSong);
-		}
-
-		aCallback.onSuccess(currentSong);
 	}
 
 	@Override
-	public void getNext(Mode aMode, AsyncCallback<SongDto> aCallback) {
+	public void remove(int aIndex) throws IndexOutOfBoundsException {
 
-		SongDto currentSong = null;
+		SongDto song = songList.remove(aIndex);
 
-		if (songs.size() > 0) {
-
-			Integer switchToIndex = null;
-
-			if (aMode == Mode.NORMAL) {
-
-				if ((currentIndex + 1) < songs.size()) {
-					switchToIndex = currentIndex + 1;
-				}
-
-			} else if (aMode == Mode.REPEAT_ALL) {
-
-				if ((currentIndex + 1) >= songs.size()) {
-					switchToIndex = 0;
-				} else {
-					switchToIndex = currentIndex + 1;
-				}
-
-			} else if (aMode == Mode.REPEAT_ONE) {
-				switchToIndex = currentIndex;
-			} else if (aMode == Mode.RANDOM) {
-				switchToIndex = new Random().nextInt(songs.size());
-			}
-
-			if (switchToIndex != null) {
-
-				currentIndex = switchToIndex;
-
-				currentSong = songs.get(switchToIndex);
+		for (Delegate nextDelegate : new ArrayList<Delegate>(delegates)) {
+			try {
+				nextDelegate.onPlayListSongRemoved(this, song, aIndex);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "exception thrown when delegating onPlayListSongRemoved to " + nextDelegate, e);
 			}
 		}
+	}
 
-		if (currentSong != null) {
-			log.fine("playlist switched to next song " + currentSong);
+	@Override
+	public void move(int aOldIndex, int aNewIndex) throws IndexOutOfBoundsException {
+
+		Collections.swap(songList, aOldIndex, aNewIndex);
+
+		for (Delegate nextDelegate : new ArrayList<Delegate>(delegates)) {
+			try {
+				nextDelegate.onPlayListSongMoved(this, aOldIndex, aNewIndex);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "exception thrown when delegating onPlayListSongMoved to " + nextDelegate, e);
+			}
 		}
+	}
 
-		aCallback.onSuccess(currentSong);
+	@Override
+	public SongDto get(int aIndex) throws IndexOutOfBoundsException {
+		return songList.get(aIndex);
+	}
+
+	@Override
+	public int size() {
+		return songList.size();
 	}
 }

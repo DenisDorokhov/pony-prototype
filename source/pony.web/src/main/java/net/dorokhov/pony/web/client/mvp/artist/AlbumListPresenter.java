@@ -14,7 +14,6 @@ import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
-import net.dorokhov.pony.web.client.service.PlayList;
 import net.dorokhov.pony.web.client.service.PlayListImpl;
 import net.dorokhov.pony.web.client.service.rpc.AlbumServiceRpcAsync;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -89,9 +88,8 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 			songs.addAll(album.getSongs());
 		}
 
-		PlayList playList = new PlayListImpl(songs, songs.indexOf(aSong));
-
-		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, playList));
+		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE,
+				new PlayListImpl(songs), songs.indexOf(aSong)));
 	}
 
 	@Override

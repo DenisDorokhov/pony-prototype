@@ -1,59 +1,37 @@
 package net.dorokhov.pony.web.client.service;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.dorokhov.pony.web.shared.SongDto;
 
-/**
- * Play list iterator.
- *
- * Allows navigation one by one through song list.
- */
+import java.util.List;
+
 public interface PlayList {
 
-	public static enum Mode {
-		NORMAL, REPEAT_ALL, REPEAT_ONE, RANDOM
+	public static interface Delegate {
+
+		public void onPlayListSongAdded(PlayList aPlayList, SongDto aSong, int aIndex);
+
+		public void onPlayListSongRemoved(PlayList aPlayList, SongDto aSong, int aIndex);
+
+		public void onPlayListSongMoved(PlayList aPlayList, int aOldIndex, int aNewIndex);
+
 	}
 
-	/**
-	 * Returns true if play list has current song.
-	 *
-	 * @return true if play list has current song, false otherwise
-	 */
-	public boolean hasCurrent();
+	public void addDelegate(Delegate aDelegate);
 
-	/**
-	 * Returns true if play list has previous song.
-	 *
-	 * @return true if play list has previous song, false otherwise
-	 */
-	public boolean hasPrevious(Mode aMode);
+	public void removeDelegate(Delegate aDelegate);
 
-	/**
-	 * Returns true if play list has next song.
-	 *
-	 * @return true if play list has next song, false otherwise
-	 */
-	public boolean hasNext(Mode aMode);
+	public void add(List<SongDto> aSongs);
 
-	/**
-	 * Fetches current song in play list. Operation can be asynchronous, but some implementations can execute callback immediately.
-	 *
-	 * @param aCallback song fetching callback, can return null if there is no current song available
-	 */
-	public void getCurrent(AsyncCallback<SongDto> aCallback);
+	public void add(SongDto aSong);
 
-	/**
-	 * Fetches previous song in play list. Operation can be asynchronous, but some implementations can execute callback immediately.
-	 *
-	 * @param aCallback song fetching callback, can return null if there is no previous song available
-	 */
-	public void getPrevious(Mode aMode, AsyncCallback<SongDto> aCallback);
+	public void add(SongDto aSong, int aIndex) throws IndexOutOfBoundsException;
 
-	/**
-	 * Fetches next song in play list. Operation can be asynchronous, but some implementations can execute callback immediately.
-	 *
-	 * @param aCallback song fetching callback, can return null if there is no next song available
-	 */
-	public void getNext(Mode aMode, AsyncCallback<SongDto> aCallback);
+	public void remove(int aIndex) throws IndexOutOfBoundsException;
+
+	public void move(int aOldIndex, int aNewIndex) throws IndexOutOfBoundsException;
+
+	public SongDto get(int aIndex) throws IndexOutOfBoundsException;
+
+	public int size();
 
 }
