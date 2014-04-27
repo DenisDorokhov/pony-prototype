@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
+import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.event.SongListItemSelectEvent;
@@ -22,13 +23,6 @@ public class SongListItem extends Composite {
     interface SongListItemUiBinder extends UiBinder<Widget, SongListItem> {}
 
     private static SongListItemUiBinder uiBinder = GWT.create(SongListItemUiBinder.class);
-
-    interface SongListItemStyle extends CssResource {
-        String songListItem();
-        String trackNumber();
-        String songName();
-        String songDuration();
-    }
 
     private EventBus eventBus;
 
@@ -51,6 +45,7 @@ public class SongListItem extends Composite {
     }
 
     public SongListItem(SongDto aSong) {
+        Resources.INSTANCE.style().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
         songItemPanel.sinkEvents(Event.ONCLICK);
 
@@ -80,6 +75,8 @@ public class SongListItem extends Composite {
     @UiHandler("songItemPanel")
     void onSongListItemClick(ClickEvent aEvent) {
         SongDto selectedSong = getSong();
+
+        songItemPanel.addStyleName(Resources.INSTANCE.style().songListItem_selected());
 
         getEventBus().fireEvent(new SongListItemSelectEvent(SongListItemSelectEvent.SONG_ITEM_SELECTED, this));
 

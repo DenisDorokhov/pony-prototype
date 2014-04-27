@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class SongListView  extends Composite {
     }
 
     public SongListView(ArrayList<SongDto> aSongs, String aCaption) {
+        Resources.INSTANCE.style().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
 
         setCaption(aCaption);
@@ -92,7 +94,7 @@ public class SongListView  extends Composite {
         {
             if (column != null) {
                 FlowPanel songsColumnPanel = new FlowPanel();
-                songsColumnPanel.setStyleName("column");
+                songsColumnPanel.setStyleName(Resources.INSTANCE.style().songListColumn());
 
                 for (SongDto song : column) {
                     SongListItem songItem = new SongListItem(song);

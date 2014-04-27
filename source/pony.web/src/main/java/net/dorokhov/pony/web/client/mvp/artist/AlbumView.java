@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlowPanel;
+import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -23,14 +24,6 @@ public class AlbumView extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	interface AlbumViewStyle extends CssResource {
-		String albumImage();
-		String nameContainer();
-		String songContainer();
-		String trackColumn();
-		String durationColumn();
-	}
-
     public interface Delegate {
 
         public void onSongSelection(SongDto aSong);
@@ -38,9 +31,6 @@ public class AlbumView extends Composite {
         public void onSongPlaybackRequest(SongDto aSong);
 
     }
-
-	@UiField
-	AlbumViewStyle style;
 
 	@UiField
 	Image albumImage;
@@ -59,6 +49,7 @@ public class AlbumView extends Composite {
     private Delegate delegate;
 
 	public AlbumView() {
+        Resources.INSTANCE.style().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
