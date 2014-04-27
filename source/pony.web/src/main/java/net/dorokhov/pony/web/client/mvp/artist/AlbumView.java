@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -10,13 +9,13 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlowPanel;
-import net.dorokhov.pony.web.client.common.StringUtils;
-import net.dorokhov.pony.web.client.view.common.SongListView;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AlbumView extends Composite {
 
@@ -39,8 +38,6 @@ public class AlbumView extends Composite {
         public void onSongPlaybackRequest(SongDto aSong);
 
     }
-    
-	private EventBus eventBus;
 
 	@UiField
 	AlbumViewStyle style;
@@ -59,6 +56,8 @@ public class AlbumView extends Composite {
 
 	private AlbumSongsDto album;
 
+    private Delegate delegate;
+
 	public AlbumView() {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -66,13 +65,13 @@ public class AlbumView extends Composite {
 		//initSongTable();
 	}
 
-	public EventBus getEventBus() {
-		return eventBus;
-	}
+    public Delegate getDelegate() {
+        return delegate;
+    }
 
-	public void setEventBus(EventBus aEventBus) {
-		eventBus = aEventBus;
-	}
+    public void setDelegate(Delegate aDelegate) {
+        delegate = aDelegate;
+    }
 
 	public AlbumSongsDto getAlbum() {
 		return album;
@@ -139,7 +138,7 @@ public class AlbumView extends Composite {
         albumImage.setUrl(imageUrl);
 
         albumNameLabel.setText(album != null ? album.getName() : null);
-        albumYearLabel.setText(album != null ? StringUtils.nullSafeToString(album.getYear()) : null);
+        albumYearLabel.setText(album != null ? Objects.toString(album.getYear(), "") : null);
 
         songListPanel.clear();
 
@@ -152,7 +151,7 @@ public class AlbumView extends Composite {
             SongListView songListView =
                     new SongListView(songList, discNumber != null ? "Disc " + discNumber : null);
 
-            songListView.setEventBus(getEventBus());
+            //songListView.setEventBus(getEventBus());
 
             songListPanel.add(songListView);
         }

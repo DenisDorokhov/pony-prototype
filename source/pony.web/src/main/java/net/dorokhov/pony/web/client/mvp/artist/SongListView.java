@@ -1,17 +1,13 @@
-package net.dorokhov.pony.web.client.view.common;
+package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
@@ -60,7 +56,7 @@ public class SongListView  extends Composite {
     public void setEventBus(EventBus aEventBus) {
         eventBus = aEventBus;
 
-        updateChildrenEventBus();
+        //updateChildrenEventBus();
     }
 
     public ArrayList<SongDto> getSongList() {
@@ -101,7 +97,7 @@ public class SongListView  extends Composite {
                 for (SongDto song : column) {
                     SongListItem songItem = new SongListItem(song);
 
-                    songItem.setEventBus(getEventBus());
+                    //songItem.setEventBus(getEventBus());
                     songsColumnPanel.add(songItem);
                 }
 

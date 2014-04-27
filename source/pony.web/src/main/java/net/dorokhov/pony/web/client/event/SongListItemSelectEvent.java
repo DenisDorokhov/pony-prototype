@@ -2,7 +2,7 @@ package net.dorokhov.pony.web.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import net.dorokhov.pony.web.client.common.AbstractEvent;
-import net.dorokhov.pony.web.client.view.common.SongListItem;
+import net.dorokhov.pony.web.client.mvp.artist.SongListItem;
 
 public class SongListItemSelectEvent extends AbstractEvent<SongListItemSelectEvent.Handler> {
 

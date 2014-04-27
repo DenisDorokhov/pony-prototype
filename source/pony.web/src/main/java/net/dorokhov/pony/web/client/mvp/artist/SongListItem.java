@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.view.common;
+package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,10 +10,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import net.dorokhov.pony.web.client.common.StringUtils;
-import net.dorokhov.pony.web.client.common.TimeUtils;
+import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.event.SongListItemSelectEvent;
-import net.dorokhov.pony.web.client.event.SongPlaybackEvent;
 import net.dorokhov.pony.web.shared.SongDto;
+
+import java.util.Objects;
 
 
 public class SongListItem extends Composite {
@@ -83,15 +84,15 @@ public class SongListItem extends Composite {
         getEventBus().fireEvent(new SongListItemSelectEvent(SongListItemSelectEvent.SONG_ITEM_SELECTED, this));
 
         if (selectedSong != null) {
-            getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, selectedSong));
+            getEventBus().fireEvent(new SongEvent(SongEvent.SONG_SELECTED, selectedSong));
         }
     }
 
     private void updateWidget() {
         if (song != null) {
-            trackNumberLabel.setText(StringUtils.nullSafeToString(song.getTrackNumber()));
+            trackNumberLabel.setText(Objects.toString(song.getTrackNumber(), null));
             songNameLabel.setText(song.getName());
-            songDurationLabel.setText(TimeUtils.secondsToMinutes(song.getDuration()));
+            songDurationLabel.setText(StringUtils.secondsToMinutes(song.getDuration()));
         }
         else {
             trackNumberLabel.setText(null);
