@@ -1,50 +1,36 @@
 package net.dorokhov.pony.web.client.mvp.artist;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
-import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.common.StringUtils;
+import com.google.gwt.user.client.ui.FlowPanel;
+import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class AlbumView extends Composite {
 
-	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
+    interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
-	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	public interface Delegate {
+    public interface Delegate {
 
-		public void onSongSelection(SongDto aSong);
+        public void onSongSelection(SongDto aSong);
 
-		public void onSongPlaybackRequest(SongDto aSong);
+        public void onSongPlaybackRequest(SongDto aSong);
 
-	}
-
-	interface AlbumViewStyle extends CssResource {
-		String albumImage();
-		String nameContainer();
-		String songContainer();
-		String trackColumn();
-		String durationColumn();
-	}
-
-	@UiField
-	AlbumViewStyle style;
+    }
 
 	@UiField
 	Image albumImage;
@@ -55,19 +41,28 @@ public class AlbumView extends Composite {
 	@UiField
 	Label albumYearLabel;
 
-	@UiField
-	CellTable<SongDto> songTable;
+    @UiField
+    FlowPanel songListPanel;
 
 	private AlbumSongsDto album;
 
-	private Delegate delegate;
+    private Delegate delegate;
 
 	public AlbumView() {
+        Resources.INSTANCE.style().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		initSongTable();
+		//initSongTable();
 	}
+
+    public Delegate getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(Delegate aDelegate) {
+        delegate = aDelegate;
+    }
 
 	public AlbumSongsDto getAlbum() {
 		return album;
@@ -80,80 +75,90 @@ public class AlbumView extends Composite {
 		updateAlbum();
 	}
 
-	public Delegate getDelegate() {
-		return delegate;
-	}
+//	private void initSongTable() {
+//
+//		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return StringUtils.nullSafeToString(aSong.getTrackNumber());
+//			}
+//		};
+//		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return aSong.getName();
+//			}
+//		};
+//		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
+//			@Override
+//			public String getValue(SongDto aSong) {
+//				return aSong.getDuration() != null ? TimeUtils.secondsToMinutes(aSong.getDuration()) : null;
+//			}
+//		};
+//
+//		trackColumn.setCellStyleNames(style.trackColumn());
+//		durationColumn.setCellStyleNames(style.durationColumn());
+//
+//		songTable.addColumn(trackColumn);
+//		songTable.addColumn(nameColumn);
+//		songTable.addColumn(durationColumn);
+//
+//		final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+//
+//		songTable.setSelectionModel(selectionModel);
+//		songTable.addDomHandler(new DoubleClickHandler() {
+//			@Override
+//			public void onDoubleClick(DoubleClickEvent event) {
+//
+//				SongDto song = selectionModel.getSelectedObject();
+//
+//				if (song != null) {
+//					getEventBus().fireEvent(new SongPlaybackEvent(SongPlaybackEvent.PLAYBACK_REQUESTED, song));
+//				}
+//			}
+//		}, DoubleClickEvent.getType());
+//	}
 
-	public void setDelegate(Delegate aDelegate) {
-		delegate = aDelegate;
-	}
+    private void updateAlbum() {
 
-	private void initSongTable() {
+        String imageUrl = album != null ? album.getArtworkUrl() : null;
+        if (imageUrl == null) {
+            imageUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+        }
 
-		TextColumn<SongDto> trackColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return ObjectUtils.nullSafeToString(aSong.getTrackNumber());
-			}
-		};
-		TextColumn<SongDto> nameColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getName();
-			}
-		};
-		TextColumn<SongDto> durationColumn = new TextColumn<SongDto>() {
-			@Override
-			public String getValue(SongDto aSong) {
-				return aSong.getDuration() != null ? StringUtils.secondsToMinutes(aSong.getDuration()) : null;
-			}
-		};
+        albumImage.setUrl(imageUrl);
 
-		trackColumn.setCellStyleNames(style.trackColumn());
-		durationColumn.setCellStyleNames(style.durationColumn());
+        albumNameLabel.setText(album != null ? album.getName() : null);
+        albumYearLabel.setText(album != null ? Objects.toString(album.getYear(), "") : null);
 
-		songTable.addColumn(trackColumn);
-		songTable.addColumn(nameColumn);
-		songTable.addColumn(durationColumn);
+        songListPanel.clear();
 
-		final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+        Map<Integer, ArrayList<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
 
-		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				if (getDelegate() != null) {
-					getDelegate().onSongSelection(selectionModel.getSelectedObject());
-				}
-			}
-		});
+        for (Map.Entry<Integer, ArrayList<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
+            Integer discNumber = albumDiscEntry.getKey();
+            ArrayList<SongDto> songList = albumDiscEntry.getValue();
 
-		songTable.setSelectionModel(selectionModel);
-		songTable.addDomHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
+            SongListView songListView =
+                    new SongListView(songList, discNumber != null ? "Disc " + discNumber : null);
 
-				SongDto song = selectionModel.getSelectedObject();
+            //songListView.setEventBus(getEventBus());
 
-				if (song != null && getDelegate() != null) {
-					getDelegate().onSongPlaybackRequest(song);
-				}
-			}
-		}, DoubleClickEvent.getType());
-	}
+            songListPanel.add(songListView);
+        }
+    }
 
-	private void updateAlbum() {
+    private Map<Integer, ArrayList<SongDto>> splitIntoDiscs(ArrayList<SongDto> aSongs) {
+        Map<Integer, ArrayList<SongDto>> result = new HashMap<Integer, ArrayList<SongDto>>();
 
-		String imageUrl = album != null ? album.getArtworkUrl() : null;
-		if (imageUrl == null) {
-			imageUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
-		}
+        for (SongDto song : aSongs) {
+            if (result.get(song.getDiscNumber()) == null) {
+                result.put(song.getDiscNumber(), new ArrayList<SongDto>());
+            }
 
-		albumImage.setUrl(imageUrl);
+            result.get(song.getDiscNumber()).add(song);
+        }
 
-		albumNameLabel.setText(album != null ? album.getName() : null);
-		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);
-
-		songTable.setRowData(album != null ? album.getSongs() : new ArrayList<SongDto>());
-	}
-
+        return result;
+    }
 }

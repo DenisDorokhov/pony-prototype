@@ -1,0 +1,92 @@
+.album {
+    margin: 10px 0 30px 20px;
+    overflow: auto;
+    clear: both;
+}
+.albumImage {
+    float: left;
+    margin: 0 10px 10px;
+}
+.albumImage img {
+    max-width: 140px;
+    max-height: 140px;
+    box-shadow: 0 5px 10px #ccc;
+    border: 1px solid #8a8a8a;
+}
+.albumInfo {
+    margin-left: 160px;
+}
+.albumHeader {
+    overflow: auto;
+    font-size: 18px;
+    border-bottom: 1px solid #ededed;
+    padding: 5px 0 10px 10px;
+    margin-bottom: 10px;
+}
+.albumName {
+    float: left;
+    font-weight: bold;
+}
+.albumYear {
+    float: right;
+    color: #82817f;
+    margin-right: 30px;
+}
+
+.albumDisc {
+
+}
+
+.albumDiscHeader {
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.songList {
+    overflow: auto;
+}
+
+.songListColumn {
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+}
+
+.songListItem {
+    overflow: auto;
+    cursor: pointer;
+    padding: 4px;
+    border: 1px solid transparent;
+}
+
+.songListItem_selected {
+    background-image: linear-gradient(to bottom, #9ab9d8, #7997bb);
+    background-repeat: repeat-x;
+    border: 1px solid #718eb0;
+    color: #fff;
+    text-shadow: 0 1px 1px #547191;
+}
+
+.songListItem_selected .trackNumber,
+.songListItem_selected .songName,
+.songListItem_selected .songDuration {
+    color: #fff;
+    text-shadow: 0 1px 1px #547191;
+}
+
+
+.trackNumber {
+    float: left;
+    width: 20px;
+    min-height: 1em;
+    text-align: right;
+    color: #82817f;
+    margin-right: 15px;
+}
+.songName {
+    float: left;
+}
+.songDuration {
+    float: right;
+    color: #82817f;
+}

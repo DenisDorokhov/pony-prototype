@@ -1,53 +1,19 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
-			 xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:style type="net.dorokhov.pony.web.client.mvp.artist.AlbumView.AlbumViewStyle">
-		.albumImage {
-			max-width: 140px;
-			max-height: 140px;
-		}
-		.nameContainer {
-			max-width: 800px;
-		}
-		.songContainer {
-			max-width: 800px;
-		}
-		.trackColumn {
-			width: 20px;
-			text-align: right;
-		}
-		.durationColumn {
-			width: 40px;
-			text-align: right;
-		}
-	</ui:style>
+    <ui:with field="res" type="net.dorokhov.pony.web.client.Resources"></ui:with>
 
-	<g:HorizontalPanel width="100%">
-		<g:cell width="140px">
-			<g:Image ui:field="albumImage" styleName="{style.albumImage}" />
-		</g:cell>
-		<g:cell>
-			<g:VerticalPanel width="100%">
-				<g:cell>
-					<g:HorizontalPanel width="100%" styleName="{style.nameContainer}" >
-						<g:cell>
-							<g:HTMLPanel>
-								<h2><g:Label ui:field="albumNameLabel" /></h2>
-							</g:HTMLPanel>
-						</g:cell>
-						<g:cell horizontalAlignment="right">
-							<g:HTMLPanel>
-								<h2><g:Label ui:field="albumYearLabel" /></h2>
-							</g:HTMLPanel>
-						</g:cell>
-					</g:HorizontalPanel>
-				</g:cell>
-				<g:cell>
-					<c:CellTable ui:field="songTable" width="100%" styleName="{style.songContainer}" />
-				</g:cell>
-			</g:VerticalPanel>
-		</g:cell>
-	</g:HorizontalPanel>
+	<g:FlowPanel styleName="{res.style.album}">
+		<g:FlowPanel styleName="{res.style.albumImage}">
+			<g:Image ui:field="albumImage" />
+		</g:FlowPanel>
+        <g:FlowPanel styleName="{res.style.albumInfo}">
+            <g:FlowPanel styleName="{res.style.albumHeader}" >
+                <g:Label ui:field="albumNameLabel" styleName="{res.style.albumName}" />
+                <g:Label ui:field="albumYearLabel" styleName="{res.style.albumYear}" />
+            </g:FlowPanel>
+            <g:FlowPanel ui:field="songListPanel"></g:FlowPanel>
+        </g:FlowPanel>
+	</g:FlowPanel>
 
 </ui:UiBinder>
