@@ -144,9 +144,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 					currentRequest = null;
 
-					if (getView().getContentState() == ContentState.LOADING) {
-						getView().setContentState(ContentState.ERROR);
-					}
+					getView().setContentState(ContentState.ERROR);
 
 					log.log(Level.SEVERE, "could not update albums", aCaught);
 				}

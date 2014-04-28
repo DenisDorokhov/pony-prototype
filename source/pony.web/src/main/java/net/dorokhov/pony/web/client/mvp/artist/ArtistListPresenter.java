@@ -134,9 +134,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 				doUpdateArtists(new ArrayList<ArtistDto>());
 
-				if (getView().getContentState() == ContentState.LOADING) {
-					getView().setContentState(ContentState.ERROR);
-				}
+				getView().setContentState(ContentState.ERROR);
 
 				log.log(Level.SEVERE, "could not update artists", aCaught);
 			}
