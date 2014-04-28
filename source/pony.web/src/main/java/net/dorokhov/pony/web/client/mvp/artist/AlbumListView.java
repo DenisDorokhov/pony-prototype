@@ -14,7 +14,7 @@ import net.dorokhov.pony.web.shared.SongDto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, AlbumView.Delegate {
+public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongDelegate {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
@@ -97,12 +97,12 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public void onSongSelection(SongDto aSong) {
+	public void onSongSelected(SongDto aSong) {
 		getUiHandlers().onSongSelection(aSong);
 	}
 
 	@Override
-	public void onSongPlaybackRequest(SongDto aSong) {
+	public void onSongPlaybackRequested(SongDto aSong) {
 		getUiHandlers().onSongActivation(aSong);
 	}
 
