@@ -1,11 +1,14 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "album", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "artist_id"}))
 @Indexed
-public class Album extends AbstractEntity<Long> implements Comparable<Album> {
+public class Album extends BaseEntity<Long> implements Comparable<Album> {
 
 	private String name;
 
@@ -58,6 +61,11 @@ public class Album extends AbstractEntity<Long> implements Comparable<Album> {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "album")
 	public List<Song> getSongs() {
+
+		if (songs == null) {
+			songs = new ArrayList<Song>();
+		}
+
 		return songs;
 	}
 
@@ -67,6 +75,7 @@ public class Album extends AbstractEntity<Long> implements Comparable<Album> {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "artist_id")
+	@NotNull
 	public Artist getArtist() {
 		return artist;
 	}

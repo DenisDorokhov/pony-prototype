@@ -12,7 +12,8 @@ import java.io.File;
 public interface LibraryImporter {
 
 	/**
-	 * Imports song files creating new song entities (artists, albums and songs) and updating existing.
+	 * Imports song files creating new song entities (artists, albums and songs) and updating existing. This method is
+	 * supposed to be called from different threads.
 	 *
 	 * @param aFile song file to import
 	 * @return imported song file

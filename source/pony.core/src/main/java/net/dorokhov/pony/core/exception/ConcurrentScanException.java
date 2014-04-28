@@ -7,10 +7,9 @@ import java.io.Serializable;
  *
  * Signals that the system is already scanning the library.
  */
-public class ConcurrentScanException extends Exception implements Serializable {
+public class ConcurrentScanException extends RuntimeException implements Serializable {
 
 	public ConcurrentScanException() {
 		super("Library is already scanning.");
 	}
-
 }

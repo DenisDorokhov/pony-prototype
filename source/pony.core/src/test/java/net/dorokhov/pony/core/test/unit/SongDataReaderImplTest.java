@@ -12,10 +12,13 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 
-public class TestSongDataReaderImpl {
+public class SongDataReaderImplTest {
 
-	private static final String TEST_FILE_PATH = "mp3/Metallica-Battery-with_artwork.mp3";
-	private static final File TEST_FILE = new File(FileUtils.getTempDirectory(), "TestSongDataReaderImpl.mp3");
+	private static final String TEST_MP3_PATH = "data/Metallica-Battery-with_artwork.mp3"; // see tags in data/mp3-info.txt
+	private static final String TEST_OGG_PATH = "data/test.ogg";
+
+	private static final File TEST_MP3_FILE = new File(FileUtils.getTempDirectory(), "TestSongDataReaderImpl.mp3");
+	private static final File TEST_OGG_FILE = new File(FileUtils.getTempDirectory(), "TestSongDataReaderImpl.ogg");
 
 	private SongDataReaderImpl service;
 
@@ -25,20 +28,22 @@ public class TestSongDataReaderImpl {
 		service = new SongDataReaderImpl();
 		service.setChecksumService(new ChecksumServiceImpl());
 
-		FileUtils.copyFile(new ClassPathResource(TEST_FILE_PATH).getFile(), TEST_FILE);
+		FileUtils.copyFile(new ClassPathResource(TEST_MP3_PATH).getFile(), TEST_MP3_FILE);
+		FileUtils.copyFile(new ClassPathResource(TEST_OGG_PATH).getFile(), TEST_OGG_FILE);
 	}
 
 	@After
 	public void tearDown() {
-		TEST_FILE.delete();
+		TEST_MP3_FILE.delete();
+		TEST_OGG_FILE.delete();
 	}
 
 	@Test
 	public void test() throws Exception {
 
-		SongData songData = service.readSongData(TEST_FILE);
+		SongData songData = service.readSongData(TEST_MP3_FILE);
 
-		Assert.assertEquals(TEST_FILE.getAbsolutePath(), songData.getPath());
+		Assert.assertEquals(TEST_MP3_FILE.getAbsolutePath(), songData.getPath());
 		Assert.assertEquals("MPEG-1 Layer 3", songData.getFormat());
 		Assert.assertEquals("audio/mpeg", songData.getMimeType());
 		Assert.assertEquals(Long.valueOf(24797), songData.getSize());
@@ -56,6 +61,16 @@ public class TestSongDataReaderImpl {
 		Assert.assertEquals("Rock", songData.getGenre());
 		Assert.assertEquals("image/jpeg", songData.getArtwork().getMimeType());
 		Assert.assertEquals("0a6632570700e5f595a75999508fc46d", songData.getArtwork().getChecksum());
+
+		boolean isExceptionThrown = false;
+
+		try {
+			service.readSongData(TEST_OGG_FILE);
+		} catch (Exception e) {
+			isExceptionThrown = true;
+		}
+
+		Assert.assertTrue(isExceptionThrown);
 	}
 
 }

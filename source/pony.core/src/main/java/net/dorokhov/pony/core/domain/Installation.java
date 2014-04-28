@@ -1,5 +1,7 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "installation")
-public class Installation extends AbstractEntity<Long> {
+public class Installation extends BaseEntity<Long> {
 
 	private String systemVersion;
 

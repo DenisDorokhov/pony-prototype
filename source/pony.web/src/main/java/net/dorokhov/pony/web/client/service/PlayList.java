@@ -1,16 +1,39 @@
 package net.dorokhov.pony.web.client.service;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.dorokhov.pony.web.shared.SongDto;
+
+import java.util.List;
 
 public interface PlayList {
 
-	public boolean hasPrevious();
-	public boolean hasNext();
+	public static interface Delegate {
 
-	public void previous(AsyncCallback<SongDto> aCallback);
-	public void next(AsyncCallback<SongDto> aCallback);
+		public void onPlayListSongAdded(PlayList aPlayList, SongDto aSong, int aIndex);
 
-	public void reset();
+		public void onPlayListSongRemoved(PlayList aPlayList, SongDto aSong, int aIndex);
+
+		public void onPlayListSongMoved(PlayList aPlayList, int aOldIndex, int aNewIndex);
+
+	}
+
+	public void addDelegate(Delegate aDelegate);
+
+	public void removeDelegate(Delegate aDelegate);
+
+	public void add(List<SongDto> aSongs);
+
+	public void add(SongDto aSong);
+
+	public void add(SongDto aSong, int aIndex) throws IndexOutOfBoundsException;
+
+	public void remove(int aIndex) throws IndexOutOfBoundsException;
+
+	public void removeAll();
+
+	public void move(int aOldIndex, int aNewIndex) throws IndexOutOfBoundsException;
+
+	public SongDto get(int aIndex) throws IndexOutOfBoundsException;
+
+	public int size();
 
 }

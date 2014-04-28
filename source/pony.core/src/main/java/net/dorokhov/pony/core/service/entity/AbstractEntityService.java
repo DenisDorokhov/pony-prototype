@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.entity;
 
-import net.dorokhov.pony.core.domain.AbstractEntity;
+import net.dorokhov.pony.core.dao.entity.AbstractEntity;
 import net.dorokhov.pony.core.utility.ValidationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -91,20 +91,18 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 
 		Date currentDate = new Date();
 
+		Date creationDate = currentDate;
+
 		if (aEntity.getId() != null) {
 
 			EntityType storedEntity = dao.findOne(aEntity.getId());
 
-			if (storedEntity == null) {
-				throw new RuntimeException("Entity does not exist.");
+			if (storedEntity != null) {
+				creationDate = storedEntity.getCreationDate();
 			}
-
-			aEntity.setCreationDate(storedEntity.getCreationDate());
-
-		} else {
-			aEntity.setCreationDate(currentDate);
 		}
 
+		aEntity.setCreationDate(creationDate);
 		aEntity.setUpdateDate(currentDate);
 
 		return dao.save(aEntity);
@@ -136,7 +134,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 	 * This method is useful when some activities must be performed on entity before storing it in the database (e.g.
 	 * trimming string values, nullify empty values, etc.). This method does nothing by default.
 	 *
-	 * @param aEntity
+	 * @param aEntity entity to normalize
 	 */
 	protected void normalize(EntityType aEntity) {
 		// Do nothing by default

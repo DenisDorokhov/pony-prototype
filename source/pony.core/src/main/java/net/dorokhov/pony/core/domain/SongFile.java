@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "song_file")
-public class SongFile extends AbstractEntity<Long> {
+public class SongFile extends BaseEntity<Long> {
 
 	private String path;
 

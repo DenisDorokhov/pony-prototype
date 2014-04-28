@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "stored_file", uniqueConstraints = @UniqueConstraint(columnNames = {"tag", "checksum"}))
-public class StoredFile extends AbstractEntity<Long> {
+public class StoredFile extends BaseEntity<Long> {
 
 	private String name;
 

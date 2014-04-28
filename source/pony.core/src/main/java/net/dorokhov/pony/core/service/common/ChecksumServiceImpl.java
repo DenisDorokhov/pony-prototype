@@ -7,19 +7,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Service
 public class ChecksumServiceImpl implements ChecksumService {
 
 	@Override
 	public String calculateChecksum(File aFile) throws IOException {
-		return calculateChecksum(new FileInputStream(aFile));
-	}
-
-	@Override
-	public String calculateChecksum(InputStream aInputStream) throws IOException {
-		return DigestUtils.md5Hex(aInputStream);
+		return DigestUtils.md5Hex(new FileInputStream(aFile));
 	}
 
 	@Override

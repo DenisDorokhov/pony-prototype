@@ -6,18 +6,23 @@ import java.util.List;
 /**
  * Library normalization service.
  *
- * Validates library entities and fixes data inconsistencies.
+ * Validates library entities and fixes data inconsistencies. Because of entity hierarchy methods are supposed to be
+ * called in the following order:
+ *
+ * 1) normalizeSongs()
+ * 2) normalizeStoredFiles()
+ * 3) normalizeAlbums()
+ * 4) normalizeArtists()
  */
 public interface LibraryNormalizer {
 
 	/**
 	 * Normalizes song files.
 	 *
-	 * This method will delete all files that don't belong to passed target files. It is needed when library folder
-	 * configuration have been changed. Example of additional normalization can be deletion of song file entities that
-	 * doesn't point to an existing file anymore. Song normalization process fully depends on particular implementation.
+	 * This method will delete all files that don't belong to passed target files / folders or doesn't point to existing
+	 * files in the filesystem anymore. Additional normalization process fully depends on particular implementation.
 	 *
-	 * @param aTargetFiles target files (song files that don't belong to target files will be deleted).
+	 * @param aTargetFiles target files (song files that don't belong to target files / folders will be deleted).
 	 * @param aHandler operation progress handler
 	 */
 	public void normalizeSongs(List<File> aTargetFiles, ProgressHandler aHandler);
@@ -25,7 +30,8 @@ public interface LibraryNormalizer {
 	/**
 	 * Normalizes stored files.
 	 *
-	 * Example of such normalization can be deletion of stored files that are not referenced by any entities.
+	 * This method will delete stored files that are not referenced by any entities. Additional normalization process
+	 * fully depends on particular implementation.
 	 *
 	 * @param aHandler operation progress handler
 	 */
@@ -34,8 +40,8 @@ public interface LibraryNormalizer {
 	/**
 	 * Normalizes albums.
 	 *
-	 * Example of such normalization can be deletion of albums without songs (e.g. when songs were deleted during song
-	 * normalization).
+	 * This method will delete albums without songs (e.g. when songs were deleted during song normalization).
+	 * Additional normalization process fully depends on particular implementation.
 	 *
 	 * @param aHandler operation progress handler
 	 */
@@ -44,8 +50,8 @@ public interface LibraryNormalizer {
 	/**
 	 * Normalizes artists.
 	 *
-	 * Example of such normalization can be deletion of artists without albums (e.g. when albums were deleted during
-	 * album normalization).
+	 * This method will delete artists without albums (e.g. when albums were deleted during album normalization).
+	 * Additional normalization process fully depends on particular implementation.
 	 *
 	 * @param aHandler operation progress handler
 	 */

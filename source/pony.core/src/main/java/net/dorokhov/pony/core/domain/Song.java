@@ -1,10 +1,12 @@
 package net.dorokhov.pony.core.domain;
 
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Song entity.
@@ -12,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "song")
 @Indexed
-public class Song extends AbstractEntity<Long> implements Comparable<Song> {
+public class Song extends BaseEntity<Long> implements Comparable<Song> {
 
 	private SongFile file;
 
@@ -21,6 +23,7 @@ public class Song extends AbstractEntity<Long> implements Comparable<Song> {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "song_file_id", unique = true)
 	@IndexedEmbedded
+	@NotNull
 	public SongFile getFile() {
 		return file;
 	}
@@ -31,6 +34,7 @@ public class Song extends AbstractEntity<Long> implements Comparable<Song> {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "album_id")
+	@NotNull
 	public Album getAlbum() {
 		return album;
 	}

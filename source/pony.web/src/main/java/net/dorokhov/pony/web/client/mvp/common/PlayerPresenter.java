@@ -2,7 +2,6 @@ package net.dorokhov.pony.web.client.mvp.common;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
@@ -10,10 +9,10 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
-import net.dorokhov.pony.web.client.service.PlayList;
+import net.dorokhov.pony.web.client.service.PlayListNavigator;
+import net.dorokhov.pony.web.client.service.PlayListNavigatorImpl;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> implements PlayerUiHandlers, PlayListEvent.Handler, Window.ClosingHandler {
@@ -51,7 +50,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	private final Logger log = Logger.getLogger(getClass().getName());
 
-	private PlayList playList;
+	private final PlayListNavigator playListNavigator = new PlayListNavigatorImpl(PlayListNavigatorImpl.Mode.NORMAL);
 
 	private HandlerRegistration closingWindowRegistration;
 
@@ -110,7 +109,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_ENDED, getView().getSong()));
 
-		startNextSong();
+		playNextSong();
 	}
 
 	@Override
@@ -126,23 +125,24 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	@Override
 	public void onPreviousSongRequested() {
-		startPreviousSong();
+		playPreviousSong();
 	}
 
 	@Override
 	public void onNextSongRequested() {
-		startNextSong();
+		playNextSong();
 	}
 
 	@Override
 	public void onPlayListEvent(PlayListEvent aEvent) {
 
-		playList = aEvent.getPlayList();
+		playListNavigator.setPlayList(aEvent.getPlayList());
+		playListNavigator.setCurrentIndex(aEvent.getStartIndex());
 
 		getView().setPreviousSongAvailable(false);
 		getView().setNextSongAvailable(false);
 
-		startNextSong();
+		playCurrentSong();
 	}
 
 	@Override
@@ -152,65 +152,40 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 		}
 	}
 
-	private void startPreviousSong() {
+	private void playCurrentSong() {
 
-		if (playList != null && playList.hasPrevious()) {
+		SongDto song = playListNavigator.getCurrent();
 
-			playList.previous(new AsyncCallback<SongDto>() {
-
-				@Override
-				public void onSuccess(SongDto aResult) {
-
-					getView().setSong(aResult);
-
-					getView().setPreviousSongAvailable(playList.hasPrevious());
-					getView().setNextSongAvailable(playList.hasNext());
-
-					getView().play();
-				}
-
-				@Override
-				public void onFailure(Throwable aCaught) {
-
-					log.log(Level.SEVERE, "could not fetch next song from playlist", aCaught);
-
-					Window.alert("Could not load previous song!");
-				}
-			});
-
-		} else {
-			log.fine("beginning of playlist");
+		if (song != null) {
+			doPlaySong(song);
 		}
 	}
 
-	private void startNextSong() {
+	private void playPreviousSong() {
 
-		if (playList != null && playList.hasNext()) {
+		SongDto song = playListNavigator.switchToPrevious();
 
-			playList.next(new AsyncCallback<SongDto>() {
-
-				@Override
-				public void onSuccess(SongDto aResult) {
-
-					getView().setSong(aResult);
-
-					getView().setPreviousSongAvailable(playList.hasPrevious());
-					getView().setNextSongAvailable(playList.hasNext());
-
-					getView().play();
-				}
-
-				@Override
-				public void onFailure(Throwable aCaught) {
-
-					log.log(Level.SEVERE, "could not fetch next song from playlist", aCaught);
-
-					Window.alert("Could not load next song!");
-				}
-			});
-
-		} else {
-			log.fine("end of playlist");
+		if (song != null) {
+			doPlaySong(song);
 		}
+	}
+
+	private void playNextSong() {
+
+		SongDto song = playListNavigator.switchToNext();
+
+		if (song != null) {
+			doPlaySong(song);
+		}
+	}
+
+	private void doPlaySong(SongDto aSong) {
+
+		getView().setSong(aSong);
+
+		getView().setPreviousSongAvailable(playListNavigator.hasPrevious());
+		getView().setNextSongAvailable(playListNavigator.hasNext());
+
+		getView().play();
 	}
 }

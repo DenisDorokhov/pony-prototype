@@ -14,15 +14,22 @@ public class PlayListEvent extends AbstractEvent<PlayListEvent.Handler> {
 
 	private PlayList playList;
 
-	public PlayListEvent(Type<Handler> aAssociatedType, PlayList aPlayList) {
+	private int startIndex;
+
+	public PlayListEvent(Type<Handler> aAssociatedType, PlayList aPlayList, int aStartIndex) {
 
 		super(aAssociatedType);
 
 		playList = aPlayList;
+		startIndex = aStartIndex;
 	}
 
 	public PlayList getPlayList() {
 		return playList;
+	}
+
+	public int getStartIndex() {
+		return startIndex;
 	}
 
 	@Override

@@ -26,6 +26,8 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	private Integer albumYear;
 
+	private Long albumArtwork;
+
 	private String albumArtworkUrl;
 
 	public String getFileUrl() {
@@ -114,6 +116,14 @@ public class SongDto extends AbstractEntityDto implements Serializable {
 
 	public void setAlbumYear(Integer aAlbumYear) {
 		albumYear = aAlbumYear;
+	}
+
+	public Long getAlbumArtwork() {
+		return albumArtwork;
+	}
+
+	public void setAlbumArtwork(Long aAlbumArtwork) {
+		albumArtwork = aAlbumArtwork;
 	}
 
 	public String getAlbumArtworkUrl() {

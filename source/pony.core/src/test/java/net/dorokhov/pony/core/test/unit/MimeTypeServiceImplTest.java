@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class TestMimeTypeServiceImpl {
+public class MimeTypeServiceImplTest {
 
 	private MimeTypeServiceImpl service;
 
@@ -20,6 +20,7 @@ public class TestMimeTypeServiceImpl {
 	public void test() {
 		Assert.assertEquals("image/png", service.getFileMimeType(new File("foobar.png")));
 		Assert.assertEquals("png", service.getFileExtension("image/png"));
+		Assert.assertNull(service.getFileExtension("image"));
 	}
 
 }

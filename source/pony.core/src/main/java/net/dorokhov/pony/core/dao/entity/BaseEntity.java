@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.domain;
+package net.dorokhov.pony.core.dao.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.util.Date;
  * @param <T> primary key type
  */
 @MappedSuperclass
-public abstract class AbstractEntity<T extends Serializable> {
+public abstract class BaseEntity<T extends Serializable> implements AbstractEntity<T> {
 
 	private T id;
 
@@ -20,6 +20,7 @@ public abstract class AbstractEntity<T extends Serializable> {
 
 	private Long version;
 
+	@Override
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -27,38 +28,45 @@ public abstract class AbstractEntity<T extends Serializable> {
 		return id;
 	}
 
+	@Override
 	public void setId(T aId) {
 		id = aId;
 	}
 
+	@Override
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "creation_date")
 	public Date getCreationDate() {
 		return creationDate;
 	}
 
+	@Override
 	public void setCreationDate(Date aCreationDate) {
 		creationDate = aCreationDate;
 	}
 
+	@Override
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_date")
 	public Date getUpdateDate() {
 		return updateDate;
 	}
 
+	@Override
 	public void setUpdateDate(Date aUpdateDate) {
 		updateDate = aUpdateDate;
 	}
 
+	@Override
 	@Version
 	@Column(name = "version")
 	public Long getVersion() {
 		return version;
 	}
 
-	public void setVersion(Long aGeneration) {
-		version = aGeneration;
+	@Override
+	public void setVersion(Long aVersion) {
+		version = aVersion;
 	}
 	
 	@Override
@@ -75,7 +83,7 @@ public abstract class AbstractEntity<T extends Serializable> {
 
 		if (aObj != null && getId() != null && getClass().equals(aObj.getClass())) {
 			
-			AbstractEntity entity = (AbstractEntity)aObj;
+			BaseEntity entity = (BaseEntity)aObj;
 			
 			return getId().equals(entity.getId());
 		}

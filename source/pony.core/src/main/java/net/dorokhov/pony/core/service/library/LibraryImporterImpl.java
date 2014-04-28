@@ -1,6 +1,7 @@
 package net.dorokhov.pony.core.service.library;
 
 import net.dorokhov.pony.core.domain.*;
+import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import net.dorokhov.pony.core.service.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -41,9 +42,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 	private SongDataReader songDataReader;
 
-	private MimeTypeService mimeTypeService;
-
-	private ImageScalingService imageScalingService;
+	private ThumbnailService thumbnailService;
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
@@ -81,13 +80,8 @@ public class LibraryImporterImpl implements LibraryImporter {
 	}
 
 	@Autowired
-	public void setMimeTypeService(MimeTypeService aMimeTypeService) {
-		mimeTypeService = aMimeTypeService;
-	}
-
-	@Autowired
-	public void setImageScalingService(ImageScalingService aImageScalingService) {
-		imageScalingService = aImageScalingService;
+	public void setThumbnailService(ThumbnailService aThumbnailService) {
+		thumbnailService = aThumbnailService;
 	}
 
 	@Override
@@ -182,9 +176,9 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 				try {
 
-					StorageTask storageTask = songDataToArtworkStorageTask(aSongData);
+					StoredFileService.SaveCommand saveCommand = songDataToArtworkStorageCommand(aSongData);
 
-					storedFile = storedFileService.save(storageTask);
+					storedFile = storedFileService.save(saveCommand);
 
 					log.debug("artwork stored {}", storedFile);
 
@@ -344,23 +338,23 @@ public class LibraryImporterImpl implements LibraryImporter {
 		return new EntityModification<Song>(song, shouldSave);
 	}
 
-	private StorageTask songDataToArtworkStorageTask(SongData aSongData) throws Exception {
+	private StoredFileService.SaveCommand songDataToArtworkStorageCommand(SongData aSongData) throws Exception {
 
 		File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_INTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-		imageScalingService.scaleImage(aSongData.getArtwork().getBinaryData(), mimeTypeService.getFileExtension(aSongData.getArtwork().getMimeType()), file);
+		thumbnailService.makeThumbnail(aSongData.getArtwork().getBinaryData(), file);
 
-		StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
+		StoredFileService.SaveCommand saveCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.MOVE, file);
 
-		storageTask.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
-		storageTask.setMimeType(aSongData.getArtwork().getMimeType());
-		storageTask.setChecksum(aSongData.getArtwork().getChecksum());
-		storageTask.setTag(FILE_TAG_ARTWORK_INTERNAL);
+		saveCommand.setName(aSongData.getArtist() + " " + aSongData.getAlbum() + " " + aSongData.getName());
+		saveCommand.setMimeType(aSongData.getArtwork().getMimeType());
+		saveCommand.setChecksum(aSongData.getArtwork().getChecksum());
+		saveCommand.setTag(FILE_TAG_ARTWORK_INTERNAL);
 
-		return storageTask;
+		return saveCommand;
 	}
 
-	private static class EntityModification<T extends AbstractEntity> {
+	private static class EntityModification<T extends BaseEntity> {
 
 		private T entity;
 

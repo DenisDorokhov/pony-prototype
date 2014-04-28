@@ -6,7 +6,7 @@ public abstract class AbstractEntityDto implements Serializable {
 
 	private Long id;
 
-	private Long generation;
+	private Long version;
 
 	public Long getId() {
 		return id;
@@ -16,12 +16,12 @@ public abstract class AbstractEntityDto implements Serializable {
 		id = aId;
 	}
 
-	public Long getGeneration() {
-		return generation;
+	public Long getVersion() {
+		return version;
 	}
 
-	public void setGeneration(Long aGeneration) {
-		generation = aGeneration;
+	public void setVersion(Long aVersion) {
+		version = aVersion;
 	}
 
 	@Override

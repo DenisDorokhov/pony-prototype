@@ -37,13 +37,13 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 	private StoredFileService storedFileService;
 
-	private ExternalArtworkService externalArtworkService;
+	private ArtworkService artworkService;
 
 	private ChecksumService checksumService;
 
 	private MimeTypeService mimeTypeService;
 
-	private ImageScalingService imageScalingService;
+	private ThumbnailService thumbnailService;
 
 	@Autowired
 	public void setSongFileService(SongFileService aSongFileService) {
@@ -71,8 +71,8 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	}
 
 	@Autowired
-	public void setExternalArtworkService(ExternalArtworkService aExternalArtworkService) {
-		externalArtworkService = aExternalArtworkService;
+	public void setArtworkService(ArtworkService aArtworkService) {
+		artworkService = aArtworkService;
 	}
 
 	@Autowired
@@ -86,8 +86,8 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 	}
 
 	@Autowired
-	public void setImageScalingService(ImageScalingService aImageScalingService) {
-		imageScalingService = aImageScalingService;
+	public void setThumbnailService(ThumbnailService aThumbnailService) {
+		thumbnailService = aThumbnailService;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -433,7 +433,7 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 	private void fetchAlbumArtwork(Album aAlbum, Song aSong, File aFolder) throws Exception {
 
-		File artworkFile = externalArtworkService.fetchArtwork(aFolder);
+		File artworkFile = artworkService.discoverArtwork(aFolder);
 
 		if (artworkFile != null) {
 
@@ -449,17 +449,17 @@ public class LibraryNormalizerImpl implements LibraryNormalizer {
 
 					File file = new File(FileUtils.getTempDirectory(), "pony." + FILE_TAG_ARTWORK_EXTERNAL + "." + UUID.randomUUID() + ".tmp");
 
-					imageScalingService.scaleImage(artworkFile, mimeTypeService.getFileExtension(mimeType), file);
+					thumbnailService.makeThumbnail(artworkFile, file);
 
-					StorageTask storageTask = new StorageTask(StorageTask.Type.MOVE, file);
+					StoredFileService.SaveCommand saveCommand = new StoredFileService.SaveCommand(StoredFileService.SaveCommand.Type.MOVE, file);
 
-					storageTask.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
-					storageTask.setMimeType(mimeType);
-					storageTask.setChecksum(checksum);
-					storageTask.setTag(FILE_TAG_ARTWORK_EXTERNAL);
-					storageTask.setUserData(artworkFile.getAbsolutePath());
+					saveCommand.setName(aSong.getFile().getArtist() + " " + aSong.getFile().getAlbum() + " " + aSong.getFile().getName());
+					saveCommand.setMimeType(mimeType);
+					saveCommand.setChecksum(checksum);
+					saveCommand.setTag(FILE_TAG_ARTWORK_EXTERNAL);
+					saveCommand.setUserData(artworkFile.getAbsolutePath());
 
-					storedFile = storedFileService.save(storageTask);
+					storedFile = storedFileService.save(saveCommand);
 
 					log.debug("external artwork stored {}", storedFile);
 				}

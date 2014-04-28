@@ -2,6 +2,8 @@ package net.dorokhov.pony.core.service.common;
 
 import net.dorokhov.pony.core.dao.InstallationDao;
 import net.dorokhov.pony.core.domain.Installation;
+import net.dorokhov.pony.core.exception.AlreadyInstalledException;
+import net.dorokhov.pony.core.exception.NotInstalledException;
 import net.dorokhov.pony.core.service.InstallationService;
 
 import org.slf4j.Logger;
@@ -30,12 +32,12 @@ public class InstallationServiceImpl implements InstallationService {
 
 	@Override
 	@Transactional
-	public void install() {
+	public void install() throws AlreadyInstalledException {
 
 		log.info("Installing...");
 
 		if (getInstallation() != null) {
-			throw new RuntimeException("Already installed.");
+			throw new AlreadyInstalledException();
 		}
 
 		installationDao.install();
@@ -45,12 +47,12 @@ public class InstallationServiceImpl implements InstallationService {
 
 	@Override
 	@Transactional
-	public void uninstall() {
+	public void uninstall() throws NotInstalledException {
 
 		log.info("Uninstalling...");
 
 		if (getInstallation() == null) {
-			throw new RuntimeException("Not installed.");
+			throw new NotInstalledException();
 		}
 
 		installationDao.uninstall();
