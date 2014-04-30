@@ -30,7 +30,7 @@
 .albumYear {
     float: right;
     color: #82817f;
-    margin-right: 30px;
+    margin-right: 40px;
 }
 
 .albumDisc {
@@ -47,9 +47,9 @@
     -moz-column-width: 400px;
     -webkit-column-width: 400px;
     column-width: 400px;
-    -moz-column-gap: 1em;
-    -webkit-column-gap: 1em;
-    column-gap: 1em;
+    -moz-column-gap: 0;
+    -webkit-column-gap: 0;
+    column-gap: 0;
 }
 
 .songListItem {
@@ -57,7 +57,10 @@
     cursor: pointer;
     display: inline-block;
     padding: 4px;
-    width: 400px;
+    width: 100%;
+    -moz-border-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
     border: 1px solid transparent;
 }
 
@@ -91,4 +94,5 @@
 .songDuration {
     float: right;
     color: #82817f;
+    margin-right: 30px;
 }
