@@ -103,43 +103,14 @@ public class SongListView extends Composite implements SongDelegate {
 
 		songListPanel.clear();
 
-		ArrayList<List<SongDto>> columns = splitIntoColumns(songs);
+        for (SongDto song : songs) {
 
-		for (List<SongDto> column : columns) {
-			if (column != null) {
+            SongView songView = new SongView(song);
 
-				FlowPanel songsColumnPanel = new FlowPanel();
+            songView.setDelegate(this);
 
-				songsColumnPanel.setStyleName(Resources.INSTANCE.style().songListColumn());
+            songListPanel.add(songView);
+        }
 
-				for (SongDto song : column) {
-
-					SongView songView = new SongView(song);
-
-					songView.setDelegate(this);
-
-					songsColumnPanel.add(songView);
-				}
-
-				songListPanel.add(songsColumnPanel);
-			}
-		}
-	}
-
-	private ArrayList<List<SongDto>> splitIntoColumns(ArrayList<SongDto> aList) {
-
-		ArrayList<List<SongDto>> result = new ArrayList<List<SongDto>>();
-
-		if (aList == null || aList.size() <= MIN_SONGS_IN_COLUMN) {
-			result.add(aList);
-		} else {
-
-			int columnSize = (aList.size() / 2) + 1;
-
-			result.add(aList.subList(0, columnSize));
-			result.add(aList.subList(columnSize, aList.size()));
-		}
-
-		return result;
 	}
 }

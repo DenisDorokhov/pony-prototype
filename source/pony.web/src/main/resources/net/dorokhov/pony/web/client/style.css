@@ -44,18 +44,20 @@
 
 .songList {
     overflow: auto;
-}
-
-.songListColumn {
-    float: left;
-    width: 48%;
-    margin-right: 2%;
+    -moz-column-width: 400px;
+    -webkit-column-width: 400px;
+    column-width: 400px;
+    -moz-column-gap: 1em;
+    -webkit-column-gap: 1em;
+    column-gap: 1em;
 }
 
 .songListItem {
     overflow: auto;
     cursor: pointer;
+    display: inline-block;
     padding: 4px;
+    width: 400px;
     border: 1px solid transparent;
 }
 
