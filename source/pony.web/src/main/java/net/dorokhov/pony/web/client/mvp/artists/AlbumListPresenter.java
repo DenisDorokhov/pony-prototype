@@ -114,7 +114,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	public void onSongEvent(SongEvent aEvent) {
 		if (!aEvent.getSong().equals(getView().getActivatedSong())) {
 
-			ignoreNextSongActivationEvent = true;
+			ignoreNextSongActivationEvent = true; // this is external event, don't create new playlist, just update UI
 
 			getView().setActivatedSong(aEvent.getSong());
 		}

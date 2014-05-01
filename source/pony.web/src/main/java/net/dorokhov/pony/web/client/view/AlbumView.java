@@ -144,6 +144,10 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 			Integer discNumber = albumDiscEntry.getKey();
 
+			if (discNumber != null && discNumber == 1 && albumDiscs.size() == 1) {
+				discNumber = null;
+			}
+
 			ArrayList<SongDto> songList = albumDiscEntry.getValue();
 
 			SongListView songListView = new SongListView(getSelectionModel(), getActivationModel(), songList);
