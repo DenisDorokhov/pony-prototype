@@ -78,9 +78,9 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 
 		selectionModel = aSelectionModel;
 
-		if (selectionModel != null) {
-			selectionRegistration = selectionModel.addSelectionChangeHandler(this);
-		}
+		selectionRegistration = selectionModel.addSelectionChangeHandler(this);
+
+		updateSelection();
 	}
 
 	public SetSelectionModel<SongDto> getActivationModel() {
@@ -96,9 +96,9 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 
 		activationModel = aActivationModel;
 
-		if (activationModel != null) {
-			activationRegistration = activationModel.addSelectionChangeHandler(this);
-		}
+		activationRegistration = activationModel.addSelectionChangeHandler(this);
+
+		updateSelection();
 	}
 
 	public ArrayList<SongDto> getSongs() {
@@ -125,14 +125,7 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 
 	@Override
 	public void onSelectionChange(SelectionChangeEvent aEvent) {
-
-		Set<SongDto> selectedSongs = getSelectionModel().getSelectedSet();
-		Set<SongDto> activatedSongs = getActivationModel().getSelectedSet();
-
-		for (Map.Entry<Long, SongView> entry : songToSongView.entrySet()) {
-			entry.getValue().setSelected(selectedSongs.contains(entry.getValue().getSong()));
-			entry.getValue().setActivated(activatedSongs.contains(entry.getValue().getSong()));
-		}
+		updateSelection();
 	}
 
 	@Override
@@ -163,5 +156,29 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 			songToSongView.put(song.getId(), songView);
             songListView.add(songView);
         }
+
+		updateSelection();
+	}
+
+	private void updateSelection() {
+
+		Set<SongDto> selectedSongs = null;
+		Set<SongDto> activatedSongs = null;
+
+		if (getSelectionModel() != null) {
+			selectedSongs = getSelectionModel().getSelectedSet();
+		}
+		if (getActivationModel() != null) {
+			activatedSongs = getActivationModel().getSelectedSet();
+		}
+
+		for (Map.Entry<Long, SongView> entry : songToSongView.entrySet()) {
+			if (selectedSongs != null) {
+				entry.getValue().setSelected(selectedSongs.contains(entry.getValue().getSong()));
+			}
+			if (activatedSongs != null) {
+				entry.getValue().setActivated(activatedSongs.contains(entry.getValue().getSong()));
+			}
+		}
 	}
 }

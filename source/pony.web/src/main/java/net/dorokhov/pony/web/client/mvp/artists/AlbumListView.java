@@ -55,7 +55,24 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	private boolean shouldScrollToTop;
 
 	public AlbumListView() {
+
 		initWidget(uiBinder.createAndBindUi(this));
+
+		selectionModel = new SingleSelectionModel<SongDto>();
+		activationModel = new SingleSelectionModel<SongDto>();
+
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				getUiHandlers().onSongSelection(selectionModel.getSelectedObject());
+			}
+		});
+		activationModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				getUiHandlers().onSongActivation(activationModel.getSelectedObject());
+			}
+		});
 	}
 
 	@Override
@@ -87,20 +104,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public SongDto getSelectedSong() {
-		return selectionModel.getSelectedObject();
-	}
-
-	@Override
-	public void setSelectedSong(SongDto aSong) {
-		if (aSong != null) {
-			selectionModel.setSelected(aSong, true);
-		} else {
-			selectionModel.setSelected(selectionModel.getSelectedObject(), false);
-		}
-	}
-
-	@Override
 	public SongDto getActivatedSong() {
 		return activationModel.getSelectedObject();
 	}
@@ -110,7 +113,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		if (aSong != null) {
 			activationModel.setSelected(aSong, true);
 		} else {
-			activationModel.setSelected(activationModel.getSelectedObject(), false);
+			if (activationModel.getSelectedObject() != null) {
+				activationModel.setSelected(activationModel.getSelectedObject(), false);
+			}
 		}
 	}
 
@@ -139,22 +144,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		albumsPanel.clear();
 
 		if (albums != null) {
-
-			selectionModel = new SingleSelectionModel<SongDto>();
-			activationModel = new SingleSelectionModel<SongDto>();
-
-			selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-				@Override
-				public void onSelectionChange(SelectionChangeEvent event) {
-					getUiHandlers().onSongSelection(selectionModel.getSelectedObject());
-				}
-			});
-			activationModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-				@Override
-				public void onSelectionChange(SelectionChangeEvent event) {
-					getUiHandlers().onSongActivation(activationModel.getSelectedObject());
-				}
-			});
 
 			for (AlbumSongsDto album : albums) {
 

@@ -37,10 +37,6 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void setAlbums(List<AlbumSongsDto> aAlbums);
 
-		public SongDto getSelectedSong();
-
-		public void setSelectedSong(SongDto aSong);
-
 		public SongDto getActivatedSong();
 
 		public void setActivatedSong(SongDto aSong);
@@ -52,8 +48,6 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	private final AlbumServiceRpcAsync albumService;
 
 	private Request currentRequest;
-
-	private SongDto startedSong;
 
 	@Inject
 	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
@@ -112,10 +106,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	@Override
 	public void onSongEvent(SongEvent aEvent) {
-
-		startedSong = aEvent.getSong();
-
-		getView().setActivatedSong(startedSong);
+		getView().setActivatedSong(aEvent.getSong());
 	}
 
 	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
@@ -151,7 +142,6 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 					currentRequest = null;
 
 					getView().setAlbums(aResult);
-					getView().setActivatedSong(startedSong);
 					getView().setContentState(ContentState.LOADED);
 
 					log.fine("albums updated");
