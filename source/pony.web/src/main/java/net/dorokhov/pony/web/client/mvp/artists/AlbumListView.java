@@ -42,7 +42,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	ScrollPanel scroller;
 
 	@UiField
-	VerticalPanel albumsPanel;
+	FlowPanel albumsPanel;
 
 	private ArtistDto artist;
 

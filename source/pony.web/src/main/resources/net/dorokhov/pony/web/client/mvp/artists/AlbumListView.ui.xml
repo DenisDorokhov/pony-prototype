@@ -17,7 +17,7 @@
 
 			<g:center>
 				<g:ScrollPanel ui:field="scroller">
-					<g:VerticalPanel ui:field="albumsPanel" width="100%" />
+					<g:FlowPanel ui:field="albumsPanel" width="100%" />
 				</g:ScrollPanel>
 			</g:center>
 
