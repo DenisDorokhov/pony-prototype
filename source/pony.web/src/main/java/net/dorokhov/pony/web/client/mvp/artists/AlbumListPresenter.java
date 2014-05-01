@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, RefreshEvent.Handler {
+public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, RefreshEvent.Handler, SongEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<AlbumListUiHandlers>, HasContentState {
 
@@ -37,6 +37,14 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void setAlbums(List<AlbumSongsDto> aAlbums);
 
+		public SongDto getSelectedSong();
+
+		public void setSelectedSong(SongDto aSong);
+
+		public SongDto getActivatedSong();
+
+		public void setActivatedSong(SongDto aSong);
+
 	}
 
 	private final Logger log = Logger.getLogger(getClass().getName());
@@ -44,6 +52,8 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	private final AlbumServiceRpcAsync albumService;
 
 	private Request currentRequest;
+
+	private SongDto startedSong;
 
 	@Inject
 	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
@@ -67,6 +77,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		super.onBind();
 
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
+		addRegisteredHandler(SongEvent.SONG_STARTED, this);
 	}
 
 	@Override
@@ -97,6 +108,14 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		if (getView().getArtist() != null) {
 			doLoadArtist(getView().getArtist(), false);
 		}
+	}
+
+	@Override
+	public void onSongEvent(SongEvent aEvent) {
+
+		startedSong = aEvent.getSong();
+
+		getView().setActivatedSong(startedSong);
 	}
 
 	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
@@ -132,6 +151,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 					currentRequest = null;
 
 					getView().setAlbums(aResult);
+					getView().setActivatedSong(startedSong);
 					getView().setContentState(ContentState.LOADED);
 
 					log.fine("albums updated");

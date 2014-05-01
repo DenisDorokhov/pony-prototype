@@ -6,7 +6,7 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface Resources  extends ClientBundle {
 
-    public static final Resources INSTANCE = GWT.create(Resources.class);
+    public static final Resources IMPL = GWT.create(Resources.class);
 
     @Source("style.css")
     Style style();
@@ -23,6 +23,7 @@ public interface Resources  extends ClientBundle {
         String songList();
         String songView();
         String songView_selected();
+        String songView_activated();
         String songTrackNumber();
         String songName();
         String songDuration();

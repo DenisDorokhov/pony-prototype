@@ -79,6 +79,11 @@
     text-shadow: 0 1px 1px #547191;
 }
 
+.songView_activated {
+	background-color: red;
+	/* TODO: implement */
+}
+
 
 .songTrackNumber {
     float: left;

@@ -1,15 +1,12 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SetSelectionModel;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.view.event.SongActivationEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -17,13 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlbumView extends Composite implements SongActivationEvent.HasHandler, SongActivationEvent.Handler {
+public class AlbumView extends Composite {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
-	private final HandlerManager handlerManager = new HandlerManager(this);
 
 	private final ArrayList<SongListView> songListViews = new ArrayList<SongListView>();
 
@@ -40,26 +35,28 @@ public class AlbumView extends Composite implements SongActivationEvent.HasHandl
 	FlowPanel songListPanel;
 
 	private SetSelectionModel<SongDto> selectionModel;
+	private SetSelectionModel<SongDto> activationModel;
 
 	private AlbumSongsDto album;
 
 	public AlbumView() {
 
-		Resources.INSTANCE.style().ensureInjected();
+		Resources.IMPL.style().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public AlbumView(SetSelectionModel<SongDto> aSelectionModel) {
+	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel) {
 
 		this();
 
 		setSelectionModel(aSelectionModel);
+		setActivationModel(aActivationModel);
 	}
 
-	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, AlbumSongsDto aAlbum) {
+	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel, AlbumSongsDto aAlbum) {
 
-		this(aSelectionModel);
+		this(aSelectionModel, aActivationModel);
 
 		setAlbum(aAlbum);
 	}
@@ -73,7 +70,20 @@ public class AlbumView extends Composite implements SongActivationEvent.HasHandl
 		selectionModel = aSelectionModel;
 
 		for (SongListView songListView : songListViews) {
-			songListView.setSelectionModel(aSelectionModel);
+			songListView.setSelectionModel(selectionModel);
+		}
+	}
+
+	public SetSelectionModel<SongDto> getActivationModel() {
+		return activationModel;
+	}
+
+	public void setActivationModel(SetSelectionModel<SongDto> aActivationModel) {
+
+		activationModel = aActivationModel;
+
+		for (SongListView songListView : songListViews) {
+			songListView.setActivationModel(activationModel);
 		}
 	}
 
@@ -86,16 +96,6 @@ public class AlbumView extends Composite implements SongActivationEvent.HasHandl
 		album = aAlbum;
 
 		updateAlbum();
-	}
-
-	@Override
-	public void onSongActivation(SongActivationEvent aEvent) {
-		handlerManager.fireEvent(new SongActivationEvent(SongActivationEvent.SONG_ACTIVATED, aEvent.getSong()));
-	}
-
-	@Override
-	public HandlerRegistration addSongActivationHandler(SongActivationEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongActivationEvent.SONG_ACTIVATED, aHandler);
 	}
 
 	private void updateAlbum() {
@@ -122,11 +122,9 @@ public class AlbumView extends Composite implements SongActivationEvent.HasHandl
 
 			ArrayList<SongDto> songList = albumDiscEntry.getValue();
 
-			SongListView songListView = new SongListView(getSelectionModel(), songList);
+			SongListView songListView = new SongListView(getSelectionModel(), getActivationModel(), songList);
 
 			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
-
-			songListView.addSongActivationHandler(this);
 
 			songListPanel.add(songListView);
 			songListViews.add(songListView);

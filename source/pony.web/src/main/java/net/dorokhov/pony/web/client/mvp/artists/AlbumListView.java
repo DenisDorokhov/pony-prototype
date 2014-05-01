@@ -10,7 +10,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.view.AlbumView;
-import net.dorokhov.pony.web.client.view.event.SongActivationEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -50,6 +49,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private ContentState contentState;
 
+	private SingleSelectionModel<SongDto> selectionModel;
+	private SingleSelectionModel<SongDto> activationModel;
+
 	private boolean shouldScrollToTop;
 
 	public AlbumListView() {
@@ -85,6 +87,34 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
+	public SongDto getSelectedSong() {
+		return selectionModel.getSelectedObject();
+	}
+
+	@Override
+	public void setSelectedSong(SongDto aSong) {
+		if (aSong != null) {
+			selectionModel.setSelected(aSong, true);
+		} else {
+			selectionModel.setSelected(selectionModel.getSelectedObject(), false);
+		}
+	}
+
+	@Override
+	public SongDto getActivatedSong() {
+		return activationModel.getSelectedObject();
+	}
+
+	@Override
+	public void setActivatedSong(SongDto aSong) {
+		if (aSong != null) {
+			activationModel.setSelected(aSong, true);
+		} else {
+			activationModel.setSelected(activationModel.getSelectedObject(), false);
+		}
+	}
+
+	@Override
 	public ContentState getContentState() {
 		return contentState;
 	}
@@ -110,7 +140,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 		if (albums != null) {
 
-			final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+			selectionModel = new SingleSelectionModel<SongDto>();
+			activationModel = new SingleSelectionModel<SongDto>();
 
 			selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 				@Override
@@ -118,17 +149,16 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 					getUiHandlers().onSongSelection(selectionModel.getSelectedObject());
 				}
 			});
+			activationModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+				@Override
+				public void onSelectionChange(SelectionChangeEvent event) {
+					getUiHandlers().onSongActivation(activationModel.getSelectedObject());
+				}
+			});
 
 			for (AlbumSongsDto album : albums) {
 
-				AlbumView albumView = new AlbumView(selectionModel, album);
-
-				albumView.addSongActivationHandler(new SongActivationEvent.Handler() {
-					@Override
-					public void onSongActivation(SongActivationEvent aEvent) {
-						getUiHandlers().onSongActivation(aEvent.getSong());
-					}
-				});
+				AlbumView albumView = new AlbumView(selectionModel, activationModel, album);
 
 				albumsPanel.add(albumView);
 			}

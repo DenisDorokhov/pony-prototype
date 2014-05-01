@@ -42,9 +42,11 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 	private boolean selected;
 
+	private boolean activated;
+
 	public SongView() {
 
-		Resources.INSTANCE.style().ensureInjected();
+		Resources.IMPL.style().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -77,7 +79,18 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 		selected = aSelected;
 
-		updateSelection();
+		updateStyles();
+	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean aActivated) {
+
+		activated = aActivated;
+
+		updateStyles();
 	}
 
 	@Override
@@ -115,11 +128,15 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 		}
 	}
 
-	private void updateSelection() {
+	private void updateStyles() {
+
+		songView.setStyleName(Resources.IMPL.style().songView());
+
+		if (isActivated()) {
+			songView.addStyleName(Resources.IMPL.style().songView_activated());
+		}
 		if (isSelected()) {
-			songView.addStyleName(Resources.INSTANCE.style().songView_selected());
-		} else {
-			songView.setStyleName(Resources.INSTANCE.style().songView());
+			songView.addStyleName(Resources.IMPL.style().songView_selected());
 		}
 	}
 }
