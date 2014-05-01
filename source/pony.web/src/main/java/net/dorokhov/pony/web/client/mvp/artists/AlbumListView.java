@@ -10,13 +10,14 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.view.AlbumView;
+import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.List;
 
-public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView {
+public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongRequestEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
@@ -132,6 +133,22 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		updateContentState();
 	}
 
+	@Override
+	public void onSongRequest(SongRequestEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
+
+			selectionModel.setSelected(aEvent.getSong(), true);
+
+		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
+
+			if (!aEvent.getSong().equals(activationModel.getSelectedObject())) {
+				activationModel.setSelected(aEvent.getSong(), true);
+			} else {
+				getUiHandlers().onSongActivation(aEvent.getSong());
+			}
+		}
+	}
+
 	private void updateArtist(ArtistDto aOldArtist) {
 
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
@@ -148,6 +165,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 			for (AlbumSongsDto album : albums) {
 
 				AlbumView albumView = new AlbumView(selectionModel, activationModel, album);
+
+				albumView.addSongSelectionRequestHandler(this);
+				albumView.addSongActivationRequestHandler(this);
 
 				albumsPanel.add(albumView);
 			}

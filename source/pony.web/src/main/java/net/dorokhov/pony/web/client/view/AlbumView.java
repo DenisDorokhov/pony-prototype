@@ -1,12 +1,15 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SetSelectionModel;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
+import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -14,11 +17,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlbumView extends Composite {
+public class AlbumView extends Composite implements SongRequestEvent.HasHandler, SongRequestEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
+	private final HandlerManager handlerManager = new HandlerManager(this);
 
 	private final ArrayList<SongListView> songListViews = new ArrayList<SongListView>();
 
@@ -98,6 +103,25 @@ public class AlbumView extends Composite {
 		updateAlbum();
 	}
 
+	@Override
+	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	}
+
+	@Override
+	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	}
+
+	@Override
+	public void onSongRequest(SongRequestEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
+			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
+		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
+			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
+		}
+	}
+
 	private void updateAlbum() {
 
 		String imageUrl = album != null ? album.getArtworkUrl() : null;
@@ -125,6 +149,9 @@ public class AlbumView extends Composite {
 			SongListView songListView = new SongListView(getSelectionModel(), getActivationModel(), songList);
 
 			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
+
+			songListView.addSongSelectionRequestHandler(this);
+			songListView.addSongActivationRequestHandler(this);
 
 			songListPanel.add(songListView);
 			songListViews.add(songListView);

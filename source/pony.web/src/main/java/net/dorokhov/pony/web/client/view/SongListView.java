@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -19,11 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class SongListView extends Composite implements SelectionChangeEvent.Handler, SongRequestEvent.Handler {
+public class SongListView extends Composite implements SongRequestEvent.HasHandler, SelectionChangeEvent.Handler, SongRequestEvent.Handler {
 
 	interface SongListUiBinder extends UiBinder<Widget, SongListView> {}
 
 	private static final SongListUiBinder uiBinder = GWT.create(SongListUiBinder.class);
+
+	private final HandlerManager handlerManager = new HandlerManager(this);
 
 	private final HashMap<Long, SongView> songToSongView = new HashMap<Long, SongView>();
 
@@ -124,6 +127,16 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 	}
 
 	@Override
+	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	}
+
+	@Override
+	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	}
+
+	@Override
 	public void onSelectionChange(SelectionChangeEvent aEvent) {
 		updateSelection();
 	}
@@ -131,9 +144,9 @@ public class SongListView extends Composite implements SelectionChangeEvent.Hand
 	@Override
 	public void onSongRequest(SongRequestEvent aEvent) {
 		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
-			getSelectionModel().setSelected(aEvent.getSong(), true);
+			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
 		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
-			getActivationModel().setSelected(aEvent.getSong(), true);
+			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
 		}
 	}
 
