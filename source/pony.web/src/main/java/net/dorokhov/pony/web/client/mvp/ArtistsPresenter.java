@@ -13,8 +13,8 @@ import net.dorokhov.pony.web.client.PlaceTokens;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
-import net.dorokhov.pony.web.client.mvp.artist.AlbumListPresenter;
-import net.dorokhov.pony.web.client.mvp.artist.ArtistListPresenter;
+import net.dorokhov.pony.web.client.mvp.artists.AlbumListPresenter;
+import net.dorokhov.pony.web.client.mvp.artists.ArtistListPresenter;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, ArtistsPresenter.MyProxy> implements ArtistEvent.Handler {

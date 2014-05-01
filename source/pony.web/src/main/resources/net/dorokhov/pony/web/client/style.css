@@ -52,7 +52,7 @@
     column-gap: 0;
 }
 
-.songListItem {
+.songView {
     overflow: auto;
     cursor: pointer;
     display: inline-block;
@@ -64,7 +64,7 @@
     border: 1px solid transparent;
 }
 
-.songListItem_selected {
+.songView_selected {
     background-image: linear-gradient(to bottom, #9ab9d8, #7997bb);
     background-repeat: repeat-x;
     border: 1px solid #718eb0;
@@ -72,15 +72,15 @@
     text-shadow: 0 1px 1px #547191;
 }
 
-.songListItem_selected .trackNumber,
-.songListItem_selected .songName,
-.songListItem_selected .songDuration {
+.songView_selected .songTrackNumber,
+.songView_selected .songName,
+.songView_selected .songDuration {
     color: #fff;
     text-shadow: 0 1px 1px #547191;
 }
 
 
-.trackNumber {
+.songTrackNumber {
     float: left;
     width: 20px;
     min-height: 1em;

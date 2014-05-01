@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.mvp.artist;
+package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.user.client.rpc.AsyncCallback;

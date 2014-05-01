@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.mvp.artist;
+package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -12,6 +12,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
+import net.dorokhov.pony.web.client.view.ArtistCell;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.List;

@@ -1,20 +1,23 @@
-package net.dorokhov.pony.web.client.mvp.artist;
+package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
+import net.dorokhov.pony.web.client.view.AlbumView;
+import net.dorokhov.pony.web.client.view.event.SongActivationEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongDelegate {
+public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
@@ -40,8 +43,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	@UiField
 	VerticalPanel albumsPanel;
-
-	private List<AlbumView> albumViewCache = new ArrayList<AlbumView>();
 
 	private ArtistDto artist;
 
@@ -96,16 +97,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		updateContentState();
 	}
 
-	@Override
-	public void onSongSelected(SongDto aSong) {
-		getUiHandlers().onSongSelection(aSong);
-	}
-
-	@Override
-	public void onSongPlaybackRequested(SongDto aSong) {
-		getUiHandlers().onSongActivation(aSong);
-	}
-
 	private void updateArtist(ArtistDto aOldArtist) {
 
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
@@ -115,37 +106,29 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private void updateAlbums() {
 
-		while (albumsPanel.getWidgetCount() > 0) {
-
-			Widget widget = albumsPanel.getWidget(0);
-
-			if (widget instanceof AlbumView) {
-
-				AlbumView view = (AlbumView) widget;
-
-				view.setAlbum(null);
-				view.setDelegate(null);
-
-				albumViewCache.add(view);
-			}
-
-			albumsPanel.remove(0);
-		}
+		albumsPanel.clear();
 
 		if (albums != null) {
 
+			final SingleSelectionModel<SongDto> selectionModel = new SingleSelectionModel<SongDto>();
+
+			selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+				@Override
+				public void onSelectionChange(SelectionChangeEvent event) {
+					getUiHandlers().onSongSelection(selectionModel.getSelectedObject());
+				}
+			});
+
 			for (AlbumSongsDto album : albums) {
 
-				AlbumView albumView = albumViewCache.size() > 0 ? albumViewCache.get(0) : null;
+				AlbumView albumView = new AlbumView(selectionModel, album);
 
-				if (albumView != null) {
-					albumViewCache.remove(0);
-				} else {
-					albumView = new AlbumView();
-				}
-
-				albumView.setAlbum(album);
-				albumView.setDelegate(this);
+				albumView.addSongActivationHandler(new SongActivationEvent.Handler() {
+					@Override
+					public void onSongActivation(SongActivationEvent aEvent) {
+						getUiHandlers().onSongActivation(aEvent.getSong());
+					}
+				});
 
 				albumsPanel.add(albumView);
 			}

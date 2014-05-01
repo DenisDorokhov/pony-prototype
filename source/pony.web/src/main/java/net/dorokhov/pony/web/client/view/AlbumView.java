@@ -1,11 +1,15 @@
-package net.dorokhov.pony.web.client.mvp.artist;
+package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.SetSelectionModel;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
+import net.dorokhov.pony.web.client.view.event.SongActivationEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
@@ -13,11 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlbumView extends Composite implements SongDelegate {
+public class AlbumView extends Composite implements SongActivationEvent.HasHandler, SongActivationEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
+	private final HandlerManager handlerManager = new HandlerManager(this);
+
+	private final ArrayList<SongListView> songListViews = new ArrayList<SongListView>();
 
 	@UiField
 	Image albumImage;
@@ -31,9 +39,9 @@ public class AlbumView extends Composite implements SongDelegate {
 	@UiField
 	FlowPanel songListPanel;
 
-	private AlbumSongsDto album;
+	private SetSelectionModel<SongDto> selectionModel;
 
-	private SongDelegate delegate;
+	private AlbumSongsDto album;
 
 	public AlbumView() {
 
@@ -42,12 +50,31 @@ public class AlbumView extends Composite implements SongDelegate {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public SongDelegate getDelegate() {
-		return delegate;
+	public AlbumView(SetSelectionModel<SongDto> aSelectionModel) {
+
+		this();
+
+		setSelectionModel(aSelectionModel);
 	}
 
-	public void setDelegate(SongDelegate aDelegate) {
-		delegate = aDelegate;
+	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, AlbumSongsDto aAlbum) {
+
+		this(aSelectionModel);
+
+		setAlbum(aAlbum);
+	}
+
+	public SetSelectionModel<SongDto> getSelectionModel() {
+		return selectionModel;
+	}
+
+	public void setSelectionModel(SetSelectionModel<SongDto> aSelectionModel) {
+
+		selectionModel = aSelectionModel;
+
+		for (SongListView songListView : songListViews) {
+			songListView.setSelectionModel(aSelectionModel);
+		}
 	}
 
 	public AlbumSongsDto getAlbum() {
@@ -62,17 +89,13 @@ public class AlbumView extends Composite implements SongDelegate {
 	}
 
 	@Override
-	public void onSongSelected(SongDto aSong) {
-		if (getDelegate() != null) {
-			getDelegate().onSongSelected(aSong);
-		}
+	public void onSongActivation(SongActivationEvent aEvent) {
+		handlerManager.fireEvent(new SongActivationEvent(SongActivationEvent.SONG_ACTIVATED, aEvent.getSong()));
 	}
 
 	@Override
-	public void onSongPlaybackRequested(SongDto aSong) {
-		if (getDelegate() != null) {
-			getDelegate().onSongPlaybackRequested(aSong);
-		}
+	public HandlerRegistration addSongActivationHandler(SongActivationEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongActivationEvent.SONG_ACTIVATED, aHandler);
 	}
 
 	private void updateAlbum() {
@@ -89,6 +112,7 @@ public class AlbumView extends Composite implements SongDelegate {
 		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);
 
 		songListPanel.clear();
+		songListViews.clear();
 
 		Map<Integer, ArrayList<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
 
@@ -98,11 +122,14 @@ public class AlbumView extends Composite implements SongDelegate {
 
 			ArrayList<SongDto> songList = albumDiscEntry.getValue();
 
-			SongListView songListView = new SongListView(songList, discNumber != null ? "Disc " + discNumber : null);
+			SongListView songListView = new SongListView(getSelectionModel(), songList);
 
-			songListView.setDelegate(this);
+			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
+
+			songListView.addSongActivationHandler(this);
 
 			songListPanel.add(songListView);
+			songListViews.add(songListView);
 		}
 	}
 

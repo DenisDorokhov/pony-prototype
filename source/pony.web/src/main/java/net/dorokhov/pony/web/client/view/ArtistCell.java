@@ -1,4 +1,4 @@
-package net.dorokhov.pony.web.client.mvp.artist;
+package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;

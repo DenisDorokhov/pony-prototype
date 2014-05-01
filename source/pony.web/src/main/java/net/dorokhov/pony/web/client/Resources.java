@@ -21,9 +21,9 @@ public interface Resources  extends ClientBundle {
         String albumDisc();
         String albumDiscHeader();
         String songList();
-        String songListItem();
-        String songListItem_selected();
-        String trackNumber();
+        String songView();
+        String songView_selected();
+        String songTrackNumber();
         String songName();
         String songDuration();
     }
