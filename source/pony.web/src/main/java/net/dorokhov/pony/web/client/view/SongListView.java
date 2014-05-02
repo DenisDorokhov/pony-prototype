@@ -15,8 +15,8 @@ import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +39,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 	private SetSelectionModel<SongDto> selectionModel;
 	private SetSelectionModel<SongDto> activationModel;
 
-	private ArrayList<SongDto> songs;
+	private List<SongDto> songs;
 
 	private String caption;
 
@@ -61,7 +61,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		setActivationModel(aActivationModel);
 	}
 
-	public SongListView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel, ArrayList<SongDto> aSongs) {
+	public SongListView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel, List<SongDto> aSongs) {
 
 		this(aSelectionModel, aActivationModel);
 
@@ -104,11 +104,11 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		updateSelection();
 	}
 
-	public ArrayList<SongDto> getSongs() {
+	public List<SongDto> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(ArrayList<SongDto> aSongs) {
+	public void setSongs(List<SongDto> aSongs) {
 
 		songs = aSongs;
 

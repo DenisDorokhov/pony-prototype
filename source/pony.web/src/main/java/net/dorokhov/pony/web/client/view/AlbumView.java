@@ -15,6 +15,7 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AlbumView extends Composite implements SongRequestEvent.HasHandler, SongRequestEvent.Handler {
@@ -138,9 +139,9 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		songListPanel.clear();
 		songListViews.clear();
 
-		Map<Integer, ArrayList<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
+		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
 
-		for (Map.Entry<Integer, ArrayList<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
+		for (Map.Entry<Integer, List<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
 
 			Integer discNumber = albumDiscEntry.getKey();
 
@@ -148,7 +149,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 				discNumber = null;
 			}
 
-			ArrayList<SongDto> songList = albumDiscEntry.getValue();
+			List<SongDto> songList = albumDiscEntry.getValue();
 
 			SongListView songListView = new SongListView(getSelectionModel(), getActivationModel(), songList);
 
@@ -162,17 +163,28 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		}
 	}
 
-	private Map<Integer, ArrayList<SongDto>> splitIntoDiscs(ArrayList<SongDto> aSongs) {
+	private Map<Integer, List<SongDto>> splitIntoDiscs(ArrayList<SongDto> aSongs) {
 
-		Map<Integer, ArrayList<SongDto>> result = new HashMap<Integer, ArrayList<SongDto>>();
+		Map<Integer, List<SongDto>> result = new HashMap<Integer, List<SongDto>>();
 
 		for (SongDto song : aSongs) {
 
-			if (result.get(song.getDiscNumber()) == null) {
-				result.put(song.getDiscNumber(), new ArrayList<SongDto>());
+			Integer discNumber = song.getDiscNumber();
+
+			if (discNumber == null) {
+				discNumber = 1;
 			}
 
-			result.get(song.getDiscNumber()).add(song);
+			List<SongDto> discSongs = result.get(discNumber);
+
+			if (discSongs == null) {
+
+				discSongs = new ArrayList<SongDto>();
+
+				result.put(discNumber, discSongs);
+			}
+
+			discSongs.add(song);
 		}
 
 		return result;
