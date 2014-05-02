@@ -53,6 +53,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	private SingleSelectionModel<SongDto> selectionModel;
 	private SingleSelectionModel<SongDto> activationModel;
 
+	private boolean shouldPropagateActivation = true;
+
 	private boolean shouldScrollToTop;
 
 	public AlbumListView() {
@@ -71,7 +73,12 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		activationModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				getUiHandlers().onSongActivation(activationModel.getSelectedObject());
+
+				if (shouldPropagateActivation && activationModel.getSelectedObject() != null) {
+					getUiHandlers().onSongActivation(activationModel.getSelectedObject());
+				}
+
+				shouldPropagateActivation = true;
 			}
 		});
 	}
@@ -105,14 +112,21 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public SongDto getActivatedSong() {
+	public SongDto getActiveSong() {
 		return activationModel.getSelectedObject();
 	}
 
 	@Override
-	public void setActivatedSong(SongDto aSong) {
+	public void setActiveSong(SongDto aSong) {
 		if (aSong != null) {
-			activationModel.setSelected(aSong, true);
+
+			if (!activationModel.isSelected(aSong)) {
+
+				shouldPropagateActivation = false;
+
+				activationModel.setSelected(aSong, true);
+			}
+
 		} else {
 			if (activationModel.getSelectedObject() != null) {
 				activationModel.setSelected(activationModel.getSelectedObject(), false);
@@ -187,7 +201,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	private void updateContentState() {
-
 		if (getContentState() == null) {
 
 			deck.setVisible(false);

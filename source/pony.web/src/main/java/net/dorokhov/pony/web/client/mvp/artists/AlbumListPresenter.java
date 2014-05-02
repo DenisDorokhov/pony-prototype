@@ -37,9 +37,9 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void setAlbums(List<AlbumSongsDto> aAlbums);
 
-		public SongDto getActivatedSong();
+		public SongDto getActiveSong();
 
-		public void setActivatedSong(SongDto aSong);
+		public void setActiveSong(SongDto aSong);
 
 	}
 
@@ -48,8 +48,6 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	private final AlbumServiceRpcAsync albumService;
 
 	private Request currentRequest;
-
-	private boolean ignoreNextSongActivationEvent;
 
 	@Inject
 	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
@@ -87,20 +85,15 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	@Override
 	public void onSongActivation(SongDto aSong) {
 
-		if (!ignoreNextSongActivationEvent) {
+		log.fine("song " + aSong + " activated");
 
-			log.fine("song " + aSong + " activated");
+		List<SongDto> songs = new ArrayList<SongDto>();
 
-			List<SongDto> songs = new ArrayList<SongDto>();
-
-			for (AlbumSongsDto album : getView().getAlbums()) {
-				songs.addAll(album.getSongs());
-			}
-
-			getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, new PlayListImpl(songs), songs.indexOf(aSong)));
+		for (AlbumSongsDto album : getView().getAlbums()) {
+			songs.addAll(album.getSongs());
 		}
 
-		ignoreNextSongActivationEvent = false;
+		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, new PlayListImpl(songs), songs.indexOf(aSong)));
 	}
 
 	@Override
@@ -112,12 +105,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	@Override
 	public void onSongEvent(SongEvent aEvent) {
-		if (!aEvent.getSong().equals(getView().getActivatedSong())) {
-
-			ignoreNextSongActivationEvent = true; // this is external event, don't create new playlist, just update UI
-
-			getView().setActivatedSong(aEvent.getSong());
-		}
+		getView().setActiveSong(aEvent.getSong());
 	}
 
 	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
