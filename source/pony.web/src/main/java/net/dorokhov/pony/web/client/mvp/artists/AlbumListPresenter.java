@@ -49,6 +49,8 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	private Request currentRequest;
 
+	private boolean shouldHandleSongActivation = true;
+
 	@Inject
 	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
 
@@ -85,15 +87,20 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	@Override
 	public void onSongActivation(SongDto aSong) {
 
-		log.fine("song " + aSong + " activated");
+		if (shouldHandleSongActivation) {
 
-		List<SongDto> songs = new ArrayList<SongDto>();
+			log.fine("song " + aSong + " activated");
 
-		for (AlbumSongsDto album : getView().getAlbums()) {
-			songs.addAll(album.getSongs());
+			List<SongDto> songs = new ArrayList<SongDto>();
+
+			for (AlbumSongsDto album : getView().getAlbums()) {
+				songs.addAll(album.getSongs());
+			}
+
+			getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, new PlayListImpl(songs), songs.indexOf(aSong)));
 		}
 
-		getEventBus().fireEvent(new PlayListEvent(PlayListEvent.PLAYLIST_CHANGE, new PlayListImpl(songs), songs.indexOf(aSong)));
+		shouldHandleSongActivation = true;
 	}
 
 	@Override
@@ -105,7 +112,12 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	@Override
 	public void onSongEvent(SongEvent aEvent) {
-		getView().setActiveSong(aEvent.getSong());
+		if (!aEvent.getSong().equals(getView().getActiveSong())) {
+
+			shouldHandleSongActivation = false;
+
+			getView().setActiveSong(aEvent.getSong());
+		}
 	}
 
 	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
