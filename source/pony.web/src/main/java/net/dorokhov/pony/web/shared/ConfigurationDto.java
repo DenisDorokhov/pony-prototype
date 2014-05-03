@@ -1,8 +1,18 @@
 package net.dorokhov.pony.web.shared;
 
-public class ConfigurationDto extends AbstractEntityDto<String> {
+import java.io.Serializable;
+
+public class ConfigurationDto extends AbstractEntityDto<String> implements Serializable {
 
 	private String value;
+
+	public ConfigurationDto() {}
+
+	public ConfigurationDto(String aId, String aValue, Long aVersion) {
+		setId(aId);
+		setValue(aValue);
+		setVersion(aVersion);
+	}
 
 	public String getValue() {
 		return value;

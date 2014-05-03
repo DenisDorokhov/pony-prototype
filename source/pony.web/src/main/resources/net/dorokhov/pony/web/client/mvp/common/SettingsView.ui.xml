@@ -2,10 +2,42 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:PopupPanel autoHideOnHistoryEventsEnabled="true" autoHideEnabled="true" glassEnabled="true">
+
 		<g:HTMLPanel width="400px" height="200px">
-			Current status: <g:InlineLabel ui:field="progressLabel" />
-			<g:Button ui:field="scanButton" text="Scan" />
+
+			Current status: <g:InlineLabel ui:field="progressLabel" /> <g:Button ui:field="scanButton" text="Scan" />
+
+			<g:DeckPanel ui:field="deck">
+
+				<g:Label ui:field="loadingLabel" text="Loading..." />
+
+				<g:Label ui:field="errorLabel" text="Error!" />
+
+				<g:HTMLPanel ui:field="formPanel">
+
+					<p>
+						Music folders (separated by ";"):<br />
+						<g:TextBox ui:field="libraryFoldersText" width="300px" />
+					</p>
+
+					<p>
+						Automatic scan:<br />
+						<g:ListBox ui:field="autoScanIntervalList">
+							<g:item value="3600">Every hour</g:item>
+							<g:item value="86400">Once a day</g:item>
+							<g:item value="604800">Once a week</g:item>
+							<g:item value="0">Off</g:item>
+						</g:ListBox>
+					</p>
+
+					<p><g:Button ui:field="saveButton" text="Save" /></p>
+
+				</g:HTMLPanel>
+
+			</g:DeckPanel>
+
 		</g:HTMLPanel>
+
 	</g:PopupPanel>
 
 </ui:UiBinder>
