@@ -64,8 +64,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	private SingleSelectionModel<SongDto> selectionModel;
 	private SingleSelectionModel<SongDto> activationModel;
 
-	private boolean shouldScrollToTop;
-
 	public AlbumListView() {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -164,17 +162,12 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
 
-		shouldScrollToTop = (artist != aOldArtist);
+		if (artist != aOldArtist) {
+			scroller.scrollToTop();
+		}
 	}
 
 	private void updateAlbums() {
-
-		if (shouldScrollToTop) {
-
-			scroller.scrollToTop();
-
-			shouldScrollToTop = false;
-		}
 
 		while (albumsPanel.getWidgetCount() > 0) {
 

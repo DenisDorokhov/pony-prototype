@@ -65,11 +65,6 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 	}
 
 	@Override
-	protected void revealInParent() {
-		super.revealInParent();
-	}
-
-	@Override
 	public void onArtistEvent(ArtistEvent aEvent) {
 
 		albumListPresenter.loadArtist(aEvent.getArtist());
