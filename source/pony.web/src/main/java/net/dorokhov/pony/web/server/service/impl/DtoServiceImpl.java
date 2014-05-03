@@ -1,9 +1,6 @@
 package net.dorokhov.pony.web.server.service.impl;
 
-import net.dorokhov.pony.core.domain.Album;
-import net.dorokhov.pony.core.domain.Artist;
-import net.dorokhov.pony.core.domain.Song;
-import net.dorokhov.pony.core.domain.SongFile;
+import net.dorokhov.pony.core.domain.*;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.shared.*;
@@ -22,6 +19,31 @@ public class DtoServiceImpl implements DtoService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	@Override
+	public ConfigurationDto configurationToDto(Configuration aConfig) {
+
+		ConfigurationDto dto = new ConfigurationDto();
+
+		dto.setId(aConfig.getId());
+		dto.setVersion(aConfig.getVersion());
+		dto.setValue(aConfig.getValue());
+
+		return dto;
+	}
+
+	@Override
+	public Configuration dtoToConfiguration(ConfigurationDto aDto) {
+
+		Configuration config = new Configuration();
+
+		config.setId(aDto.getId());
+		config.setVersion(aDto.getVersion());
+		config.setValue(aDto.getValue());
+
+		return config;
+	}
+
+	@Override
 	public StatusDto statusToDto(LibraryScanner.Status aStatus) {
 
 		StatusDto dto = new StatusDto();
@@ -40,6 +62,7 @@ public class DtoServiceImpl implements DtoService {
 		return dto;
 	}
 
+	@Override
 	public ArtistDto artistToDto(Artist aArtist) {
 
 		ArtistDto dto = new ArtistDto();
@@ -54,6 +77,7 @@ public class DtoServiceImpl implements DtoService {
 		return dto;
 	}
 
+	@Override
 	public AlbumDto albumToDto(Album aAlbum) {
 
 		AlbumDto dto = new AlbumDto();
@@ -63,6 +87,7 @@ public class DtoServiceImpl implements DtoService {
 		return dto;
 	}
 
+	@Override
 	public AlbumSongsDto albumToSongsDto(Album aAlbum, List<Song> aSongs) {
 
 		AlbumSongsDto dto = new AlbumSongsDto();
@@ -76,6 +101,7 @@ public class DtoServiceImpl implements DtoService {
 		return dto;
 	}
 
+	@Override
 	public SongDto songToDto(Song aSong) {
 
 		SongDto dto = new SongDto();

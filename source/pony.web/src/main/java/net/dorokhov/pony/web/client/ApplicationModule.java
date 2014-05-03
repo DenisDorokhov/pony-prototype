@@ -32,6 +32,7 @@ public class ApplicationModule extends AbstractPresenterModule {
 		bind(SongServiceRpcAsync.class).in(Singleton.class);
 		bind(SearchServiceRpcAsync.class).in(Singleton.class);
 		bind(LibraryServiceRpcAsync.class).in(Singleton.class);
+		bind(ConfigurationServiceRpcAsync.class).in(Singleton.class);
 
 		bind(LibraryScanner.class).to(LibraryScannerImpl.class).in(Singleton.class);
 

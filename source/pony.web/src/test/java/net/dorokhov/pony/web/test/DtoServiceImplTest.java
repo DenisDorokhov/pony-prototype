@@ -22,7 +22,29 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testStatusToDto() throws Exception {
+	public void testConfig() throws Exception {
+
+		Configuration config = new Configuration();
+
+		config.setId("config1");
+		config.setVersion(10L);
+		config.setValue("value1");
+
+		ConfigurationDto dto = service.configurationToDto(config);
+
+		Assert.assertEquals("config1", dto.getId());
+		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
+		Assert.assertEquals("value1", dto.getValue());
+
+		config = service.dtoToConfiguration(dto);
+
+		Assert.assertEquals("config1", config.getId());
+		Assert.assertEquals(Long.valueOf(10), config.getVersion());
+		Assert.assertEquals("value1", config.getValue());
+	}
+
+	@Test
+	public void testStatus() throws Exception {
 
 		LibraryScanner.Status status = new LibraryScanner.Status() {
 
@@ -71,7 +93,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testArtistToDto() throws Exception {
+	public void testArtist() throws Exception {
 
 		ArtistDto dto = service.artistToDto(buildArtist());
 
@@ -83,7 +105,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testAlbumToDto() throws Exception {
+	public void testAlbum() throws Exception {
 
 		AlbumDto dto = service.albumToDto(buildAlbum());
 
@@ -91,7 +113,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testAlbumToSongsDto() throws Exception {
+	public void testAlbumSongs() throws Exception {
 
 		Album album = buildAlbum();
 
@@ -113,7 +135,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testSongToDto() throws Exception {
+	public void testSong() throws Exception {
 
 		SongDto dto = service.songToDto(buildSong(0, buildAlbum()));
 

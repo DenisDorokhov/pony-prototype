@@ -2,7 +2,7 @@ package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
 
-public class SongDto extends AbstractEntityDto implements Serializable {
+public class SongDto extends AbstractEntityDto<Long> implements Serializable {
 
 	private String fileUrl;
 

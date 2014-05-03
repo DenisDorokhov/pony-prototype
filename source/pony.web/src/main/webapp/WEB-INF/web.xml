@@ -104,6 +104,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>configurationService</servlet-name>
+		<servlet-class>net.dorokhov.pony.web.server.service.impl.rpc.ConfigurationServiceRpcServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>configurationService</servlet-name>
+		<url-pattern>/pony/rpc/configurationService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
 	</servlet>

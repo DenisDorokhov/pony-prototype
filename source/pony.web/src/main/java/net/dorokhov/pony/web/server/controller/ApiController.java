@@ -2,13 +2,17 @@ package net.dorokhov.pony.web.server.controller;
 
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.domain.StoredFile;
-import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.SongFileService;
 import net.dorokhov.pony.core.service.StoredFileService;
-import net.dorokhov.pony.web.server.service.*;
+import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
+import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
+import net.dorokhov.pony.web.server.service.SearchServiceFacade;
+import net.dorokhov.pony.web.server.service.SongServiceFacade;
 import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
-import net.dorokhov.pony.web.shared.*;
-import net.dorokhov.pony.web.shared.response.Response;
+import net.dorokhov.pony.web.shared.AlbumSongsDto;
+import net.dorokhov.pony.web.shared.ArtistDto;
+import net.dorokhov.pony.web.shared.SearchDto;
+import net.dorokhov.pony.web.shared.SongDto;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +38,6 @@ public class ApiController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private LibraryServiceFacade libraryServiceFacade;
-
 	private ArtistServiceFacade artistServiceFacade;
 
 	private AlbumServiceFacade albumServiceFacade;
@@ -47,11 +49,6 @@ public class ApiController {
 	private SongFileService songFileService;
 
 	private StoredFileService storedFileService;
-
-	@Autowired
-	public void setLibraryServiceFacade(LibraryServiceFacade aLibraryServiceFacade) {
-		libraryServiceFacade = aLibraryServiceFacade;
-	}
 
 	@Autowired
 	public void setArtistServiceFacade(ArtistServiceFacade aArtistServiceFacade) {
@@ -159,38 +156,6 @@ public class ApiController {
 		}
 
 		return new ResponseWithResult<SearchDto>();
-	}
-
-	@RequestMapping(value = "/status", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseWithResult<StatusDto> getStatus() {
-
-		try {
-			return new ResponseWithResult<StatusDto>(libraryServiceFacade.getStatus());
-		} catch (Exception e) {
-			log.error("could not get status", e);
-		}
-
-		return new ResponseWithResult<StatusDto>();
-	}
-
-	@RequestMapping(value = "/startScanning", method = RequestMethod.GET)
-	@ResponseBody
-	public Response scan() {
-
-		try {
-
-			libraryServiceFacade.startScanning();
-
-			return new Response(true);
-
-		} catch (ConcurrentScanException e) {
-			log.error("library is already being scanned");
-		} catch (Exception e) {
-			log.error("could not run scanning", e);
-		}
-
-		return new Response(false);
 	}
 
 	@RequestMapping(value = "/songFile/{songFileId}", method = RequestMethod.GET)

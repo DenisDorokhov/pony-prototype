@@ -2,17 +2,17 @@ package net.dorokhov.pony.web.shared;
 
 import java.io.Serializable;
 
-public abstract class AbstractEntityDto implements Serializable {
+public abstract class AbstractEntityDto<T> implements Serializable {
 
-	private Long id;
+	private T id;
 
 	private Long version;
 
-	public Long getId() {
+	public T getId() {
 		return id;
 	}
 
-	public void setId(Long aId) {
+	public void setId(T aId) {
 		id = aId;
 	}
 
