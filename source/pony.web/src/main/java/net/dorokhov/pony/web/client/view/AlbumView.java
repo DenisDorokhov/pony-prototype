@@ -24,9 +24,17 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
+	private static final List<SongListView> viewCache = new ArrayList<SongListView>();
+
+	static {
+		for (int i = 0; i < 50; i++) {
+			viewCache.add(new SongListView());
+		}
+	}
+
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
-	private final ArrayList<SongListView> songListViews = new ArrayList<SongListView>();
+	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	@UiField
 	Image albumImage;
@@ -52,21 +60,6 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel) {
-
-		this();
-
-		setSelectionModel(aSelectionModel);
-		setActivationModel(aActivationModel);
-	}
-
-	public AlbumView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel, AlbumSongsDto aAlbum) {
-
-		this(aSelectionModel, aActivationModel);
-
-		setAlbum(aAlbum);
-	}
-
 	public SetSelectionModel<SongDto> getSelectionModel() {
 		return selectionModel;
 	}
@@ -75,8 +68,10 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		selectionModel = aSelectionModel;
 
-		for (SongListView songListView : songListViews) {
-			songListView.setSelectionModel(selectionModel);
+		for (Widget widget : songListPanel) {
+			if (widget instanceof SongListView) {
+				((SongListView) widget).setSelectionModel(selectionModel);
+			}
 		}
 	}
 
@@ -88,8 +83,10 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		activationModel = aActivationModel;
 
-		for (SongListView songListView : songListViews) {
-			songListView.setActivationModel(activationModel);
+		for (Widget widget : songListPanel) {
+			if (widget instanceof SongListView) {
+				((SongListView) widget).setActivationModel(activationModel);
+			}
 		}
 	}
 
@@ -136,8 +133,30 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);
 
-		songListPanel.clear();
-		songListViews.clear();
+		while (songListPanel.getWidgetCount() > 0) {
+
+			Widget widget = songListPanel.getWidget(0);
+
+			songListPanel.remove(0);
+
+			if (widget instanceof SongListView) {
+
+				SongListView songListView = (SongListView) widget;
+
+				songListView.setSelectionModel(null);
+				songListView.setActivationModel(null);
+
+				songListView.setSongs(null);
+
+				viewCache.add(songListView);
+			}
+		}
+
+		for (HandlerRegistration registration : handlerRegistrations) {
+			registration.removeHandler();
+		}
+
+		handlerRegistrations.clear();
 
 		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
 
@@ -151,15 +170,23 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 			List<SongDto> songList = albumDiscEntry.getValue();
 
-			SongListView songListView = new SongListView(getSelectionModel(), getActivationModel(), songList);
+			SongListView songListView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+
+			if (songListView == null) {
+				songListView = new SongListView();
+			}
+
+			songListView.setSelectionModel(getSelectionModel());
+			songListView.setActivationModel(getActivationModel());
+
+			songListView.setSongs(songList);
 
 			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
 
-			songListView.addSongSelectionRequestHandler(this);
-			songListView.addSongActivationRequestHandler(this);
+			handlerRegistrations.add(songListView.addSongSelectionRequestHandler(this));
+			handlerRegistrations.add(songListView.addSongActivationRequestHandler(this));
 
 			songListPanel.add(songListView);
-			songListViews.add(songListView);
 		}
 	}
 

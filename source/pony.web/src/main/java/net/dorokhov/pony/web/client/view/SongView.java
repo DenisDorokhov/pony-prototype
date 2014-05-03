@@ -53,13 +53,6 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 		setSelected(false);
 	}
 
-	public SongView(SongDto aSong) {
-
-		this();
-
-		setSong(aSong);
-	}
-
 	public void setSong(SongDto aSong) {
 
 		song = aSong;

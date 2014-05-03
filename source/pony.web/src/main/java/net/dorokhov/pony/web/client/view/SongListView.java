@@ -15,10 +15,7 @@ import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SongListView extends Composite implements SongRequestEvent.HasHandler, SelectionChangeEvent.Handler, SongRequestEvent.Handler {
 
@@ -26,7 +23,17 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	private static final SongListUiBinder uiBinder = GWT.create(SongListUiBinder.class);
 
+	private static final List<SongView> viewCache = new ArrayList<SongView>();
+
+	static {
+		for (int i = 0; i < 500; i++) {
+			viewCache.add(new SongView());
+		}
+	}
+
 	private final HandlerManager handlerManager = new HandlerManager(this);
+
+	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	private final HashMap<Long, SongView> songToSongView = new HashMap<Long, SongView>();
 
@@ -53,21 +60,6 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public SongListView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel) {
-
-		this();
-
-		setSelectionModel(aSelectionModel);
-		setActivationModel(aActivationModel);
-	}
-
-	public SongListView(SetSelectionModel<SongDto> aSelectionModel, SetSelectionModel<SongDto> aActivationModel, List<SongDto> aSongs) {
-
-		this(aSelectionModel, aActivationModel);
-
-		setSongs(aSongs);
-	}
-
 	public SetSelectionModel<SongDto> getSelectionModel() {
 		return selectionModel;
 	}
@@ -81,7 +73,9 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 		selectionModel = aSelectionModel;
 
-		selectionRegistration = selectionModel.addSelectionChangeHandler(this);
+		if (selectionModel != null) {
+			selectionRegistration = selectionModel.addSelectionChangeHandler(this);
+		}
 
 		updateSelection();
 	}
@@ -99,7 +93,9 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 		activationModel = aActivationModel;
 
-		activationRegistration = activationModel.addSelectionChangeHandler(this);
+		if (activationModel != null) {
+			activationRegistration = activationModel.addSelectionChangeHandler(this);
+		}
 
 		updateSelection();
 	}
@@ -156,19 +152,48 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	private void updateSongs() {
 
+		while (songListView.getWidgetCount() > 0) {
+
+			Widget widget = songListView.getWidget(0);
+
+			songListView.remove(0);
+
+			if (widget instanceof SongView) {
+
+				SongView songListView = (SongView) widget;
+
+				songListView.setSong(null);
+
+				viewCache.add(songListView);
+			}
+		}
+
+		for (HandlerRegistration registration : handlerRegistrations) {
+			registration.removeHandler();
+		}
+
+		handlerRegistrations.clear();
+
 		songToSongView.clear();
-		songListView.clear();
 
-        for (SongDto song : songs) {
+		if (songs != null) {
+			for (SongDto song : songs) {
 
-            SongView songView = new SongView(song);
+				SongView songView = viewCache.size() > 0 ? viewCache.remove(0) : null;
 
-			songView.addSongSelectionRequestHandler(this);
-			songView.addSongActivationRequestHandler(this);
+				if (songView == null) {
+					songView = new SongView();
+				}
 
-			songToSongView.put(song.getId(), songView);
-            songListView.add(songView);
-        }
+				songView.setSong(song);
+
+				handlerRegistrations.add(songView.addSongSelectionRequestHandler(this));
+				handlerRegistrations.add(songView.addSongActivationRequestHandler(this));
+
+				songToSongView.put(song.getId(), songView);
+				songListView.add(songView);
+			}
+		}
 
 		updateSelection();
 	}
