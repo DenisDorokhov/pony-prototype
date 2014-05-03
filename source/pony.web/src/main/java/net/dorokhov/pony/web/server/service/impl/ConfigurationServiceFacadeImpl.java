@@ -43,7 +43,6 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<ConfigurationDto> getAll() {
 
 		List<ConfigurationDto> result = new ArrayList<ConfigurationDto>();
@@ -56,9 +55,9 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
 	public List<ConfigurationDto> save(final List<ConfigurationDto> aConfigurations) throws ConstraintViolationException {
 
+		// Run new transaction to get updated versions for optimistic locking
 		List<Configuration> savedConfiguration = transactionTemplate.execute(new TransactionCallback<List<Configuration>>() {
 			@Override
 			public List<Configuration> doInTransaction(TransactionStatus status) {

@@ -30,37 +30,31 @@ public class SongServiceFacadeImpl implements SongServiceFacade {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Long getCountByAlbum(Long aAlbumId) {
 		return songService.getCountByAlbum(aAlbumId);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Long getCountByArtist(Long aArtistId) {
 		return songService.getCountByArtist(aArtistId);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public ArrayList<SongDto> getByAlbum(Long aAlbumId) {
 		return songListToDto(songService.getByAlbum(aAlbumId));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public ArrayList<SongDto> getByArtist(Long aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public ArrayList<SongDto> search(String aQuery) {
 		return songListToDto(songService.search(aQuery));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public SongDto getById(Long aId) {
 
 		Song song = songService.getById(aId);
