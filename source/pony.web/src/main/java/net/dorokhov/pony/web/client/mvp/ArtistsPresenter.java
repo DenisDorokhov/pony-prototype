@@ -13,11 +13,12 @@ import net.dorokhov.pony.web.client.PlaceTokens;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
+import net.dorokhov.pony.web.client.event.NoDataEvent;
 import net.dorokhov.pony.web.client.mvp.artists.AlbumListPresenter;
 import net.dorokhov.pony.web.client.mvp.artists.ArtistListPresenter;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
-public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, ArtistsPresenter.MyProxy> implements ArtistEvent.Handler {
+public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, ArtistsPresenter.MyProxy> implements ArtistEvent.Handler, NoDataEvent.Handler {
 
 	@ProxyStandard
 	@NameToken(PlaceTokens.TOKEN_ARTISTS)
@@ -54,6 +55,7 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 		setInSlot(SLOT_ALBUMS, albumListPresenter);
 
 		addRegisteredHandler(ArtistEvent.ARTIST_SELECTED, this);
+		addRegisteredHandler(NoDataEvent.NO_DATA_DETECTED, this);
 	}
 
 	@Override
@@ -67,9 +69,14 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 	@Override
 	public void onArtistEvent(ArtistEvent aEvent) {
 
-		albumListPresenter.loadArtist(aEvent.getArtist());
+		albumListPresenter.updateAlbums(aEvent.getArtist());
 
 		goToArtist(aEvent.getArtist());
+	}
+
+	@Override
+	public void onNoDataEvent(NoDataEvent aEvent) {
+		albumListPresenter.updateAlbums(null);
 	}
 
 	private void goToArtist(ArtistDto aArtist) {

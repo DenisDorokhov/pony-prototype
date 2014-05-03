@@ -7,6 +7,8 @@
 
 		<g:Label ui:field="errorLabel" text="Error!" />
 
+		<g:Label ui:field="noDataLabel" text="No data!" />
+
 		<g:DockLayoutPanel ui:field="content">
 
 			<g:north size="50">

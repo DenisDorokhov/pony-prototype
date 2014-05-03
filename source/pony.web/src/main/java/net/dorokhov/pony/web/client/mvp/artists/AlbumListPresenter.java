@@ -9,7 +9,6 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
-import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
@@ -59,12 +58,11 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		albumService = aAlbumService;
 
 		getView().setUiHandlers(this);
+		getView().setContentState(ContentState.LOADING);
 	}
 
-	public void loadArtist(ArtistDto aArtist) {
-		if (!ObjectUtils.nullSafeEquals(getView().getArtist(), aArtist)) {
-			doLoadArtist(aArtist, true);
-		}
+	public void updateAlbums(ArtistDto aArtist) {
+		doUpdateAlbums(aArtist, true);
 	}
 
 	@Override
@@ -106,7 +104,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	@Override
 	public void onRefreshEvent(RefreshEvent aEvent) {
 		if (getView().getArtist() != null) {
-			doLoadArtist(getView().getArtist(), false);
+			doUpdateAlbums(getView().getArtist(), false);
 		}
 	}
 
@@ -120,11 +118,13 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		}
 	}
 
-	private void doLoadArtist(ArtistDto aArtist, boolean aShouldShowLoadingState) {
+	private void doUpdateAlbums(ArtistDto aArtist, boolean aShouldShowLoadingState) {
 
 		getView().setArtist(aArtist);
 
-		log.fine("updating albums of artist " + aArtist + "...");
+		if (aArtist != null) {
+			log.fine("updating albums of artist " + aArtist + "...");
+		}
 
 		if (aShouldShowLoadingState || getView().getContentState() != ContentState.LOADED) {
 			getView().setContentState(ContentState.LOADING);
@@ -172,7 +172,10 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 			});
 
 		} else {
-			log.fine("albums cleared");
+
+			getView().setContentState(ContentState.LOADED);
+
+			log.fine("no albums can be loaded for empty artist");
 		}
 	}
 }

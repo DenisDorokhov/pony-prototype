@@ -44,6 +44,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	Label errorLabel;
 
 	@UiField
+	Label noDataLabel;
+
+	@UiField
 	Widget content;
 
 	@UiField
@@ -233,7 +236,11 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 					break;
 
 				case LOADED:
-					deck.showWidget(content);
+					if (getArtist() == null || getAlbums() == null || getAlbums().size() == 0) {
+						deck.showWidget(noDataLabel);
+					} else {
+						deck.showWidget(content);
+					}
 					break;
 
 				default:

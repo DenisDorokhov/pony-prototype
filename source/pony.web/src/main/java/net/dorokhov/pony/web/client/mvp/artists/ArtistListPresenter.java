@@ -10,6 +10,7 @@ import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
+import net.dorokhov.pony.web.client.event.NoDataEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.rpc.ArtistServiceRpcAsync;
@@ -53,6 +54,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 		artistService = aArtistService;
 
 		getView().setUiHandlers(this);
+		getView().setContentState(ContentState.LOADING);
 	}
 
 	public void selectArtist(String aArtist) {
@@ -121,6 +123,10 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 				getView().setContentState(ContentState.LOADED);
 
 				log.fine("artists updated");
+
+				if (aResult.size() == 0) {
+					getEventBus().fireEvent(new NoDataEvent(NoDataEvent.NO_DATA_DETECTED));
+				}
 
 				doSelectArtist(artistToSelect, aShouldScroll);
 			}

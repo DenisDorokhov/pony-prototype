@@ -33,6 +33,9 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	Label errorLabel;
 
 	@UiField
+	Label noDataLabel;
+
+	@UiField
 	ScrollPanel scroller;
 
 	@UiField(provided = true)
@@ -130,7 +133,11 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 					break;
 
 				case LOADED:
-					deck.showWidget(scroller);
+					if (getArtists() == null || getArtists().size() == 0) {
+						deck.showWidget(noDataLabel);
+					} else {
+						deck.showWidget(scroller);
+					}
 					break;
 
 				default:

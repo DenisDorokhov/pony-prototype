@@ -8,6 +8,8 @@
 
 		<g:Label ui:field="errorLabel" text="Error!" />
 
+		<g:Label ui:field="noDataLabel" text="No data!" />
+
 		<g:ScrollPanel ui:field="scroller">
 			<c:CellList ui:field="list" />
 		</g:ScrollPanel>
