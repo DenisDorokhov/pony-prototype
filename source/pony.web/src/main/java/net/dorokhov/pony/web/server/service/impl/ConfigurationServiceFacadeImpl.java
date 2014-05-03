@@ -8,11 +8,11 @@ import net.dorokhov.pony.web.shared.ConfigurationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.*;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
-		transactionTemplate = new TransactionTemplate(aTransactionManager, new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
+		transactionTemplate = new TransactionTemplate(aTransactionManager);
 	}
 
 	@Override
@@ -55,9 +55,10 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<ConfigurationDto> save(final List<ConfigurationDto> aConfigurations) throws ConstraintViolationException {
 
-		// Run new transaction to get updated versions for optimistic locking
+		// Run new transaction to get updated entity versions in DTOs
 		List<Configuration> savedConfiguration = transactionTemplate.execute(new TransactionCallback<List<Configuration>>() {
 			@Override
 			public List<Configuration> doInTransaction(TransactionStatus status) {

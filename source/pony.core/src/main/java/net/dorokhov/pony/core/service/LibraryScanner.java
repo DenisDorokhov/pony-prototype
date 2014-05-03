@@ -43,15 +43,6 @@ public interface LibraryScanner {
 	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException;
 
 	/**
-	 * Scans library file recursively.
-	 *
-	 * @param aTargetFile file to scan
-	 * @return library scanning result
-	 * @throws ConcurrentScanException in case library is already being scanned
-	 */
-	public Result scan(File aTargetFile) throws ConcurrentScanException;
-
-	/**
 	 * Library scanning result.
 	 */
 	public static interface Result {

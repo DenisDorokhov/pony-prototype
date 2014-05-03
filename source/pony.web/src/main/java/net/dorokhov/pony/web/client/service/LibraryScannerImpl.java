@@ -122,6 +122,8 @@ public class LibraryScannerImpl implements LibraryScanner {
 			@Override
 			public void onFailure(Throwable aCaught) {
 
+				scanning = false;
+
 				log.log(Level.SEVERE, "could not get library status before scanning", aCaught);
 
 				propagateScanFailed();
@@ -143,6 +145,8 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			@Override
 			public void onFailure(Throwable aCaught) {
+
+				scanning = false;
 
 				log.log(Level.SEVERE, "could not start scanning", aCaught);
 

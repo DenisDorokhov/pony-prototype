@@ -143,17 +143,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 		return result;
 	}
 
-	@Override
-	@Transactional
-	public Result scan(File aTargetFile) throws ConcurrentScanException {
-
-		ArrayList<File> files = new ArrayList<File>();
-
-		files.add(aTargetFile);
-
-		return scan(files);
-	}
-
 	@PreDestroy
 	public void onPreDestroy() {
 

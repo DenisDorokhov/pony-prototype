@@ -8,6 +8,8 @@ import org.junit.Test;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +64,11 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 
 			// TODO: change path to test MP3 files stored in VCS
 
-			LibraryScanner.Result result = service.scan(new File("/Volumes/Volume_1/Shared/Music/Denis/Dio"));
+			List<File> filesToScan = new ArrayList<File>();
+
+			filesToScan.add(new File("/Volumes/Volume_1/Shared/Music/Denis/Dio"));
+
+			LibraryScanner.Result result = service.scan(filesToScan);
 
 			assertTrue(result.getScannedFoldersCount() > 0);
 			assertTrue(result.getScannedFilesCount() > 0);
