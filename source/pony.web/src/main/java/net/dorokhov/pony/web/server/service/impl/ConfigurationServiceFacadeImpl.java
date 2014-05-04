@@ -43,6 +43,7 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ConfigurationDto> getAll() {
 
 		List<ConfigurationDto> result = new ArrayList<ConfigurationDto>();

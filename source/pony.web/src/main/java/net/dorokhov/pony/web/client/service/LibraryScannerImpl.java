@@ -126,21 +126,17 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 				log.log(Level.SEVERE, "could not get library status before scanning", aCaught);
 
-				propagateScanFailed();
+				propagateScanFailed(aCaught);
 			}
 		});
 	}
 
 	private void doScan() {
-		libraryService.startScanning(new AsyncCallback<Boolean>() {
+		libraryService.startScanning(new AsyncCallback<Void>() {
 
 			@Override
-			public void onSuccess(Boolean aResult) {
-				if (aResult) {
-					scheduleStatusTimer(STATUS_TIMER_INTERVAL_SCANNING);
-				} else {
-					propagateScanFailed();
-				}
+			public void onSuccess(Void aResult) {
+				scheduleStatusTimer(STATUS_TIMER_INTERVAL_SCANNING);
 			}
 
 			@Override
@@ -150,7 +146,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 				log.log(Level.SEVERE, "could not start scanning", aCaught);
 
-				propagateScanFailed();
+				propagateScanFailed(aCaught);
 			}
 		});
 	}
@@ -219,10 +215,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 	}
 
-	private void propagateScanFailed() {
+	private void propagateScanFailed(Throwable aCaught) {
 		for (Delegate nextDelegate : new ArrayList<Delegate>(delegates)) {
 			try {
-				nextDelegate.onScanFailed(this);
+				nextDelegate.onScanFailed(this, aCaught);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "exception thrown when delegating onScanFailed to " + nextDelegate, e);
 			}

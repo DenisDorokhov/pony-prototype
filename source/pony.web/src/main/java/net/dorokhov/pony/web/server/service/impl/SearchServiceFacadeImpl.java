@@ -34,6 +34,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public SearchDto search(String aQuery) {
 
 		SearchDto dto = new SearchDto();

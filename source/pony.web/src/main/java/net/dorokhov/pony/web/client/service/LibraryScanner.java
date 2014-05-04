@@ -10,7 +10,7 @@ public interface LibraryScanner {
 
 		public void onScanProgress(LibraryScanner aLibraryScanner, StatusDto aStatus);
 
-		public void onScanFailed(LibraryScanner aLibraryScanner);
+		public void onScanFailed(LibraryScanner aLibraryScanner, Throwable aCaught);
 
 		public void onScanFinished(LibraryScanner aLibraryScanner);
 	}

@@ -32,21 +32,25 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getCount() {
 		return artistService.getCount();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArrayList<ArtistDto> getAll() {
 		return artistListToDto(artistService.getAll());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArrayList<ArtistDto> search(String aQuery) {
 		return artistListToDto(artistService.search(aQuery));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArtistDto getById(Long aId) {
 
 		Artist artist = artistService.getById(aId);
@@ -55,6 +59,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArtistDto getByName(String aName) {
 
 		Artist artist = artistService.getByName(aName);
@@ -63,6 +68,7 @@ public class ArtistServiceFacadeImpl implements ArtistServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArtistDto getByIdOrName(String aIdOrName) {
 
 		ArtistDto artist = null;

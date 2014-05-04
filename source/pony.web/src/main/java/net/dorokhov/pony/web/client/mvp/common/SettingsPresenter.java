@@ -15,6 +15,8 @@ import net.dorokhov.pony.web.client.service.LibraryScanner;
 import net.dorokhov.pony.web.client.service.rpc.ConfigurationServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
+import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -165,7 +167,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 	}
 
 	@Override
-	public void onScanFailed(LibraryScanner aLibraryScanner) {
+	public void onScanFailed(LibraryScanner aLibraryScanner, Throwable aCaught) {
 
 		getView().setScanState(MyView.ScanState.INACTIVE);
 
@@ -173,7 +175,13 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 		refreshTimer = null;
 
-		Window.alert("Could not start scanning!");
+		if (aCaught instanceof LibraryNotDefinedException) {
+			Window.alert("Music folders not defined!");
+		} else if (aCaught instanceof ConcurrentScanException) {
+			Window.alert("Music folders are already being scanned!");
+		} else {
+			Window.alert("Could not start scanning!");
+		}
 	}
 
 	@Override

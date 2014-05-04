@@ -51,16 +51,19 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getCountByArtist(Long aArtistId) {
 		return albumService.getCountByArtist(aArtistId);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArrayList<AlbumSongsDto> getByArtist(Long aArtistId) {
 		return songListToDto(songService.getByArtist(aArtistId));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArrayList<AlbumSongsDto> getByArtistIdOrName(String aIdOrName) {
 
 		Artist artist = null;
@@ -77,11 +80,13 @@ public class AlbumServiceFacadeImpl implements AlbumServiceFacade {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ArrayList<AlbumDto> search(String aQuery) {
 		return albumListToDto(albumService.search(aQuery));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public AlbumSongsDto getById(Long aId) {
 
 		List<AlbumSongsDto> dto = songListToDto(songService.getByAlbum(aId));

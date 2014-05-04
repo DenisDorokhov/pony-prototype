@@ -1,10 +1,10 @@
 package net.dorokhov.pony.web.server.service.impl;
 
 import net.dorokhov.pony.core.domain.Configuration;
-import net.dorokhov.pony.core.exception.ConcurrentScanException;
 import net.dorokhov.pony.core.service.ConfigurationService;
 import net.dorokhov.pony.core.service.LibraryScanner;
-import net.dorokhov.pony.web.server.exception.LibraryNotDefinedException;
+import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
+import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
 import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
@@ -47,7 +47,7 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 	}
 
 	@Override
-	synchronized public void startScanning() throws ConcurrentScanException {
+	synchronized public void startScanning() throws ConcurrentScanException, LibraryNotDefinedException {
 
 		if (libraryScanner.getStatus() != null) {
 			throw new ConcurrentScanException();

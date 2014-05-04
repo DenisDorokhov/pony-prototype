@@ -6,7 +6,7 @@ import net.dorokhov.pony.web.shared.StatusDto;
 
 public interface LibraryServiceRpcAsync {
 
-	public Request startScanning(AsyncCallback<Boolean> aCallback);
+	public Request startScanning(AsyncCallback<Void> aCallback);
 
 	public Request getStatus(AsyncCallback<StatusDto> aCallback);
 
