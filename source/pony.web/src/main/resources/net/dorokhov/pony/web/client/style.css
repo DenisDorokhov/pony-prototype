@@ -3,19 +3,23 @@
     overflow: auto;
     clear: both;
 }
+
 .albumImage {
     float: left;
     margin: 0 10px 10px;
 }
+
 .albumImage img {
     max-width: 140px;
     max-height: 140px;
     box-shadow: 0 5px 10px #ccc;
     border: 1px solid #8a8a8a;
 }
+
 .albumInfo {
     margin-left: 165px;
 }
+
 .albumHeader {
     overflow: auto;
     font-size: 18px;
@@ -24,15 +28,20 @@
     margin-bottom: 10px;
     position: relative;
 }
+
 .albumName {
     float: left;
     font-weight: bold;
     width: 100%;
     padding-right: 100px;
-    -moz-border-sizing: border-box;
+    -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
 }
+
 .albumYear {
     position: absolute;
     right: 0;
@@ -41,10 +50,11 @@
 }
 
 .albumDisc {
-
+    margin-bottom: 10px;
 }
 
 .albumDiscHeader {
+    font-size: 14px;
     font-weight: bold;
     padding: 5px 10px;
 }
@@ -53,46 +63,40 @@
     -moz-column-width: 400px;
     -webkit-column-width: 400px;
     column-width: 400px;
-    -moz-column-gap: 0;
-    -webkit-column-gap: 0;
-    column-gap: 0;
-    overflow-x: hidden;
+    -moz-column-gap: 20px;
+    -webkit-column-gap: 20px;
+    column-gap: 20px;
+    margin-right: 20px;
 }
 
 .songView {
+    height: 16px;
     overflow: auto;
     cursor: pointer;
-    padding: 4px;
+    padding: 4px 4px;
+    margin: 0 5px;
     position: relative;
     border: 1px solid transparent;
-}
-
-.songView_selected {
-    background-image: linear-gradient(to bottom, #9ab9d8, #7997bb);
-    background-repeat: repeat-x;
-    border: 1px solid #718eb0;
-    color: #fff;
-    text-shadow: 0 1px 1px #547191;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
     z-index: 0;
 }
 
-.songView_selected .songTrackNumber,
-.songView_selected .songName,
-.songView_selected .songDuration {
+.songView_selected {
+    background-color: #8ba7c9;
+    border: 1px solid #829dbc;
     color: #fff;
     text-shadow: 0 1px 1px #547191;
-    z-index: 1;
+}
+
+.songView_selected .songTrackNumber,
+.songView_selected .songDuration {
+    color: #fff;
 }
 
 .songView_activated {
-	background-color: #8ba7c9;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-	border-radius: 3px;
-    border: 1px solid #829dbc;
+    /* TODO: Add icon */
 }
 
 .songView_activated .songTrackNumber {
@@ -100,35 +104,36 @@
     text-shadow: none;
 }
 
-.songView_activated .songName,
-.songView_activated .songDuration {
-    color: #fff;
-    text-shadow: 0 1px 1px #547191;
-}
-
-
 .songTrackNumber {
     position: absolute;
     left: 0;
-    width: 20px;
+    width: 25px;
     min-height: 1em;
     text-align: right;
     color: #82817f;
-    margin-right: 15px;
+    margin-left: 4px;
+    z-index: 1;
 }
+
 .songName {
-    -moz-border-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 0 70px 0 35px;
     width: 100%;
     float: left;
+    padding: 0 50px 0 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    z-index: 1;
 }
+
 .songDuration {
     position: absolute;
     right: 0;
     width: 40px;
+    margin-right: 4px;
     text-align: right;
     color: #82817f;
-    margin-right: 30px;
+    z-index: 1;
 }
