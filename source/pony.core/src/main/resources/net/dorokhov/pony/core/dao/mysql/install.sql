@@ -28,6 +28,40 @@ CREATE TABLE configuration (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
+CREATE TABLE scan_result (
+
+	id BIGINT NOT NULL AUTO_INCREMENT,
+
+	creation_date TIMESTAMP NOT NULL,
+	update_date TIMESTAMP NOT NULL,
+
+	version BIGINT NOT NULL,
+
+	success BIT(1) NOT NULL,
+
+	duration BIGINT NOT NULL,
+
+	scanned_folder_count BIGINT NOT NULL,
+	scanned_file_count BIGINT NOT NULL,
+
+	imported_file_count BIGINT NOT NULL,
+
+	PRIMARY KEY (id)
+
+) CHARSET=UTF8 ENGINE=InnoDB;
+
+CREATE INDEX index_scan_result_creation_date ON scan_result(creation_date);
+
+CREATE TABLE scan_result_path (
+
+	scan_result_id BIGINT NOT NULL,
+
+	path VARCHAR(255) NOT NULL,
+
+	PRIMARY KEY (scan_result_id, path)
+
+) CHARSET=UTF8 ENGINE=InnoDB;
+
 CREATE TABLE stored_file (
 
 	id BIGINT NOT NULL AUTO_INCREMENT,

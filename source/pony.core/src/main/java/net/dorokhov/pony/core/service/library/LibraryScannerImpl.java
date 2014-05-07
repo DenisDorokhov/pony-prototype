@@ -1,20 +1,32 @@
 package net.dorokhov.pony.core.service.library;
 
+import net.dorokhov.pony.core.dao.ScanResultDao;
+import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
+import net.dorokhov.pony.core.service.LibraryImporter;
 import net.dorokhov.pony.core.service.LibraryNormalizer;
 import net.dorokhov.pony.core.service.LibraryScanner;
-import net.dorokhov.pony.core.service.LibraryImporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PreDestroy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -39,9 +51,23 @@ public class LibraryScannerImpl implements LibraryScanner {
 	private final AtomicReference<ExecutorService> executorServiceReference = new AtomicReference<ExecutorService>();
 	private final AtomicLong processedFilesCountReference = new AtomicLong();
 
+	private TransactionTemplate transactionTemplate;
+
+	private ScanResultDao scanResultDao;
+
 	private LibraryImporter libraryImporter;
 
 	private LibraryNormalizer libraryNormalizer;
+
+	@Autowired
+	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
+		transactionTemplate = new TransactionTemplate(aTransactionManager, new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
+	}
+
+	@Autowired
+	public void setScanResultDao(ScanResultDao aScanResultDao) {
+		scanResultDao = aScanResultDao;
+	}
 
 	@Autowired
 	public void setLibraryImporter(LibraryImporter aLibraryImporter) {
@@ -78,8 +104,17 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public ScanResult getLastResult() {
+
+		Page<ScanResult> scanResults = scanResultDao.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "creationDate"));
+
+		return scanResults.getNumberOfElements() > 0 ? scanResults.getContent().get(0) : null;
+	}
+
+	@Override
 	@Transactional
-	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException {
+	public ScanResult scan(List<File> aTargetFiles) throws ConcurrentScanException {
 
 		if (statusReference.get() != null) {
 			throw new ConcurrentScanException();
@@ -97,19 +132,23 @@ public class LibraryScannerImpl implements LibraryScanner {
 			}
 		}
 
-		LibraryScannerResult result = new LibraryScannerResult(aTargetFiles);
+		ScanResult scanResult;
+
+		AtomicResult atomicResult = new AtomicResult(aTargetFiles);
 
 		try {
 
 			executorServiceReference.set(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
 			processedFilesCountReference.set(0);
 
-			doScan(aTargetFiles, result);
+			doScan(aTargetFiles, atomicResult);
+
+			scanResult = scanResultDao.save(buildScanResult(atomicResult, true));
 
 			synchronized (lockDelegates) {
 				for (Delegate next : new ArrayList<Delegate>(delegates)) {
 					try {
-						next.onScanFinish(result);
+						next.onScanFinish(scanResult);
 					} catch (Exception e) {
 						log.error("exception thrown when delegating onScanFinish to {}", next, e);
 					}
@@ -118,10 +157,23 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		} catch (Exception processingException) {
 
+			scanResult = buildScanResult(atomicResult, false);
+
+			try {
+				scanResult = transactionTemplate.execute(new TransactionCallback<ScanResult>() {
+					@Override
+					public ScanResult doInTransaction(TransactionStatus aStatus) {
+						return null;
+					}
+				});
+			} catch (Exception e) {
+				log.error("could not save scan result", e);
+			}
+
 			synchronized (lockDelegates) {
 				for (Delegate next : new ArrayList<Delegate>(delegates)) {
 					try {
-						next.onScanFail(processingException);
+						next.onScanFail(scanResult, processingException);
 					} catch (Exception e) {
 						log.error("exception thrown when delegating onScanFail to {}", next, e);
 					}
@@ -131,16 +183,17 @@ public class LibraryScannerImpl implements LibraryScanner {
 			throw new RuntimeException(processingException);
 
 		} finally {
-
 			executorServiceReference.set(null);
 			statusReference.set(null);
 			processedFilesCountReference.set(0);
 		}
 
 		log.info("library {} ({} folders, {} files) scanned successfully, {} files imported in {} seconds",
-				result.getTargetFiles(), result.getScannedFoldersCount(), result.getScannedFilesCount(), result.getImportedFilesCount(), result.getDuration() / 1000000000.0);
+				scanResult.getTargetFiles(),
+				scanResult.getScannedFolderCount(), scanResult.getScannedFileCount(), scanResult.getImportedFileCount(),
+				scanResult.getDuration() / 1000000000.0);
 
-		return result;
+		return scanResult;
 	}
 
 	@PreDestroy
@@ -153,7 +206,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 	}
 
-	private void doScan(final List<File> aTargetFiles, final LibraryScannerResult aResult) {
+	private void doScan(final List<File> aTargetFiles, final AtomicResult aResult) {
 
 		log.info("scanning library {}...", aTargetFiles);
 
@@ -224,7 +277,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		aResult.setDuration(endTime - startTime);
 	}
 
-	private void scanRecursively(File aFile, List<File> aFilesToProcess, LibraryScannerResult aResult) {
+	private void scanRecursively(File aFile, List<File> aFilesToProcess, AtomicResult aResult) {
 
 		if (aFile.isDirectory()) {
 
@@ -252,40 +305,59 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 	}
 
-	private static class LibraryScannerResult implements Result {
+	private ScanResult buildScanResult(AtomicResult aResult, boolean aSuccess) {
+
+		ScanResult scanResult = new ScanResult();
+
+		for (File file : aResult.getTargetFiles()) {
+			scanResult.getTargetFiles().add(file.getAbsolutePath());
+		}
+
+		scanResult.setDuration(aResult.getDuration());
+		scanResult.setScannedFolderCount(aResult.getScannedFolderCount());
+		scanResult.setScannedFileCount(aResult.getScannedFileCount());
+		scanResult.setImportedFileCount(aResult.getImportedFileCount());
+
+		scanResult.setSuccess(aSuccess);
+
+		Date date = new Date();
+
+		scanResult.setCreationDate(date);
+		scanResult.setUpdateDate(date);
+
+		return scanResult;
+	}
+
+	private static class AtomicResult {
 
 		private final List<File> targetFiles;
 
-		private final AtomicLong scannedFoldersCount = new AtomicLong();
-		private final AtomicLong scannedFilesCount = new AtomicLong();
-		private final AtomicLong importedFilesCount = new AtomicLong();
+		private final AtomicLong scannedFolderCount = new AtomicLong();
+		private final AtomicLong scannedFileCount = new AtomicLong();
+		private final AtomicLong importedFileCount = new AtomicLong();
+
 		private final AtomicLong duration = new AtomicLong();
 
-		public LibraryScannerResult(List<File> aTargetFiles) {
+		public AtomicResult(List<File> aTargetFiles) {
 			targetFiles = new ArrayList<File>(aTargetFiles);
 		}
 
-		@Override
 		public List<File> getTargetFiles() {
 			return targetFiles;
 		}
 
-		@Override
-		public long getScannedFoldersCount() {
-			return scannedFoldersCount.get();
+		public long getScannedFolderCount() {
+			return scannedFolderCount.get();
 		}
 
-		@Override
-		public long getScannedFilesCount() {
-			return scannedFilesCount.get();
+		public long getScannedFileCount() {
+			return scannedFileCount.get();
 		}
 
-		@Override
-		public long getImportedFilesCount() {
-			return importedFilesCount.get();
+		public long getImportedFileCount() {
+			return importedFileCount.get();
 		}
 
-		@Override
 		public long getDuration() {
 			return duration.get();
 		}
@@ -295,15 +367,15 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 
 		public long incrementScannedFoldersCount() {
-			return scannedFoldersCount.incrementAndGet();
+			return scannedFolderCount.incrementAndGet();
 		}
 
 		public long incrementScannedFilesCount() {
-			return scannedFilesCount.incrementAndGet();
+			return scannedFileCount.incrementAndGet();
 		}
 
 		public long incrementImportedFilesCount() {
-			return importedFilesCount.incrementAndGet();
+			return importedFileCount.incrementAndGet();
 		}
 	}
 
@@ -355,9 +427,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		private File file;
 
-		private LibraryScannerResult result;
+		private AtomicResult result;
 
-		public FileProcessor(File aFile, LibraryScannerResult aResult) {
+		public FileProcessor(File aFile, AtomicResult aResult) {
 			file = aFile;
 			result = aResult;
 		}
@@ -365,19 +437,19 @@ public class LibraryScannerImpl implements LibraryScanner {
 		@Override
 		public SongFile call() throws Exception {
 
-			SongFile songFile = null;
+			LibraryImporter.Result importResult = null;
 
 			try {
-				songFile = libraryImporter.importSong(file);
+				importResult = libraryImporter.importSong(file);
 			} catch (Exception e) {}
 
-			if (songFile != null) {
+			if (importResult != null && importResult.isModified()) {
 				result.incrementImportedFilesCount();
 			}
 
 			long processedFilesCount = processedFilesCountReference.incrementAndGet();
 
-			double progress = (double) processedFilesCount / result.getScannedFilesCount();
+			double progress = (double) processedFilesCount / result.getScannedFileCount();
 
 			statusReference.set(new LibraryScannerStatus(result.getTargetFiles(), "importingSongs", progress, 2));
 
@@ -393,7 +465,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 			Thread.sleep(50); // avoid high CPU load
 
-			return songFile;
+			return importResult != null ? importResult.getFile() : null;
 		}
 	}
 }

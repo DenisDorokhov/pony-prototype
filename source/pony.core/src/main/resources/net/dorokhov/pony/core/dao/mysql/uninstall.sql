@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS installation;
 DROP TABLE IF EXISTS configuration;
+DROP TABLE IF EXISTS scan_result_path;
+DROP TABLE IF EXISTS scan_result;
 DROP TABLE IF EXISTS song;
 DROP TABLE IF EXISTS album;
 DROP TABLE IF EXISTS artist;

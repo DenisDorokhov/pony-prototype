@@ -1,5 +1,6 @@
 package net.dorokhov.pony.core.service;
 
+import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.exception.ConcurrentScanException;
 
 import java.io.File;
@@ -27,11 +28,18 @@ public interface LibraryScanner {
 	public void removeDelegate(Delegate aDelegate);
 
 	/**
-	 * Gets library scanner status
+	 * Gets library scanner status.
 	 *
 	 * @return library scanner status or null if library is not being scanned
 	 */
 	public Status getStatus();
+
+	/**
+	 * Gets last scan result.
+	 *
+	 * @return last scan result or null if no scans completed
+	 */
+	public ScanResult getLastResult();
 
 	/**
 	 * Scans library files recursively.
@@ -40,49 +48,7 @@ public interface LibraryScanner {
 	 * @return library scanning result
 	 * @throws ConcurrentScanException in case library is already being scanned
 	 */
-	public Result scan(List<File> aTargetFiles) throws ConcurrentScanException;
-
-	/**
-	 * Library scanning result.
-	 */
-	public static interface Result {
-
-		/**
-		 * Gets scanned target files.
-		 *
-		 * @return scanned target files
-		 */
-		public List<File> getTargetFiles();
-
-		/**
-		 * Gets scanned folders count.
-		 *
-		 * @return number of scanned folders
-		 */
-		public long getScannedFoldersCount();
-
-		/**
-		 * Gets scanned files count.
-		 *
-		 * @return number of scanned files
-		 */
-		public long getScannedFilesCount();
-
-		/**
-		 * Gets imported files count.
-		 *
-		 * @return number of imported files
-		 */
-		public long getImportedFilesCount();
-
-		/**
-		 * Gets library scanning duration.
-		 *
-		 * @return library scanning duration
-		 */
-		public long getDuration();
-
-	}
+	public ScanResult scan(List<File> aTargetFiles) throws ConcurrentScanException;
 
 	/**
 	 * Library scanning status.
@@ -147,14 +113,15 @@ public interface LibraryScanner {
 		 *
 		 * @param aResult library scanning result
 		 */
-		public void onScanFinish(Result aResult);
+		public void onScanFinish(ScanResult aResult);
 
 		/**
 		 * This method is called when library scanning fails.
 		 *
+		 * @param aResult library scanning result
 		 * @param e fail reason
 		 */
-		public void onScanFail(Exception e);
+		public void onScanFail(ScanResult aResult, Exception e);
 	}
 
 }

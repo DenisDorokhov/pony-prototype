@@ -86,7 +86,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 
 	@Override
 	@Transactional
-	public SongFile importSong(File aFile) {
+	public Result importSong(File aFile) {
 
 		SongFile songFile;
 
@@ -99,6 +99,8 @@ public class LibraryImporterImpl implements LibraryImporter {
 			throw new RuntimeException(e);
 		}
 
+		boolean modified = false;
+
 		if (songFile == null || songFile.getUpdateDate().getTime() < aFile.lastModified()) {
 
 			final SongData metaData;
@@ -109,12 +111,14 @@ public class LibraryImporterImpl implements LibraryImporter {
 				throw new RuntimeException(e);
 			}
 
+			EntityModification<SongFile> songFileModification;
+
 			synchronized (lock) {
 
-				songFile = transactionTemplate.execute(new TransactionCallback<SongFile>() {
+				songFileModification = transactionTemplate.execute(new TransactionCallback<EntityModification<SongFile>>() {
 
 					@Override
-					public SongFile doInTransaction(TransactionStatus status) {
+					public EntityModification<SongFile> doInTransaction(TransactionStatus status) {
 
 						EntityModification<SongFile> songFile;
 
@@ -153,13 +157,16 @@ public class LibraryImporterImpl implements LibraryImporter {
 							log.warn("could not create song entities for inconsistent song file: {}", songFile.getEntity());
 						}
 
-						return songFile.getEntity();
+						return songFile;
 					}
 				});
 			}
+
+			songFile = songFileModification.getEntity();
+			modified = songFileModification.isModified();
 		}
 
-		return songFile;
+		return new ResultImpl(songFile, modified);
 	}
 
 	private EntityModification<SongFile> importSongFile(SongData aSongData) {
@@ -354,7 +361,7 @@ public class LibraryImporterImpl implements LibraryImporter {
 		return saveCommand;
 	}
 
-	private static class EntityModification<T extends BaseEntity> {
+	private class EntityModification<T extends BaseEntity> {
 
 		private T entity;
 
@@ -369,6 +376,28 @@ public class LibraryImporterImpl implements LibraryImporter {
 			return entity;
 		}
 
+		public boolean isModified() {
+			return modified;
+		}
+	}
+
+	private class ResultImpl implements Result {
+
+		private SongFile file;
+
+		private boolean modified;
+
+		private ResultImpl(SongFile aFile, boolean aModified) {
+			file = aFile;
+			modified = aModified;
+		}
+
+		@Override
+		public SongFile getFile() {
+			return file;
+		}
+
+		@Override
 		public boolean isModified() {
 			return modified;
 		}

@@ -1,7 +1,9 @@
 package net.dorokhov.pony.core.test.integration;
 
+import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.core.test.AbstractIntegrationCase;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,9 +12,6 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class LibraryScannerIT extends AbstractIntegrationCase {
 
@@ -46,12 +45,12 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 			}
 
 			@Override
-			public void onScanFinish(LibraryScanner.Result aResult) {
+			public void onScanFinish(ScanResult aResult) {
 				didCallFinish = true;
 			}
 
 			@Override
-			public void onScanFail(Exception e) {
+			public void onScanFail(ScanResult aResult, Exception e) {
 				didCallFail = true;
 			}
 		});
@@ -68,16 +67,37 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 
 			filesToScan.add(new File("/Volumes/Volume_1/Shared/Music/Denis/Dio"));
 
-			LibraryScanner.Result result = service.scan(filesToScan);
+			ScanResult result = service.scan(filesToScan);
 
-			assertTrue(result.getScannedFoldersCount() > 0);
-			assertTrue(result.getScannedFilesCount() > 0);
-			assertTrue(result.getDuration() > 0);
+			Assert.assertNotNull(result.getId());
 
-			assertTrue(didCallStart);
-			assertTrue(didCallFinish);
-			assertFalse(didCallFail);
+			Assert.assertNotNull(result.getCreationDate());
+			Assert.assertNotNull(result.getUpdateDate());
+
+			Assert.assertNotNull(result.getVersion());
+
+			Assert.assertTrue(result.getSuccess());
+
+			Assert.assertTrue(result.getTargetFiles().size() == 1);
+			Assert.assertEquals("/Volumes/Volume_1/Shared/Music/Denis/Dio", result.getTargetFiles().get(0));
+
+			Assert.assertTrue(result.getDuration() > 0);
+
+			Assert.assertTrue(result.getScannedFolderCount() > 0);
+			Assert.assertTrue(result.getScannedFileCount() > 0);
+
+			Assert.assertTrue(i > 0 || result.getImportedFileCount() > 0);
+
+			Assert.assertTrue(didCallStart);
+			Assert.assertTrue(didCallFinish);
+			Assert.assertFalse(didCallFail);
 		}
+
+		ScanResult result = service.getLastResult();
+
+		result.getTargetFiles();
+
+		Assert.assertNotNull(result);
 	}
 
 }
