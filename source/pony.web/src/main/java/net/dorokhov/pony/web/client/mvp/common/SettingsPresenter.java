@@ -14,6 +14,7 @@ import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.LibraryScanner;
 import net.dorokhov.pony.web.client.service.rpc.ConfigurationServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
+import net.dorokhov.pony.web.shared.ConfigurationOptions;
 import net.dorokhov.pony.web.shared.StatusDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
@@ -219,6 +220,8 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 			getView().setContentState(MyView.ContentState.SAVING);
 
+			final ConfigurationDto originalLibraryConfig = getLibraryConfig(getView().getConfiguration());
+
 			currentRequest = configurationService.save(aConfiguration, new AsyncCallback<List<ConfigurationDto>>() {
 
 				@Override
@@ -230,6 +233,12 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 					getView().setContentState(MyView.ContentState.LOADED);
 
 					log.fine("configuration saved successfully");
+
+					if (shouldOfferScan(getLibraryConfig(aResult), originalLibraryConfig)) {
+						if (Window.confirm("Library configuration has been changed. Do you want to scan new library?")) {
+							libraryScanner.scan();
+						}
+					}
 				}
 
 				@Override
@@ -249,5 +258,37 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 	private void requestRefresh() {
 		getEventBus().fireEvent(new RefreshEvent(RefreshEvent.REFRESH_REQUESTED));
+	}
+
+	private ConfigurationDto getLibraryConfig(List<ConfigurationDto> aConfig) {
+
+		if (aConfig != null) {
+			for (ConfigurationDto nextConfig : aConfig) {
+				if (nextConfig.getId().equals(ConfigurationOptions.LIBRARY_FOLDERS)) {
+					return nextConfig;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private boolean shouldOfferScan(ConfigurationDto aLibraryConfig, ConfigurationDto aOriginalLibraryConfig) {
+
+		String oldValue = aOriginalLibraryConfig != null ? aOriginalLibraryConfig.getValue() : null;
+		if (oldValue == null) {
+			oldValue = "";
+		}
+
+		String newValue = aLibraryConfig != null ? aLibraryConfig.getValue() : null;
+		if (newValue == null) {
+			newValue = "";
+		}
+
+		if (!newValue.equals(oldValue)) {
+			return !libraryScanner.isScanning();
+		}
+
+		return false;
 	}
 }

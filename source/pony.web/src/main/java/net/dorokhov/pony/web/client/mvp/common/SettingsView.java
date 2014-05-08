@@ -241,7 +241,7 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 		Integer autoScanInterval = Integer.valueOf(autoScanIntervalList.getValue(autoScanIntervalList.getSelectedIndex()));
 
-		config = new ConfigurationDto(ConfigurationOptions.AUTO_SCAN_INTERVAL, null, getConfigVersion(ConfigurationOptions.LIBRARY_FOLDERS));
+		config = new ConfigurationDto(ConfigurationOptions.AUTO_SCAN_INTERVAL, null, getConfigVersion(ConfigurationOptions.AUTO_SCAN_INTERVAL));
 
 		if (autoScanInterval > 0) {
 			config.setValue(autoScanInterval.toString());
