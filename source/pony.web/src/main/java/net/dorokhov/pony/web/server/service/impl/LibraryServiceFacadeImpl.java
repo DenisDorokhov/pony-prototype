@@ -62,7 +62,7 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 		return status != null ? dtoService.statusToDto(status) : null;
 	}
 
-	@Scheduled(fixedDelay = 60 * 1000)
+	@Scheduled(fixedDelay = 5 * 60 * 1000)
 	synchronized public void autoScanIfNeeded() throws ConcurrentScanException, LibraryNotDefinedException {
 
 		log.debug("checking if automatic scan needed...");
@@ -84,7 +84,7 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 					if (secondsSinceLastScan >= config.getLong()) {
 						shouldScan = true;
 					} else {
-						log.debug("it is too early for automatic scan");
+						log.debug("too early for automatic scan");
 					}
 
 				} else {
