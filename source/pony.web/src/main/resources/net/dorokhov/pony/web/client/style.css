@@ -60,17 +60,18 @@
 }
 
 .songList {
-    -moz-column-width: 400px;
-    -webkit-column-width: 400px;
-    column-width: 400px;
+    -moz-column-width: 300px;
+    -webkit-column-width: 300px;
+    column-width: 300px;
     -moz-column-gap: 20px;
     -webkit-column-gap: 20px;
     column-gap: 20px;
     margin-right: 20px;
+    overflow-x: hidden;
 }
 
 .songView {
-    height: 16px;
+    height: 1.231em;
     overflow: auto;
     cursor: pointer;
     padding: 4px 4px;
