@@ -20,6 +20,18 @@ public class DtoServiceImpl implements DtoService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
+	public InstallationDto installationToDto(Installation aInstallation) {
+
+		InstallationDto dto = new InstallationDto();
+
+		dto.setId(aInstallation.getId());
+		dto.setVersion(aInstallation.getVersion());
+		dto.setSystemVersion(aInstallation.getSystemVersion());
+
+		return dto;
+	}
+
+	@Override
 	public ConfigurationDto configurationToDto(Configuration aConfig) {
 
 		ConfigurationDto dto = new ConfigurationDto();

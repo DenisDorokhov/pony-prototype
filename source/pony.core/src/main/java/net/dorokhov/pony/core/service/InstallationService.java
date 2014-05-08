@@ -19,7 +19,7 @@ public interface InstallationService {
 	/**
 	 * Installs the system.
 	 */
-	public void install() throws AlreadyInstalledException;
+	public Installation install() throws AlreadyInstalledException;
 
 	/**
 	 * Uninstalls the system.

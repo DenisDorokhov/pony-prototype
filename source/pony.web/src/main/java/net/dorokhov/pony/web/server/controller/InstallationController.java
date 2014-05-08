@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.server.controller;
 
-import net.dorokhov.pony.core.service.InstallationService;
-
+import net.dorokhov.pony.web.server.service.InstallationServiceFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +14,18 @@ public class InstallationController {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
-	private InstallationService installationService;
+	private InstallationServiceFacade installationServiceFacade;
 
 	@Autowired
-	public void setInstallationService(InstallationService aInstallationService) {
-		installationService = aInstallationService;
+	public void setInstallationServiceFacade(InstallationServiceFacade aInstallationServiceFacade) {
+		installationServiceFacade = aInstallationServiceFacade;
 	}
 
 	@RequestMapping("/install")
 	synchronized public String install(HttpServletRequest aRequest) {
 		
-		if (installationService.getInstallation() == null) {
-			installationService.install();
+		if (installationServiceFacade.getInstallation() == null) {
+			installationServiceFacade.install();
 		} else {
 			log.warn("Already installed.");
 		}

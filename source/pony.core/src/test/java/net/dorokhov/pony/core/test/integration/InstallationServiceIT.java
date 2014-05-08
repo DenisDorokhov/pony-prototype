@@ -38,15 +38,8 @@ public class InstallationServiceIT {
 
 		Assert.assertNull(service.getInstallation());
 
-		service.install();
-
-		Installation installation = service.getInstallation();
-
-		Assert.assertNotNull(installation.getId());
-		Assert.assertNotNull(installation.getVersion());
-		Assert.assertNotNull(installation.getCreationDate());
-		Assert.assertNotNull(installation.getUpdateDate());
-		Assert.assertNotNull(installation.getSystemVersion());
+		checkInstallation(service.install());
+		checkInstallation(service.getInstallation());
 
 		isExceptionThrown = false;
 
@@ -77,5 +70,13 @@ public class InstallationServiceIT {
 		if (service.getInstallation() != null) {
 			service.uninstall();
 		}
+	}
+
+	private void checkInstallation(Installation aInstallation) {
+		Assert.assertNotNull(aInstallation.getId());
+		Assert.assertNotNull(aInstallation.getVersion());
+		Assert.assertNotNull(aInstallation.getCreationDate());
+		Assert.assertNotNull(aInstallation.getUpdateDate());
+		Assert.assertNotNull(aInstallation.getSystemVersion());
 	}
 }

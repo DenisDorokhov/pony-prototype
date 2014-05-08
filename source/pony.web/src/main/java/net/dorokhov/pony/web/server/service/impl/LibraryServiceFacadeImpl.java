@@ -3,6 +3,7 @@ package net.dorokhov.pony.web.server.service.impl;
 import net.dorokhov.pony.core.domain.Configuration;
 import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.service.ConfigurationService;
+import net.dorokhov.pony.core.service.InstallationService;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
@@ -34,6 +35,8 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 
 	private DtoService dtoService;
 
+	private InstallationService installationService;
+
 	@Autowired
 	public void setLibraryScanner(LibraryScanner aLibraryScanner) {
 		libraryScanner = aLibraryScanner;
@@ -49,9 +52,14 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 		dtoService = aDtoService;
 	}
 
+	@Autowired
+	public void setInstallationService(InstallationService aInstallationService) {
+		installationService = aInstallationService;
+	}
+
 	@Override
 	synchronized public void startScanning() throws ConcurrentScanException, LibraryNotDefinedException {
-		doStartScanning();
+		doStartScanning(getLibraryFiles());
 	}
 
 	@Override
@@ -65,47 +73,59 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 	@Scheduled(fixedDelay = 5 * 60 * 1000)
 	synchronized public void autoScanIfNeeded() throws ConcurrentScanException, LibraryNotDefinedException {
 
-		log.debug("checking if automatic scan needed...");
+		if (installationService.getInstallation() != null) {
 
-		boolean shouldScan = false;
+			log.debug("checking if automatic scan needed...");
 
-		if (libraryScanner.getStatus() == null) {
+			boolean shouldScan = false;
 
-			Configuration config = configurationService.getById(ConfigurationOptions.AUTO_SCAN_INTERVAL);
+			List<File> libraryFiles = getLibraryFiles();
 
-			if (config != null && config.getValue() != null) {
+			if (libraryFiles.size() > 0) {
 
-				ScanResult lastResult = libraryScanner.getLastResult();
+				if (libraryScanner.getStatus() == null) {
 
-				if (lastResult != null) {
+					Configuration config = configurationService.getById(ConfigurationOptions.AUTO_SCAN_INTERVAL);
 
-					long secondsSinceLastScan = (new Date().getTime() - lastResult.getCreationDate().getTime()) / 1000;
+					if (config != null && config.getValue() != null) {
 
-					if (secondsSinceLastScan >= config.getLong()) {
-						shouldScan = true;
+						ScanResult lastResult = libraryScanner.getLastResult();
+
+						if (lastResult != null) {
+
+							long secondsSinceLastScan = (new Date().getTime() - lastResult.getCreationDate().getTime()) / 1000;
+
+							if (secondsSinceLastScan >= config.getLong()) {
+								shouldScan = true;
+							} else {
+								log.debug("too early for automatic scan");
+							}
+
+						} else {
+
+							log.debug("library was never scanned before");
+
+							shouldScan = true;
+						}
+
 					} else {
-						log.debug("too early for automatic scan");
+						log.debug("automatic scan is off");
 					}
 
 				} else {
-
-					shouldScan = true;
-
-					log.debug("library was never scanned before");
+					log.debug("library is already being scanned");
 				}
+
 			} else {
-				log.debug("automatic scan is off");
+				log.debug("no library files defined");
 			}
 
-		} else {
-			log.debug("library is already being scanned");
-		}
+			if (shouldScan) {
 
-		if (shouldScan) {
+				log.info("starting automatic scan...");
 
-			log.info("starting automatic scan...");
-
-			doStartScanning();
+				doStartScanning(libraryFiles);
+			}
 		}
 	}
 
@@ -129,13 +149,11 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 		return result;
 	}
 
-	private void doStartScanning() throws ConcurrentScanException, LibraryNotDefinedException {
+	private void doStartScanning(final List<File> libraryFiles) throws ConcurrentScanException, LibraryNotDefinedException {
 
 		if (libraryScanner.getStatus() != null) {
 			throw new ConcurrentScanException();
 		}
-
-		final List<File> libraryFiles = getLibraryFiles();
 
 		if (libraryFiles.size() == 0) {
 			throw new LibraryNotDefinedException();

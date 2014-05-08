@@ -32,7 +32,7 @@ public class InstallationServiceImpl implements InstallationService {
 
 	@Override
 	@Transactional
-	public void install() throws AlreadyInstalledException {
+	public Installation install() throws AlreadyInstalledException {
 
 		log.info("Installing...");
 
@@ -40,9 +40,11 @@ public class InstallationServiceImpl implements InstallationService {
 			throw new AlreadyInstalledException();
 		}
 
-		installationDao.install();
+		Installation installation = installationDao.install();
 
 		log.info("Successfully installed.");
+
+		return installation;
 	}
 
 	@Override

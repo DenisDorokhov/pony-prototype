@@ -1,26 +1,25 @@
 package net.dorokhov.pony.web.server.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.dorokhov.pony.core.service.InstallationService;
 import net.dorokhov.pony.web.server.controller.InstallationController;
-
+import net.dorokhov.pony.web.server.service.InstallationServiceFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class InstallationInterceptor extends HandlerInterceptorAdapter {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
-	private InstallationService installationService;
+	private InstallationServiceFacade installationServiceFacade;
 
 	@Autowired
-	public void setInstallationService(InstallationService aInstallationService) {
-		installationService = aInstallationService;
+	public void setInstallationServiceFacade(InstallationServiceFacade aInstallationService) {
+		installationServiceFacade = aInstallationService;
 	}
 
 	@Override
@@ -31,7 +30,7 @@ public class InstallationInterceptor extends HandlerInterceptorAdapter {
 			HandlerMethod handlerMethod = (HandlerMethod)aHandler;
 			
 			if (!(handlerMethod.getBean() instanceof InstallationController)) {
-				if (installationService.getInstallation() == null) {
+				if (installationServiceFacade.getInstallation() == null) {
 					
 					log.info("Redirecting to installation...");
 

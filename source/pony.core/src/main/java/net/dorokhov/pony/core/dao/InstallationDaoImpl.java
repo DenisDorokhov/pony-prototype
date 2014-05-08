@@ -54,7 +54,7 @@ public class InstallationDaoImpl implements InstallationDao {
 		Installation installation = null;
 
 		try {
-			installation = entityManager.createQuery("SELECT i FROM Installation i", Installation.class).getSingleResult();
+			installation = doFindInstallation();
 		} catch (NonUniqueResultException e) {
 			throw new RuntimeException(e);
 		} catch (Exception e) {
@@ -67,13 +67,16 @@ public class InstallationDaoImpl implements InstallationDao {
 	/**
 	 * Installs the database.
 	 *
-	 * 1) Finds the installation script "install.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
-	 * 2) Splits the script into SQL statements.
-	 * 3) Runs SQL statements one by one.
+	 * 1) Uninstalls existing database (to guarantee consistency for DBMS that can't rollback schema changes).
+	 * 2) Finds the installation script "install.sql" in SCRIPT_PACKAGE/DBMS_PRODUCT_NAME.
+	 * 3) Splits the script into SQL statements.
+	 * 4) Runs SQL statements one by one.
 	 */
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public void install() {
+	public Installation install() {
+
+		uninstall();
 
 		try {
 
@@ -86,6 +89,8 @@ public class InstallationDaoImpl implements InstallationDao {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
+		return doFindInstallation();
 	}
 
 	/**
@@ -110,6 +115,10 @@ public class InstallationDaoImpl implements InstallationDao {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Installation doFindInstallation() {
+		return entityManager.createQuery("SELECT i FROM Installation i", Installation.class).getSingleResult();
 	}
 
 	private String fetchScriptContents(String aName) throws Exception {

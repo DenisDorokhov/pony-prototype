@@ -4,15 +4,9 @@ import net.dorokhov.pony.core.domain.SongFile;
 import net.dorokhov.pony.core.domain.StoredFile;
 import net.dorokhov.pony.core.service.SongFileService;
 import net.dorokhov.pony.core.service.StoredFileService;
-import net.dorokhov.pony.web.server.service.AlbumServiceFacade;
-import net.dorokhov.pony.web.server.service.ArtistServiceFacade;
-import net.dorokhov.pony.web.server.service.SearchServiceFacade;
-import net.dorokhov.pony.web.server.service.SongServiceFacade;
+import net.dorokhov.pony.web.server.service.*;
 import net.dorokhov.pony.web.server.view.StreamingViewRenderer;
-import net.dorokhov.pony.web.shared.AlbumSongsDto;
-import net.dorokhov.pony.web.shared.ArtistDto;
-import net.dorokhov.pony.web.shared.SearchDto;
-import net.dorokhov.pony.web.shared.SongDto;
+import net.dorokhov.pony.web.shared.*;
 import net.dorokhov.pony.web.shared.response.ResponseWithResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +32,8 @@ public class ApiController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	private InstallationServiceFacade installationServiceFacade;
+
 	private ArtistServiceFacade artistServiceFacade;
 
 	private AlbumServiceFacade albumServiceFacade;
@@ -49,6 +45,11 @@ public class ApiController {
 	private SongFileService songFileService;
 
 	private StoredFileService storedFileService;
+
+	@Autowired
+	public void setInstallationServiceFacade(InstallationServiceFacade aInstallationServiceFacade) {
+		installationServiceFacade = aInstallationServiceFacade;
+	}
 
 	@Autowired
 	public void setArtistServiceFacade(ArtistServiceFacade aArtistServiceFacade) {
@@ -78,6 +79,19 @@ public class ApiController {
 	@Autowired
 	public void setStoredFileService(StoredFileService aStoredFileService) {
 		storedFileService = aStoredFileService;
+	}
+
+	@RequestMapping(value = "/installation", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseWithResult<InstallationDto> getInstallation() {
+
+		try {
+			return new ResponseWithResult<InstallationDto>(installationServiceFacade.getInstallation());
+		} catch (Exception e) {
+			log.error("could not get installation", e);
+		}
+
+		return new ResponseWithResult<InstallationDto>();
 	}
 
 	@RequestMapping(value = "/artists", method = RequestMethod.GET)

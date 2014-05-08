@@ -22,6 +22,22 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
+	public void testInstallation() throws Exception {
+
+		Installation installation = new Installation();
+
+		installation.setId(1L);
+		installation.setVersion(10L);
+		installation.setSystemVersion("1.1");
+
+		InstallationDto dto = service.installationToDto(installation);
+
+		Assert.assertEquals(Long.valueOf(1), dto.getId());
+		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
+		Assert.assertEquals("1.1", dto.getSystemVersion());
+	}
+
+	@Test
 	public void testConfig() throws Exception {
 
 		Configuration config = new Configuration();

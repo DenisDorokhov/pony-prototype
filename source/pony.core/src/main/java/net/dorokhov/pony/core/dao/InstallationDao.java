@@ -17,7 +17,7 @@ public interface InstallationDao {
 	/**
 	 * Installs the database.
 	 */
-	public void install();
+	public Installation install();
 
 	/**
 	 * Uninstalls the database.
