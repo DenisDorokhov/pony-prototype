@@ -79,7 +79,7 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 		return result != null ? dtoService.scanResultToDto(result) : null;
 	}
 
-	@Scheduled(fixedDelay = 5 * 60 * 1000)
+	@Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 5 * 60 * 1000)
 	synchronized public void autoScanIfNeeded() throws ConcurrentScanException, LibraryNotDefinedException {
 
 		if (installationService.getInstallation() != null) {
