@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
+import net.dorokhov.pony.web.client.Resources;
 
 public class ApplicationView extends ViewImpl implements ApplicationPresenter.MyView {
 
@@ -27,6 +28,8 @@ public class ApplicationView extends ViewImpl implements ApplicationPresenter.My
 	SimpleLayoutPanel contentContainer;
 
 	public ApplicationView() {
+        Resources.IMPL.global().ensureInjected();
+
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
