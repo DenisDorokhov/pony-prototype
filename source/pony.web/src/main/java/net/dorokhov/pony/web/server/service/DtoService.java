@@ -14,6 +14,8 @@ public interface DtoService {
 
 	public Configuration dtoToConfiguration(ConfigurationDto aDto);
 
+	public ScanResultDto scanResultToDto(ScanResult aScanResult);
+
 	public StatusDto statusToDto(LibraryScanner.Status aStatus);
 
 	public ArtistDto artistToDto(Artist aArtist);

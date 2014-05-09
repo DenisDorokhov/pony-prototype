@@ -5,6 +5,7 @@ import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.service.ConfigurationService;
 import net.dorokhov.pony.core.service.InstallationService;
 import net.dorokhov.pony.core.service.LibraryScanner;
+import net.dorokhov.pony.web.shared.ScanResultDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
 import net.dorokhov.pony.web.server.service.DtoService;
@@ -70,6 +71,14 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 		return status != null ? dtoService.statusToDto(status) : null;
 	}
 
+	@Override
+	public ScanResultDto getLastResult() {
+
+		ScanResult result = libraryScanner.getLastResult();
+
+		return result != null ? dtoService.scanResultToDto(result) : null;
+	}
+
 	@Scheduled(fixedDelay = 5 * 60 * 1000)
 	synchronized public void autoScanIfNeeded() throws ConcurrentScanException, LibraryNotDefinedException {
 
@@ -93,7 +102,7 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 
 						if (lastResult != null) {
 
-							long secondsSinceLastScan = (new Date().getTime() - lastResult.getCreationDate().getTime()) / 1000;
+							long secondsSinceLastScan = (new Date().getTime() - lastResult.getDate().getTime()) / 1000;
 
 							if (secondsSinceLastScan >= config.getLong()) {
 								shouldScan = true;

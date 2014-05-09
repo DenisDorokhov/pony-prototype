@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DtoServiceImplTest {
@@ -22,7 +23,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testInstallation() throws Exception {
+	public void testInstallation() {
 
 		Installation installation = new Installation();
 
@@ -38,7 +39,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testConfig() throws Exception {
+	public void testConfig() {
 
 		Configuration config = new Configuration();
 
@@ -60,7 +61,41 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testStatus() throws Exception {
+	public void testScanResult() {
+
+		ScanResult scanResult = new ScanResult();
+
+		scanResult.setId(1L);
+		scanResult.setVersion(10L);
+		scanResult.setDate(new Date());
+		scanResult.setDuration(1000L);
+		scanResult.setSuccess(true);
+		scanResult.setScannedFolderCount(2000L);
+		scanResult.setScannedFileCount(3000L);
+		scanResult.setImportedFileCount(4000L);
+
+		List<String> targetFiles = new ArrayList<String>();
+
+		targetFiles.add("foobar1");
+		targetFiles.add("foobar2");
+
+		scanResult.setTargetFiles(targetFiles);
+
+		ScanResultDto dto = service.scanResultToDto(scanResult);
+
+		Assert.assertEquals(Long.valueOf(1), dto.getId());
+		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
+		Assert.assertEquals(scanResult.getDate(), dto.getDate());
+		Assert.assertEquals(Long.valueOf(1000), dto.getDuration());
+		Assert.assertEquals(true, dto.isSuccess());
+		Assert.assertEquals(Long.valueOf(2000), dto.getScannedFolderCount());
+		Assert.assertEquals(Long.valueOf(3000), dto.getScannedFileCount());
+		Assert.assertEquals(Long.valueOf(4000), dto.getImportedFileCount());
+		Assert.assertEquals(targetFiles, dto.getTargetFiles());
+	}
+
+	@Test
+	public void testStatus() {
 
 		LibraryScanner.Status status = new LibraryScanner.Status() {
 
@@ -109,7 +144,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testArtist() throws Exception {
+	public void testArtist() {
 
 		ArtistDto dto = service.artistToDto(buildArtist());
 
@@ -121,7 +156,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testAlbum() throws Exception {
+	public void testAlbum() {
 
 		AlbumDto dto = service.albumToDto(buildAlbum());
 
@@ -129,7 +164,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testAlbumSongs() throws Exception {
+	public void testAlbumSongs() {
 
 		Album album = buildAlbum();
 
@@ -151,7 +186,7 @@ public class DtoServiceImplTest {
 	}
 
 	@Test
-	public void testSong() throws Exception {
+	public void testSong() {
 
 		SongDto dto = service.songToDto(buildSong(0, buildAlbum()));
 

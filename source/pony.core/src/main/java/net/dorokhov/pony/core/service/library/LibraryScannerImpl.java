@@ -107,7 +107,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	@Transactional(readOnly = true)
 	public ScanResult getLastResult() {
 
-		Page<ScanResult> scanResults = scanResultDao.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "creationDate"));
+		Page<ScanResult> scanResults = scanResultDao.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "date"));
 
 		return scanResults.getNumberOfElements() > 0 ? scanResults.getContent().get(0) : null;
 	}
@@ -309,6 +309,9 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		ScanResult scanResult = new ScanResult();
 
+		scanResult.setDate(new Date());
+		scanResult.setSuccess(aSuccess);
+
 		for (File file : aResult.getTargetFiles()) {
 			scanResult.getTargetFiles().add(file.getAbsolutePath());
 		}
@@ -317,13 +320,6 @@ public class LibraryScannerImpl implements LibraryScanner {
 		scanResult.setScannedFolderCount(aResult.getScannedFolderCount());
 		scanResult.setScannedFileCount(aResult.getScannedFileCount());
 		scanResult.setImportedFileCount(aResult.getImportedFileCount());
-
-		scanResult.setSuccess(aSuccess);
-
-		Date date = new Date();
-
-		scanResult.setCreationDate(date);
-		scanResult.setUpdateDate(date);
 
 		return scanResult;
 	}

@@ -32,10 +32,9 @@ CREATE TABLE scan_result (
 
 	id BIGINT NOT NULL AUTO_INCREMENT,
 
-	creation_date TIMESTAMP NOT NULL,
-	update_date TIMESTAMP NOT NULL,
-
 	version BIGINT NOT NULL,
+
+	date TIMESTAMP NOT NULL,
 
 	success BIT(1) NOT NULL,
 
@@ -50,7 +49,7 @@ CREATE TABLE scan_result (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-CREATE INDEX index_scan_result_creation_date ON scan_result(creation_date);
+CREATE INDEX index_scan_result_creation_date ON scan_result(date);
 
 CREATE TABLE scan_result_path (
 

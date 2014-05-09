@@ -70,11 +70,8 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 			ScanResult result = service.scan(filesToScan);
 
 			Assert.assertNotNull(result.getId());
-
-			Assert.assertNotNull(result.getCreationDate());
-			Assert.assertNotNull(result.getUpdateDate());
-
 			Assert.assertNotNull(result.getVersion());
+			Assert.assertNotNull(result.getDate());
 
 			Assert.assertTrue(result.getSuccess());
 
