@@ -3,11 +3,11 @@
 
     <ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
 
-    <g:FocusPanel ui:field="songView" styleName="{res.style.songView}">
+    <g:FocusPanel ui:field="songView" styleName="{res.songlist.songView}">
         <g:FlowPanel>
-            <g:Label ui:field="trackNumberLabel" styleName="{res.style.songTrackNumber}" />
-            <g:Label ui:field="nameLabel" styleName="{res.style.songName}" />
-            <g:Label ui:field="durationLabel" styleName="{res.style.songDuration}" />
+            <g:Label ui:field="trackNumberLabel" styleName="{res.songlist.songTrackNumber}" />
+            <g:Label ui:field="nameLabel" styleName="{res.songlist.songName}" />
+            <g:Label ui:field="durationLabel" styleName="{res.songlist.songDuration}" />
         </g:FlowPanel>
     </g:FocusPanel>
 
