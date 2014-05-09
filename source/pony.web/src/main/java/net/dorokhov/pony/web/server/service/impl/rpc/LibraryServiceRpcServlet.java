@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.server.service.impl.rpc;
 
 import net.dorokhov.pony.web.client.service.rpc.LibraryServiceRpc;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
+import net.dorokhov.pony.web.shared.ScanResultDto;
 import net.dorokhov.pony.web.shared.StatusDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
@@ -26,4 +27,8 @@ public class LibraryServiceRpcServlet extends AbstractServiceRpcServlet implemen
 		return libraryServiceFacade.getStatus();
 	}
 
+	@Override
+	public ScanResultDto getLastResult() {
+		return libraryServiceFacade.getLastResult();
+	}
 }
