@@ -28,6 +28,7 @@ public class ApplicationView extends ViewImpl implements ApplicationPresenter.My
 	SimpleLayoutPanel contentContainer;
 
 	public ApplicationView() {
+
         Resources.IMPL.global().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));

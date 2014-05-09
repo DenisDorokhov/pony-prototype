@@ -180,15 +180,16 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	}
 
 	private void updateScanResultState() {
-
 		if (getScanResultState() == ContentState.LOADING) {
+
 			scanResultLabel.setText("Loading...");
+
 		} else if (getScanResultState() == ContentState.LOADED) {
 
 			if (getScanResult() != null && getScanResult().getDate() != null) {
 				scanResultLabel.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(getScanResult().getDate()));
 			} else {
-				scanResultLabel.setText("Unknown");
+				scanResultLabel.setText("Not scanned yet");
 			}
 
 		} else {
