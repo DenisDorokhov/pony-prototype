@@ -8,6 +8,9 @@ public interface Resources  extends ClientBundle {
 
     public static final Resources IMPL = GWT.create(Resources.class);
 
+    @Source("global.css")
+    CssResource global();
+
     @Source("style.css")
     Style style();
 
