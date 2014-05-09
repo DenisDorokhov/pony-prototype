@@ -12,7 +12,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.ScanStatusDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	@UiField
 	Button saveButton;
 
-	private StatusDto progress;
+	private ScanStatusDto progress;
 
 	private List<ConfigurationDto> configuration;
 
@@ -75,12 +75,12 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	}
 
 	@Override
-	public StatusDto getProgress() {
+	public ScanStatusDto getProgress() {
 		return progress;
 	}
 
 	@Override
-	public void setProgress(StatusDto aProgress) {
+	public void setProgress(ScanStatusDto aProgress) {
 		progress = aProgress;
 	}
 

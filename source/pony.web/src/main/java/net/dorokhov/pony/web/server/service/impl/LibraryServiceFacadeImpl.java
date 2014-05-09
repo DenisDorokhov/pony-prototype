@@ -6,12 +6,12 @@ import net.dorokhov.pony.core.service.ConfigurationService;
 import net.dorokhov.pony.core.service.InstallationService;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.web.shared.ScanResultDto;
+import net.dorokhov.pony.web.shared.ScanStatusDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
 import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.server.service.LibraryServiceFacade;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
-import net.dorokhov.pony.web.shared.StatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,11 +64,11 @@ public class LibraryServiceFacadeImpl implements LibraryServiceFacade {
 	}
 
 	@Override
-	public StatusDto getStatus() {
+	public ScanStatusDto getStatus() {
 
 		LibraryScanner.Status status = libraryScanner.getStatus();
 
-		return status != null ? dtoService.statusToDto(status) : null;
+		return status != null ? dtoService.scanStatusToDto(status) : null;
 	}
 
 	@Override

@@ -64,19 +64,24 @@ public class DtoServiceImpl implements DtoService {
 		dto.setVersion(aScanResult.getVersion());
 		dto.setDate(aScanResult.getDate());
 		dto.setSuccess(aScanResult.getSuccess());
-		dto.setTargetFiles(aScanResult.getTargetFiles());
 		dto.setDuration(aScanResult.getDuration());
 		dto.setScannedFolderCount(aScanResult.getScannedFolderCount());
 		dto.setScannedFileCount(aScanResult.getScannedFileCount());
 		dto.setImportedFileCount(aScanResult.getImportedFileCount());
 
+		if (aScanResult.getTargetFiles() != null) {
+			for (String file : aScanResult.getTargetFiles()) {
+				dto.getTargetFiles().add(file);
+			}
+		}
+
 		return dto;
 	}
 
 	@Override
-	public StatusDto statusToDto(LibraryScanner.Status aStatus) {
+	public ScanStatusDto scanStatusToDto(LibraryScanner.Status aStatus) {
 
-		StatusDto dto = new StatusDto();
+		ScanStatusDto dto = new ScanStatusDto();
 
 		dto.setProgress(aStatus.getProgress());
 		dto.setDescription(aStatus.getDescription());

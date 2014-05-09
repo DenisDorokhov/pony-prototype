@@ -4,7 +4,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import net.dorokhov.pony.web.client.service.rpc.LibraryServiceRpcAsync;
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.ScanStatusDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 	private boolean scanning;
 
-	private StatusDto lastStatus;
+	private ScanStatusDto lastStatus;
 
 	private Timer statusTimer;
 
@@ -64,7 +64,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	public StatusDto getLastStatus() {
+	public ScanStatusDto getLastStatus() {
 		return lastStatus;
 	}
 
@@ -98,10 +98,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		log.fine("getting library status before scanning...");
 
-		libraryService.getStatus(new AsyncCallback<StatusDto>() {
+		libraryService.getStatus(new AsyncCallback<ScanStatusDto>() {
 
 			@Override
-			public void onSuccess(StatusDto aResult) {
+			public void onSuccess(ScanStatusDto aResult) {
 
 				if (aResult == null) {
 
@@ -152,10 +152,10 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	private void updateStatus() {
-		libraryService.getStatus(new AsyncCallback<StatusDto>() {
+		libraryService.getStatus(new AsyncCallback<ScanStatusDto>() {
 
 			@Override
-			public void onSuccess(StatusDto aResult) {
+			public void onSuccess(ScanStatusDto aResult) {
 
 				lastStatus = aResult;
 
@@ -205,7 +205,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 		}
 	}
 
-	private void propagateScanProgress(StatusDto aStatus) {
+	private void propagateScanProgress(ScanStatusDto aStatus) {
 		for (Delegate nextDelegate : new ArrayList<Delegate>(delegates)) {
 			try {
 				nextDelegate.onScanProgress(this, aStatus);

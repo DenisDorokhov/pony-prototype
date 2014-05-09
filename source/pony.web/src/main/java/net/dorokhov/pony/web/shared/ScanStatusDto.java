@@ -3,7 +3,7 @@ package net.dorokhov.pony.web.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class StatusDto implements Serializable {
+public class ScanStatusDto implements Serializable {
 
 	private ArrayList<String> targetFiles;
 

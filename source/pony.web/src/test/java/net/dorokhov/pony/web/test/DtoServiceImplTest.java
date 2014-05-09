@@ -131,7 +131,7 @@ public class DtoServiceImplTest {
 			}
 		};
 
-		StatusDto dto = service.statusToDto(status);
+		ScanStatusDto dto = service.scanStatusToDto(status);
 
 		Assert.assertEquals(2, dto.getTargetFiles().size());
 		Assert.assertEquals("/target1", dto.getTargetFiles().get(0));

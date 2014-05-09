@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.client.service;
 
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.ScanStatusDto;
 
 public interface LibraryScanner {
 
@@ -8,7 +8,7 @@ public interface LibraryScanner {
 
 		public void onScanStarted(LibraryScanner aLibraryScanner);
 
-		public void onScanProgress(LibraryScanner aLibraryScanner, StatusDto aStatus);
+		public void onScanProgress(LibraryScanner aLibraryScanner, ScanStatusDto aStatus);
 
 		public void onScanFailed(LibraryScanner aLibraryScanner, Throwable aCaught);
 
@@ -23,6 +23,6 @@ public interface LibraryScanner {
 
 	public void scan();
 
-	public StatusDto getLastStatus();
+	public ScanStatusDto getLastStatus();
 
 }

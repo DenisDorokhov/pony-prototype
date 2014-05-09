@@ -15,7 +15,7 @@ import net.dorokhov.pony.web.client.service.LibraryScanner;
 import net.dorokhov.pony.web.client.service.rpc.ConfigurationServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
-import net.dorokhov.pony.web.shared.StatusDto;
+import net.dorokhov.pony.web.shared.ScanStatusDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
 
@@ -35,9 +35,9 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 			LOADING, LOADED, SAVING, ERROR
 		}
 
-		public StatusDto getProgress();
+		public ScanStatusDto getProgress();
 
-		public void setProgress(StatusDto aProgress);
+		public void setProgress(ScanStatusDto aProgress);
 
 		public List<ConfigurationDto> getConfiguration();
 
@@ -160,7 +160,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 	}
 
 	@Override
-	public void onScanProgress(LibraryScanner aLibraryScanner, StatusDto aStatus) {
+	public void onScanProgress(LibraryScanner aLibraryScanner, ScanStatusDto aStatus) {
 
 		getView().setProgress(aStatus);
 
