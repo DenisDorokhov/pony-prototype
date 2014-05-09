@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.client.mvp.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -10,8 +11,10 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
+import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
+import net.dorokhov.pony.web.shared.ScanResultDto;
 import net.dorokhov.pony.web.shared.ScanStatusDto;
 
 import java.util.ArrayList;
@@ -28,6 +31,9 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	private static final NumberFormat PROGRESS_FORMAT = NumberFormat.getPercentFormat();
 
 	private final Map<String, ConfigurationDto> configurationMap = new HashMap<String, ConfigurationDto>();
+
+	@UiField
+	Label scanResultLabel;
 
 	@UiField
 	Label progressLabel;
@@ -56,13 +62,17 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	@UiField
 	Button saveButton;
 
+	private ScanResultDto scanResult;
+
 	private ScanStatusDto progress;
 
 	private List<ConfigurationDto> configuration;
 
-	private ScanState scanState;
+	private ContentState scanResultState;
 
-	private ContentState contentState;
+	private ScannerState scannerState;
+
+	private ConfigurationState configurationState;
 
 	@Inject
 	public SettingsView(EventBus aEventBus) {
@@ -71,7 +81,17 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		updateScanState();
+		updateScannerState();
+	}
+
+	@Override
+	public ScanResultDto getScanResult() {
+		return scanResult;
+	}
+
+	@Override
+	public void setScanResult(ScanResultDto aScanResult) {
+		scanResult = aScanResult;
 	}
 
 	@Override
@@ -82,24 +102,6 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	@Override
 	public void setProgress(ScanStatusDto aProgress) {
 		progress = aProgress;
-	}
-
-	@Override
-	public ScanState getScanState() {
-
-		if (scanState == null) {
-			scanState = ScanState.INACTIVE;
-		}
-
-		return scanState;
-	}
-
-	@Override
-	public void setScanState(ScanState aScanState) {
-
-		scanState = aScanState;
-
-		updateScanState();
 	}
 
 	@Override
@@ -124,16 +126,47 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	}
 
 	@Override
-	public ContentState getContentState() {
-		return contentState;
+	public ContentState getScanResultState() {
+		return scanResultState;
 	}
 
 	@Override
-	public void setContentState(ContentState aContentState) {
+	public void setScanResultState(ContentState aScanResultState) {
 
-		contentState = aContentState;
+		scanResultState = aScanResultState;
 
-		updateContentState();
+		updateScanResultState();
+	}
+
+	@Override
+	public ScannerState getScannerState() {
+
+		if (scannerState == null) {
+			scannerState = ScannerState.INACTIVE;
+		}
+
+		return scannerState;
+	}
+
+	@Override
+	public void setScannerState(ScannerState aScannerState) {
+
+		scannerState = aScannerState;
+
+		updateScannerState();
+	}
+
+	@Override
+	public ConfigurationState getConfigurationState() {
+		return configurationState;
+	}
+
+	@Override
+	public void setConfigurationState(ConfigurationState aConfigurationState) {
+
+		configurationState = aConfigurationState;
+
+		updateConfigurationState();
 	}
 
 	@UiHandler("scanButton")
@@ -146,15 +179,32 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 		getUiHandlers().onSaveRequested(exportConfiguration());
 	}
 
-	private void updateScanState() {
+	private void updateScanResultState() {
 
-		scanButton.setEnabled(getScanState() == null || getScanState() == ScanState.INACTIVE);
+		if (getScanResultState() == ContentState.LOADING) {
+			scanResultLabel.setText("Loading...");
+		} else if (getScanResultState() == ContentState.LOADED) {
 
-		if (getScanState() == ScanState.SCAN_STARTING) {
+			if (getScanResult() != null && getScanResult().getDate() != null) {
+				scanResultLabel.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(getScanResult().getDate()));
+			} else {
+				scanResultLabel.setText("Unknown");
+			}
+
+		} else {
+			scanResultLabel.setText("Error!");
+		}
+	}
+
+	private void updateScannerState() {
+
+		scanButton.setEnabled(getScannerState() == null || getScannerState() == ScannerState.INACTIVE);
+
+		if (getScannerState() == ScannerState.SCAN_STARTING) {
 
 			progressLabel.setText("Starting...");
 
-		} else if (getScanState() == ScanState.SCANNING) {
+		} else if (getScannerState() == ScannerState.SCANNING) {
 
 			if (getProgress() != null) {
 				progressLabel.setText("Scanning " + PROGRESS_FORMAT.format(getProgress().getProgress()) +
@@ -169,8 +219,8 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 		}
 	}
 
-	private void updateContentState() {
-		if (getContentState() == null) {
+	private void updateConfigurationState() {
+		if (getConfigurationState() == null) {
 
 			deck.setVisible(false);
 
@@ -178,9 +228,9 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 			deck.setVisible(true);
 
-			saveButton.setEnabled(getContentState() != ContentState.SAVING);
+			saveButton.setEnabled(getConfigurationState() != ConfigurationState.SAVING);
 
-			switch (getContentState()) {
+			switch (getConfigurationState()) {
 
 				case LOADING:
 					deck.showWidget(deck.getWidgetIndex(loadingLabel));

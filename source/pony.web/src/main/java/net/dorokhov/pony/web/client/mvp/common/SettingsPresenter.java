@@ -9,12 +9,15 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PopupView;
 import com.gwtplatform.mvp.client.PresenterWidget;
+import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.LibraryScanner;
 import net.dorokhov.pony.web.client.service.rpc.ConfigurationServiceRpcAsync;
+import net.dorokhov.pony.web.client.service.rpc.LibraryServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
+import net.dorokhov.pony.web.shared.ScanResultDto;
 import net.dorokhov.pony.web.shared.ScanStatusDto;
 import net.dorokhov.pony.web.shared.exception.ConcurrentScanException;
 import net.dorokhov.pony.web.shared.exception.LibraryNotDefinedException;
@@ -27,13 +30,17 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 	public interface MyView extends PopupView, HasUiHandlers<SettingsUiHandlers> {
 
-		public static enum ScanState {
+		public static enum ScannerState {
 			INACTIVE, SCAN_STARTING, SCANNING
 		}
 
-		public static enum ContentState {
+		public static enum ConfigurationState {
 			LOADING, LOADED, SAVING, ERROR
 		}
+
+		public ScanResultDto getScanResult();
+
+		public void setScanResult(ScanResultDto aScanResult);
 
 		public ScanStatusDto getProgress();
 
@@ -43,18 +50,24 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 		public void setConfiguration(List<ConfigurationDto> aConfiguration);
 
-		public ScanState getScanState();
+		public ContentState getScanResultState();
 
-		public void setScanState(ScanState aScanState);
+		public void setScanResultState(ContentState aScanResultState);
 
-		public ContentState getContentState();
+		public ScannerState getScannerState();
 
-		public void setContentState(ContentState aContentState);
+		public void setScannerState(ScannerState aScannerState);
+
+		public ConfigurationState getConfigurationState();
+
+		public void setConfigurationState(ConfigurationState aConfigurationState);
 	}
 
 	private static final int REFRESH_INTERVAL = 10000;
 
 	private final Logger log = Logger.getLogger(getClass().getName());
+
+	private final LibraryServiceRpcAsync libraryService;
 
 	private final LibraryScanner libraryScanner;
 
@@ -62,13 +75,15 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 	private Timer refreshTimer;
 
-	private Request currentRequest;
+	private Request currentScanResultRequest;
+	private Request currentConfigRequest;
 
 	@Inject
-	public SettingsPresenter(EventBus aEventBus, MyView aView, LibraryScanner aLibraryScanner, ConfigurationServiceRpcAsync aSettingsService) {
+	public SettingsPresenter(EventBus aEventBus, MyView aView, LibraryServiceRpcAsync aLibraryService, LibraryScanner aLibraryScanner, ConfigurationServiceRpcAsync aSettingsService) {
 
 		super(aEventBus, aView);
 
+		libraryService = aLibraryService;
 		libraryScanner = aLibraryScanner;
 		configurationService = aSettingsService;
 
@@ -96,55 +111,17 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 		super.onReveal();
 
-		if (getView().getContentState() != MyView.ContentState.SAVING) {
+		loadScanResult();
 
-			log.fine("updating configuration...");
-
-			if (currentRequest != null) {
-
-				currentRequest.cancel();
-
-				BusyIndicator.finishTask();
-
-				log.fine("active settings request cancelled");
-			}
-
-			BusyIndicator.startTask();
-
-			getView().setContentState(MyView.ContentState.LOADING);
-
-			currentRequest = configurationService.getAll(new AsyncCallback<List<ConfigurationDto>>() {
-
-				@Override
-				public void onSuccess(List<ConfigurationDto> aResult) {
-
-					BusyIndicator.finishTask();
-
-					currentRequest = null;
-
-					getView().setConfiguration(aResult);
-					getView().setContentState(MyView.ContentState.LOADED);
-
-					log.fine("configuration updated successfully");
-				}
-
-				@Override
-				public void onFailure(Throwable aCaught) {
-
-					BusyIndicator.finishTask();
-
-					getView().setContentState(MyView.ContentState.ERROR);
-
-					log.log(Level.SEVERE, "could not update configuration", aCaught);
-				}
-			});
+		if (getView().getConfigurationState() != MyView.ConfigurationState.SAVING) {
+			loadConfiguration();
 		}
 	}
 
 	@Override
 	public void onScanStarted(LibraryScanner aLibraryScanner) {
 
-		getView().setScanState(MyView.ScanState.SCAN_STARTING);
+		getView().setScannerState(MyView.ScannerState.SCAN_STARTING);
 
 		if (refreshTimer != null) {
 			refreshTimer.cancel();
@@ -164,13 +141,13 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 		getView().setProgress(aStatus);
 
-		getView().setScanState(MyView.ScanState.SCANNING);
+		getView().setScannerState(MyView.ScannerState.SCANNING);
 	}
 
 	@Override
 	public void onScanFailed(LibraryScanner aLibraryScanner, Throwable aCaught) {
 
-		getView().setScanState(MyView.ScanState.INACTIVE);
+		getView().setScannerState(MyView.ScannerState.INACTIVE);
 
 		refreshTimer.cancel();
 
@@ -188,12 +165,13 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 	@Override
 	public void onScanFinished(LibraryScanner aLibraryScanner) {
 
-		getView().setScanState(MyView.ScanState.INACTIVE);
+		getView().setScannerState(MyView.ScannerState.INACTIVE);
 
 		refreshTimer.cancel();
 
 		refreshTimer = null;
 
+		loadScanResult();
 		requestRefresh();
 	}
 
@@ -205,32 +183,34 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 	@Override
 	public void onSaveRequested(List<ConfigurationDto> aConfiguration) {
 
-		if (getView().getContentState() == MyView.ContentState.LOADED) {
+		if (getView().getConfigurationState() == MyView.ConfigurationState.LOADED) {
 
-			if (currentRequest != null) {
+			if (currentConfigRequest != null) {
 
-				currentRequest.cancel();
+				currentConfigRequest.cancel();
 
 				BusyIndicator.finishTask();
 
-				log.fine("active settings request cancelled");
+				log.fine("active configuration request cancelled");
 			}
 
 			BusyIndicator.startTask();
 
-			getView().setContentState(MyView.ContentState.SAVING);
+			getView().setConfigurationState(MyView.ConfigurationState.SAVING);
 
 			final ConfigurationDto originalLibraryConfig = getLibraryConfig(getView().getConfiguration());
 
-			currentRequest = configurationService.save(aConfiguration, new AsyncCallback<List<ConfigurationDto>>() {
+			currentConfigRequest = configurationService.save(aConfiguration, new AsyncCallback<List<ConfigurationDto>>() {
 
 				@Override
 				public void onSuccess(List<ConfigurationDto> aResult) {
 
 					BusyIndicator.finishTask();
 
+					currentConfigRequest = null;
+
 					getView().setConfiguration(aResult);
-					getView().setContentState(MyView.ContentState.LOADED);
+					getView().setConfigurationState(MyView.ConfigurationState.LOADED);
 
 					log.fine("configuration saved successfully");
 
@@ -246,7 +226,9 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 					BusyIndicator.finishTask();
 
-					getView().setContentState(MyView.ContentState.LOADED);
+					currentConfigRequest = null;
+
+					getView().setConfigurationState(MyView.ConfigurationState.LOADED);
 
 					log.log(Level.SEVERE, "could not save configuration", aCaught);
 
@@ -254,6 +236,98 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 				}
 			});
 		}
+	}
+
+	private void loadScanResult() {
+
+		log.fine("updating last scan result...");
+
+		if (currentScanResultRequest != null) {
+
+			currentScanResultRequest.cancel();
+
+			BusyIndicator.finishTask();
+
+			log.fine("active last scan result cancelled");
+		}
+
+		BusyIndicator.startTask();
+
+		getView().setScanResultState(ContentState.LOADING);
+
+		currentScanResultRequest = libraryService.getLastResult(new AsyncCallback<ScanResultDto>() {
+
+			@Override
+			public void onSuccess(ScanResultDto aResult) {
+
+				BusyIndicator.finishTask();
+
+				currentScanResultRequest = null;
+
+				getView().setScanResult(aResult);
+				getView().setScanResultState(ContentState.LOADED);
+
+				log.fine("last scan result updated successfully");
+			}
+
+			@Override
+			public void onFailure(Throwable aCaught) {
+
+				BusyIndicator.finishTask();
+
+				currentScanResultRequest = null;
+
+				getView().setScanResultState(ContentState.ERROR);
+
+				log.log(Level.SEVERE, "could not update last scan result", aCaught);
+			}
+		});
+	}
+
+	private void loadConfiguration() {
+
+		log.fine("updating configuration...");
+
+		if (currentConfigRequest != null) {
+
+			currentConfigRequest.cancel();
+
+			BusyIndicator.finishTask();
+
+			log.fine("active configuration request cancelled");
+		}
+
+		BusyIndicator.startTask();
+
+		getView().setConfigurationState(MyView.ConfigurationState.LOADING);
+
+		currentConfigRequest = configurationService.getAll(new AsyncCallback<List<ConfigurationDto>>() {
+
+			@Override
+			public void onSuccess(List<ConfigurationDto> aResult) {
+
+				BusyIndicator.finishTask();
+
+				currentConfigRequest = null;
+
+				getView().setConfiguration(aResult);
+				getView().setConfigurationState(MyView.ConfigurationState.LOADED);
+
+				log.fine("configuration updated successfully");
+			}
+
+			@Override
+			public void onFailure(Throwable aCaught) {
+
+				BusyIndicator.finishTask();
+
+				currentConfigRequest = null;
+
+				getView().setConfigurationState(MyView.ConfigurationState.ERROR);
+
+				log.log(Level.SEVERE, "could not update configuration", aCaught);
+			}
+		});
 	}
 
 	private void requestRefresh() {

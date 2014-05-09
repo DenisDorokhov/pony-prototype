@@ -1,5 +1,6 @@
 package net.dorokhov.pony.web.shared;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class ScanResultDto extends AbstractEntityDto<Long> {
 	}
 
 	public List<String> getTargetFiles() {
+
+		if (targetFiles == null) {
+			targetFiles = new ArrayList<String>();
+		}
+
 		return targetFiles;
 	}
 

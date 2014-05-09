@@ -5,7 +5,8 @@
 
 		<g:HTMLPanel width="400px" height="200px">
 
-			Current status: <g:InlineLabel ui:field="progressLabel" /> <g:Button ui:field="scanButton" text="Scan" />
+			Scan progress: <g:InlineLabel ui:field="progressLabel" /> <g:Button ui:field="scanButton" text="Scan" /><br />
+			Last scan: <g:InlineLabel ui:field="scanResultLabel" /><br />
 
 			<g:DeckPanel ui:field="deck">
 
