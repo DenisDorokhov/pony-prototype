@@ -164,6 +164,8 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 	private void updateArtists() {
 
+		final int scrollPosition = scroller.getVerticalScrollPosition();
+
 		while (artistsPanel.getWidgetCount() > 0) {
 
 			int i = artistsPanel.getWidgetCount() - 1;
@@ -209,6 +211,13 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 		}
 
 		updateArtistViews();
+
+		Scheduler.get().scheduleDeferred(new Command() {
+			@Override
+			public void execute() {
+				scroller.setVerticalScrollPosition(scrollPosition);
+			}
+		});
 	}
 
 	private void updateArtistViews() {
