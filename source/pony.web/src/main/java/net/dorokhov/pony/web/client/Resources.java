@@ -18,14 +18,28 @@ public interface Resources  extends ClientBundle {
 	@Source("img/pause.png")
 	ImageResource imgPause();
 
+    @Source("img/logo.png")
+    ImageResource imgLogo();
+
 	@Source("css/global.css")
 	CssResource cssGlobal();
+
+    @Source("css/header.css")
+    HeaderCssResource cssHeader();
 
 	@Source("css/artistList.css")
 	ArtistListCssResource cssArtistList();
 
 	@Source("css/albumList.css")
 	AlbumListCssResource cssAlbumList();
+
+    public interface HeaderCssResource extends CssResource {
+        String headerBlock();
+
+        String logo();
+        String playerContainer();
+        String searchContainer();
+    }
 
 	public interface ArtistListCssResource extends CssResource {
 

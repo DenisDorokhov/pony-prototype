@@ -12,7 +12,7 @@
 		}
 	</ui:style>
 
-	<g:SimpleLayoutPanel ui:field="rootPanel">
+	<g:FlowPanel ui:field="rootPanel">
 
 		<g:HTMLPanel styleName="{style.htmlPanel}">
 
@@ -56,6 +56,6 @@
 
 		</g:HTMLPanel>
 
-	</g:SimpleLayoutPanel>
+	</g:FlowPanel>
 
 </ui:UiBinder>
