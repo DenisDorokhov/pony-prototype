@@ -12,7 +12,7 @@
 				<g:Label ui:field="albumNameLabel" styleName="{res.cssAlbumList.albumName}" />
 				<g:Label ui:field="albumYearLabel" styleName="{res.cssAlbumList.albumYear}" />
 			</g:FlowPanel>
-			<g:FlowPanel ui:field="songListPanel" />
+			<g:FlowPanel ui:field="songsPanel" />
 		</g:FlowPanel>
 	</g:FlowPanel>
 

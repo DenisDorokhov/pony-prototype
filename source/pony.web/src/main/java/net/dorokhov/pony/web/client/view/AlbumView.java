@@ -13,10 +13,7 @@ import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AlbumView extends Composite implements SongRequestEvent.HasHandler, SongRequestEvent.Handler {
 
@@ -34,8 +31,6 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
-	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
-
 	@UiField
 	FlowPanel albumView;
 
@@ -49,7 +44,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 	Label albumYearLabel;
 
 	@UiField
-	FlowPanel songListPanel;
+	FlowPanel songsPanel;
 
 	private SetSelectionModel<SongDto> selectionModel;
 	private SetSelectionModel<SongDto> activationModel;
@@ -73,7 +68,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		selectionModel = aSelectionModel;
 
-		for (Widget widget : songListPanel) {
+		for (Widget widget : songsPanel) {
 			if (widget instanceof SongListView) {
 				((SongListView) widget).setSelectionModel(selectionModel);
 			}
@@ -88,7 +83,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		activationModel = aActivationModel;
 
-		for (Widget widget : songListPanel) {
+		for (Widget widget : songsPanel) {
 			if (widget instanceof SongListView) {
 				((SongListView) widget).setActivationModel(activationModel);
 			}
@@ -103,7 +98,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		playing = aPlaying;
 
-		for (Widget widget : songListPanel) {
+		for (Widget widget : songsPanel) {
 			if (widget instanceof SongListView) {
 				((SongListView) widget).setPlaying(playing);
 			}
@@ -142,85 +137,79 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	private void updateAlbum() {
 
-		while (songListPanel.getWidgetCount() > 0) {
+		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(getAlbum());
 
-			Widget widget = songListPanel.getWidget(0);
+		while (songsPanel.getWidgetCount() > albumDiscs.size()) {
 
-			songListPanel.remove(0);
+			int i = songsPanel.getWidgetCount() - 1;
 
-			if (widget instanceof SongListView) {
+			SongListView songListView = (SongListView) songsPanel.getWidget(i);
 
-				SongListView songListView = (SongListView) widget;
+			songsPanel.remove(i);
 
-				songListView.setSelectionModel(null);
-				songListView.setActivationModel(null);
+			songListView.setSelectionModel(null);
+			songListView.setActivationModel(null);
+			songListView.setPlaying(false);
 
-				songListView.setSongs(null);
+			songListView.setSongs(null);
 
-				viewCache.add(songListView);
+			viewCache.add(songListView);
+		}
+
+		int i = 0;
+
+		for (Map.Entry<Integer, List<SongDto>> entry : albumDiscs.entrySet()) {
+
+			SongListView songListView;
+
+			if (i < songsPanel.getWidgetCount()) {
+				songListView = (SongListView) songsPanel.getWidget(i);
+			} else {
+
+				songListView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+
+				if (songListView == null) {
+					songListView = new SongListView();
+				}
+
+				songListView.setSelectionModel(getSelectionModel());
+				songListView.setActivationModel(getActivationModel());
+				songListView.setPlaying(isPlaying());
+
+				songListView.addSongSelectionRequestHandler(this);
+				songListView.addSongActivationRequestHandler(this);
+
+				songsPanel.add(songListView);
 			}
-		}
 
-		for (HandlerRegistration registration : handlerRegistrations) {
-			registration.removeHandler();
-		}
-
-		handlerRegistrations.clear();
-
-		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(getAlbum() != null ? getAlbum().getSongs() : new ArrayList<SongDto>());
-
-		for (Map.Entry<Integer, List<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
-
-			Integer discNumber = albumDiscEntry.getKey();
+			Integer discNumber = entry.getKey();
 
 			if (discNumber != null && discNumber == 1 && albumDiscs.size() == 1) {
 				discNumber = null;
 			}
 
-			List<SongDto> songList = albumDiscEntry.getValue();
-
-			SongListView songListView = viewCache.size() > 0 ? viewCache.remove(0) : null;
-
-			if (songListView == null) {
-				songListView = new SongListView();
-			}
-
-			songListView.setSelectionModel(getSelectionModel());
-			songListView.setActivationModel(getActivationModel());
-			songListView.setPlaying(isPlaying());
-
-			songListView.setSongs(songList);
+			songListView.setSongs(entry.getValue());
 
 			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
 
-			handlerRegistrations.add(songListView.addSongSelectionRequestHandler(this));
-			handlerRegistrations.add(songListView.addSongActivationRequestHandler(this));
-
-			songListPanel.add(songListView);
+			i++;
 		}
 
-		// avoid refresh flickering by not clearing image sources
-		if (getAlbum() != null) {
-
-			albumView.setVisible(true);
-
-			if (getAlbum().getArtworkUrl() != null) {
-				albumImage.setUrl(getAlbum().getArtworkUrl());
-			} else {
-				albumImage.setResource(Resources.IMPL.imgUnknown());
-			}
-
-			albumNameLabel.setText(getAlbum().getName());
-			albumYearLabel.setText(ObjectUtils.nullSafeToString(getAlbum().getYear()));
-
+		if (getAlbum() != null && getAlbum().getArtworkUrl() != null) {
+			albumImage.setUrl(getAlbum().getArtworkUrl());
 		} else {
-			albumView.setVisible(false);
+			albumImage.setResource(Resources.IMPL.imgUnknown());
 		}
+
+		albumNameLabel.setText(getAlbum() != null ? getAlbum().getName() : null);
+		albumYearLabel.setText(getAlbum() != null ? ObjectUtils.nullSafeToString(getAlbum().getYear()) : null);
 	}
 
-	private Map<Integer, List<SongDto>> splitIntoDiscs(ArrayList<SongDto> aSongs) {
+	private Map<Integer, List<SongDto>> splitIntoDiscs(AlbumSongsDto aAlbum) {
 
-		Map<Integer, List<SongDto>> result = new HashMap<Integer, List<SongDto>>();
+		ArrayList<SongDto> aSongs = aAlbum != null ? aAlbum.getSongs() : new ArrayList<SongDto>();
+
+		Map<Integer, List<SongDto>> result = new LinkedHashMap<Integer, List<SongDto>>();
 
 		for (SongDto song : aSongs) {
 

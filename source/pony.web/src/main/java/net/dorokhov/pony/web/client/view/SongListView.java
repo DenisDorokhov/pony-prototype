@@ -38,13 +38,11 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
-	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
-
 	@UiField
 	Label captionLabel;
 
 	@UiField
-	FlowPanel songListView;
+	FlowPanel songsPanel;
 
 	private SetSelectionModel<SongDto> selectionModel;
 	private SetSelectionModel<SongDto> activationModel;
@@ -168,46 +166,48 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	private void updateSongs() {
 
-		while (songListView.getWidgetCount() > 0) {
+		List<SongDto> songList = getSongs() != null ? getSongs() : new ArrayList<SongDto>();
 
-			Widget widget = songListView.getWidget(0);
+		while (songsPanel.getWidgetCount() > songList.size()) {
 
-			songListView.remove(0);
+			int i = songsPanel.getWidgetCount() - 1;
 
-			if (widget instanceof SongView) {
+			SongView songView = (SongView) songsPanel.getWidget(i);
 
-				SongView songListView = (SongView) widget;
+			songsPanel.remove(i);
 
-				songListView.setSong(null);
+			songView.setSong(null);
 
-				viewCache.add(songListView);
-			}
+			viewCache.add(songView);
 		}
 
-		for (HandlerRegistration registration : handlerRegistrations) {
-			registration.removeHandler();
-		}
-
-		handlerRegistrations.clear();
 		songToSongView.clear();
 
-		if (songs != null) {
-			for (SongDto song : songs) {
+		for (int i = 0; i < songList.size(); i++) {
 
-				SongView songView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+			SongDto song = songList.get(i);
+
+			SongView songView;
+
+			if (i < songsPanel.getWidgetCount()) {
+				songView = (SongView) songsPanel.getWidget(i);
+			} else {
+
+				songView = viewCache.size() > 0 ? viewCache.remove(0) : null;
 
 				if (songView == null) {
 					songView = new SongView();
 				}
 
-				songView.setSong(song);
+				songView.addSongSelectionRequestHandler(this);
+				songView.addSongActivationRequestHandler(this);
 
-				handlerRegistrations.add(songView.addSongSelectionRequestHandler(this));
-				handlerRegistrations.add(songView.addSongActivationRequestHandler(this));
-
-				songToSongView.put(song, songView);
-				songListView.add(songView);
+				songsPanel.add(songView);
 			}
+
+			songView.setSong(song);
+
+			songToSongView.put(song, songView);
 		}
 
 		updateSongViews();

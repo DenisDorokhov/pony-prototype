@@ -74,24 +74,15 @@ public class ArtistView extends Composite implements ArtistRequestEvent.HasHandl
 
 	private void updateArtist() {
 
-		// avoid refresh flickering by not clearing image sources
-		if (getArtist() != null) {
-
-			artistView.setVisible(true);
-
-			if (getArtist().getArtworkUrl() != null) {
-				if (!artistImage.getUrl().equals(getArtist().getArtworkUrl())) {
-					artistImage.setUrl(getArtist().getArtworkUrl());
-				}
-			} else {
-				artistImage.setResource(Resources.IMPL.imgUnknown());
+		if (getArtist() != null && getArtist().getArtworkUrl() != null) {
+			if (!artistImage.getUrl().equals(getArtist().getArtworkUrl())) {
+				artistImage.setUrl(getArtist().getArtworkUrl());
 			}
-
-			artistName.setText(getArtist().getName());
-
 		} else {
-			artistView.setVisible(false);
+			artistImage.setResource(Resources.IMPL.imgUnknown());
 		}
+
+		artistName.setText(getArtist() != null ? getArtist().getName() : null);
 	}
 
 	private void updateStyle() {

@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -31,8 +30,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 			viewCache.add(new AlbumView());
 		}
 	}
-
-	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	@UiField
 	DeckLayoutPanel deck;
@@ -191,55 +188,52 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 	private void updateAlbums() {
 
-		while (albumsPanel.getWidgetCount() > 0) {
+		List<AlbumSongsDto> albumList = getAlbums() != null ? getAlbums() : new ArrayList<AlbumSongsDto>();
+
+		while (albumsPanel.getWidgetCount() > albumList.size()) {
 
 			int i = albumsPanel.getWidgetCount() - 1;
 
-			Widget widget = albumsPanel.getWidget(i);
+			AlbumView albumView = (AlbumView) albumsPanel.getWidget(i);
 
 			albumsPanel.remove(i);
 
-			if (widget instanceof AlbumView) {
+			albumView.setSelectionModel(null);
+			albumView.setActivationModel(null);
+			albumView.setPlaying(false);
 
-				AlbumView albumView = (AlbumView) widget;
+			albumView.setAlbum(null);
 
-				albumView.setSelectionModel(null);
-				albumView.setActivationModel(null);
-				albumView.setPlaying(false);
-
-				albumView.setAlbum(null);
-
-				viewCache.add(0, albumView); // keep original ordering to re-use the same views when refreshing
-			}
+			viewCache.add(albumView);
 		}
 
-		for (HandlerRegistration registration : handlerRegistrations) {
-			registration.removeHandler();
-		}
+		for (int i = 0; i < albumList.size(); i++) {
 
-		handlerRegistrations.clear();
+			AlbumSongsDto album = albumList.get(i);
 
-		if (albums != null) {
+			AlbumView albumView;
 
-			for (AlbumSongsDto album : albums) {
+			if (i < albumsPanel.getWidgetCount()) {
+				albumView = (AlbumView) albumsPanel.getWidget(i);
+			} else {
 
-				AlbumView albumView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+				albumView = viewCache.size() > 0 ? viewCache.remove(0) : null;
 
 				if (albumView == null) {
 					albumView = new AlbumView();
 				}
 
-				albumView.setAlbum(album);
-
 				albumView.setSelectionModel(selectionModel);
 				albumView.setActivationModel(activationModel);
 				albumView.setPlaying(isPlaying());
 
-				handlerRegistrations.add(albumView.addSongSelectionRequestHandler(this));
-				handlerRegistrations.add(albumView.addSongActivationRequestHandler(this));
+				albumView.addSongSelectionRequestHandler(this);
+				albumView.addSongActivationRequestHandler(this);
 
 				albumsPanel.add(albumView);
 			}
+
+			albumView.setAlbum(album);
 		}
 	}
 
