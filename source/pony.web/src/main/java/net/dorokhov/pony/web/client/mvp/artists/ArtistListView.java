@@ -1,9 +1,11 @@
 package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -14,7 +16,9 @@ import net.dorokhov.pony.web.client.view.event.ArtistRequestEvent;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> implements ArtistListPresenter.MyView, ArtistRequestEvent.Handler {
 
@@ -29,6 +33,8 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 			viewCache.add(new ArtistView());
 		}
 	}
+
+	private final Map<ArtistDto, ArtistView> artistToArtistView = new HashMap<ArtistDto, ArtistView>();
 
 	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
@@ -109,7 +115,15 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 		selectionModel.setSelected(aArtist, true);
 
 		if (aShouldScroll && artists != null) {
-			// TODO: scroll to artist
+
+			final ArtistView artistView = artistToArtistView.get(aArtist);
+
+			Scheduler.get().scheduleDeferred(new Command() {
+				@Override
+				public void execute() {
+					artistView.getElement().scrollIntoView();
+				}
+			});
 		}
 	}
 
@@ -171,6 +185,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 		}
 
 		handlerRegistrations.clear();
+		artistToArtistView.clear();
 
 		if (artists != null) {
 
@@ -186,6 +201,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 				handlerRegistrations.add(artistView.addArtistSelectionRequestHandler(this));
 
+				artistToArtistView.put(artist, artistView);
 				artistsPanel.add(artistView);
 			}
 		}
@@ -194,17 +210,8 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	}
 
 	private void updateArtistViews() {
-
-		for (int i = 0; i < artistsPanel.getWidgetCount(); i++) {
-
-			Widget widget = artistsPanel.getWidget(i);
-
-			if (widget instanceof ArtistView) {
-
-				ArtistView artistView = (ArtistView) widget;
-
-				artistView.setSelected(selectionModel.isSelected(artistView.getArtist()));
-			}
+		for (Map.Entry<ArtistDto, ArtistView> entry : artistToArtistView.entrySet()) {
+			entry.getValue().setSelected(selectionModel.isSelected(entry.getKey()));
 		}
 	}
 }

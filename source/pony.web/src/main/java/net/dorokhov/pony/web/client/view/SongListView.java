@@ -15,7 +15,10 @@ import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SongListView extends Composite implements SongRequestEvent.HasHandler, SelectionChangeEvent.Handler, SongRequestEvent.Handler {
 
@@ -30,6 +33,8 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 			viewCache.add(new SongView());
 		}
 	}
+
+	private final Map<SongDto, SongView> songToSongView = new HashMap<SongDto, SongView>();
 
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
@@ -184,6 +189,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		}
 
 		handlerRegistrations.clear();
+		songToSongView.clear();
 
 		if (songs != null) {
 			for (SongDto song : songs) {
@@ -199,6 +205,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 				handlerRegistrations.add(songView.addSongSelectionRequestHandler(this));
 				handlerRegistrations.add(songView.addSongActivationRequestHandler(this));
 
+				songToSongView.put(song, songView);
 				songListView.add(songView);
 			}
 		}
@@ -207,24 +214,16 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 	}
 
 	private void updateSongViews() {
+		for (Map.Entry<SongDto, SongView> entry : songToSongView.entrySet()) {
 
-		for (int i = 0; i < songListView.getWidgetCount(); i++) {
-
-			Widget widget = songListView.getWidget(i);
-
-			if (widget instanceof SongView) {
-
-				SongView songView = (SongView) widget;
-
-				if (getSelectionModel() != null) {
-					songView.setSelected(getSelectionModel().isSelected(songView.getSong()));
-				}
-				if (getActivationModel() != null) {
-					songView.setActivated(getActivationModel().isSelected(songView.getSong()));
-				}
-
-				songView.setPlaying(isPlaying());
+			if (getSelectionModel() != null) {
+				entry.getValue().setSelected(getSelectionModel().isSelected(entry.getKey()));
 			}
+			if (getActivationModel() != null) {
+				entry.getValue().setActivated(getActivationModel().isSelected(entry.getKey()));
+			}
+
+			entry.getValue().setPlaying(isPlaying());
 		}
 	}
 }

@@ -1,8 +1,11 @@
 .artistView {
-
+	cursor: pointer;
 }
 .artistView_selected {
-	background-color: yellow;
+	background-color: #8ba7c9;
+	border: 1px solid #829dbc;
+	color: #fff;
+	text-shadow: 0 1px 1px #547191;
 }
 
 .artistName {
