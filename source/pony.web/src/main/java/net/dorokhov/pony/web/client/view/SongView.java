@@ -46,7 +46,7 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 	public SongView() {
 
-		Resources.IMPL.style().ensureInjected();
+		Resources.IMPL.songlist().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -123,13 +123,13 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 	private void updateStyles() {
 
-		songView.setStyleName(Resources.IMPL.style().songView());
+		songView.setStyleName(Resources.IMPL.songlist().songView());
 
 		if (isActivated()) {
-			songView.addStyleName(Resources.IMPL.style().songView_activated());
+			songView.addStyleName(Resources.IMPL.songlist().songView_activated());
 		}
 		if (isSelected()) {
-			songView.addStyleName(Resources.IMPL.style().songView_selected());
+			songView.addStyleName(Resources.IMPL.songlist().songView_selected());
 		}
 	}
 }

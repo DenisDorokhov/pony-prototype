@@ -55,7 +55,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	public SongListView() {
 
-		Resources.IMPL.style().ensureInjected();
+		Resources.IMPL.songlist().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}

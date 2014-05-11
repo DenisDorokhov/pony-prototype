@@ -1,3 +1,8 @@
+.artistName {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px;
+}
 .album {
     margin: 10px 0 30px 20px;
     overflow: auto;
@@ -98,12 +103,31 @@
 }
 
 .songView_activated {
-    /* TODO: Add icon */
+
 }
 
-.songView_activated .songTrackNumber {
+@sprite .songView_activated .songTrackNumber {
+    gwt-image: "speaker";
+    background-position: center right;
+    background-repeat: no-repeat;
     color: transparent;
     text-shadow: none;
+    width: 25px;
+    height: auto;
+}
+
+.songView_paused {
+
+}
+
+@sprite .songView_paused .songTrackNumber {
+    gwt-image: "pause";
+    background-position: center right;
+    background-repeat: no-repeat;
+    color: transparent;
+    text-shadow: none;
+    width: 25px;
+    height: auto;
 }
 
 .songTrackNumber {

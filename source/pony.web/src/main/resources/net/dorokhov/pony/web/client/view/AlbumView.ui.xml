@@ -3,14 +3,14 @@
 
     <ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
 
-	<g:FlowPanel styleName="{res.style.album}">
-		<g:FlowPanel styleName="{res.style.albumImage}">
+	<g:FlowPanel styleName="{res.songlist.album}">
+		<g:FlowPanel styleName="{res.songlist.albumImage}">
 			<g:Image ui:field="albumImage" />
 		</g:FlowPanel>
-        <g:FlowPanel styleName="{res.style.albumInfo}">
-            <g:FlowPanel styleName="{res.style.albumHeader}" >
-                <g:Label ui:field="albumNameLabel" styleName="{res.style.albumName}" />
-                <g:Label ui:field="albumYearLabel" styleName="{res.style.albumYear}" />
+        <g:FlowPanel styleName="{res.songlist.albumInfo}">
+            <g:FlowPanel styleName="{res.songlist.albumHeader}" >
+                <g:Label ui:field="albumNameLabel" styleName="{res.songlist.albumName}" />
+                <g:Label ui:field="albumYearLabel" styleName="{res.songlist.albumYear}" />
             </g:FlowPanel>
             <g:FlowPanel ui:field="songListPanel" />
         </g:FlowPanel>

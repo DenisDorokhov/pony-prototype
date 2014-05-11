@@ -55,7 +55,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	public AlbumView() {
 
-		Resources.IMPL.style().ensureInjected();
+		Resources.IMPL.songlist().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
