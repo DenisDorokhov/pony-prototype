@@ -215,7 +215,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 					log.fine("configuration saved successfully");
 
 					if (shouldOfferScan(getLibraryConfig(aResult), originalLibraryConfig)) {
-						if (Window.confirm("Library configuration has been changed. Do you want to scan new library?")) {
+						if (Window.confirm("Library configuration has been changed. Do you want to start scanning?")) {
 							libraryScanner.scan();
 						}
 					}
