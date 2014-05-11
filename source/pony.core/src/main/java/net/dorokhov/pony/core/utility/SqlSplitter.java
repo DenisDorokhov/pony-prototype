@@ -14,185 +14,185 @@ import org.springframework.util.StringUtils;
  */
 public class SqlSplitter {
 
-    private static final char DEFAULT_STATEMENT_SEPARATOR = ';';
-    private static final String DEFAULT_COMMENT_PREFIX = "--";
+	private static final char DEFAULT_STATEMENT_SEPARATOR = ';';
+	private static final String DEFAULT_COMMENT_PREFIX = "--";
 
-    private char statementSeparator;
+	private char statementSeparator;
 
-    private String commentPrefix;
+	private String commentPrefix;
 
-    public SqlSplitter() {
-        setStatementSeparator(DEFAULT_STATEMENT_SEPARATOR);
-        setCommentPrefix(DEFAULT_COMMENT_PREFIX);
-    }
+	public SqlSplitter() {
+		setStatementSeparator(DEFAULT_STATEMENT_SEPARATOR);
+		setCommentPrefix(DEFAULT_COMMENT_PREFIX);
+	}
 
-    public SqlSplitter(char aStatementSeparator, String aCommentPrefix) {
-        setStatementSeparator(aStatementSeparator);
-        setCommentPrefix(aCommentPrefix);
-    }
+	public SqlSplitter(char aStatementSeparator, String aCommentPrefix) {
+		setStatementSeparator(aStatementSeparator);
+		setCommentPrefix(aCommentPrefix);
+	}
 
-    public char getStatementSeparator() {
-        return statementSeparator;
-    }
+	public char getStatementSeparator() {
+		return statementSeparator;
+	}
 
-    public void setStatementSeparator(char aStatementSeparator) {
-        statementSeparator = aStatementSeparator;
-    }
+	public void setStatementSeparator(char aStatementSeparator) {
+		statementSeparator = aStatementSeparator;
+	}
 
-    public String getCommentPrefix() {
-        return commentPrefix;
-    }
+	public String getCommentPrefix() {
+		return commentPrefix;
+	}
 
-    public void setCommentPrefix(String aCommentPrefix) {
-        commentPrefix = aCommentPrefix;
-    }
+	public void setCommentPrefix(String aCommentPrefix) {
+		commentPrefix = aCommentPrefix;
+	}
 
-    public List<String> splitScript(File aFile) throws Exception {
+	public List<String> splitScript(File aFile) throws Exception {
 
-        LineNumberReader reader = null;
+		LineNumberReader reader = null;
 
-        try {
+		try {
 
-            reader = new LineNumberReader(new FileReader(aFile));
+			reader = new LineNumberReader(new FileReader(aFile));
 
-            return splitScript(readScript(reader));
+			return splitScript(readScript(reader));
 
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException ex) {
-            }
-        }
-    }
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException ex) {
+			}
+		}
+	}
 
-    public List<String> splitScript(String aScript) {
+	public List<String> splitScript(String aScript) {
 
-        List<String> statements = new LinkedList<String>();
+		List<String> statements = new LinkedList<String>();
 
-        char delimiter = getStatementSeparator();
-        if (!containsSqlScriptDelimiters(aScript, delimiter)) {
-            delimiter = '\n';
-        }
+		char delimiter = getStatementSeparator();
+		if (!containsSqlScriptDelimiters(aScript, delimiter)) {
+			delimiter = '\n';
+		}
 
-        splitScript(aScript, "" + delimiter, statements);
+		splitScript(aScript, "" + delimiter, statements);
 
-        return statements;
-    }
+		return statements;
+	}
 
-    private void splitScript(String aScript, String aDelimiter, List<String> aStatements) {
+	private void splitScript(String aScript, String aDelimiter, List<String> aStatements) {
 
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-        boolean inLiteral = false;
-        boolean inEscape = false;
+		boolean inLiteral = false;
+		boolean inEscape = false;
 
-        String sqlScript = removeSqlComments(aScript);
+		String sqlScript = removeSqlComments(aScript);
 
-        char[] content = sqlScript.toCharArray();
+		char[] content = sqlScript.toCharArray();
 
-        for (int i = 0; i < sqlScript.length(); i++) {
+		for (int i = 0; i < sqlScript.length(); i++) {
 
-            char c = content[i];
+			char c = content[i];
 
-            if (inEscape) {
-                inEscape = false;
-                sb.append(c);
-                continue;
-            }
+			if (inEscape) {
+				inEscape = false;
+				sb.append(c);
+				continue;
+			}
 
-            // MySQL style escapes
-            if (c == '\\') {
-                inEscape = true;
-                sb.append(c);
-                continue;
-            }
+			// MySQL style escapes
+			if (c == '\\') {
+				inEscape = true;
+				sb.append(c);
+				continue;
+			}
 
-            if (c == '\'') {
-                inLiteral = !inLiteral;
-            }
+			if (c == '\'') {
+				inLiteral = !inLiteral;
+			}
 
-            if (!inLiteral) {
-                if (startsWithDelimiter(sqlScript, i, aDelimiter)) {
+			if (!inLiteral) {
+				if (startsWithDelimiter(sqlScript, i, aDelimiter)) {
 
-                    if (sb.length() > 0) {
-                        aStatements.add(sb.toString().trim());
-                        sb = new StringBuilder();
-                    }
+					if (sb.length() > 0) {
+						aStatements.add(sb.toString().trim());
+						sb = new StringBuilder();
+					}
 
-                    i += aDelimiter.length() - 1;
+					i += aDelimiter.length() - 1;
 
-                    continue;
+					continue;
 
-                } else if (c == '\n' || c == '\t') {
-                    c = ' ';
-                }
-            }
+				} else if (c == '\n' || c == '\t') {
+					c = ' ';
+				}
+			}
 
-            sb.append(c);
-        }
+			sb.append(c);
+		}
 
-        if (StringUtils.hasText(sb)) {
-            aStatements.add(sb.toString().trim());
-        }
-    }
+		if (StringUtils.hasText(sb)) {
+			aStatements.add(sb.toString().trim());
+		}
+	}
 
-    public String readScript(LineNumberReader aLineNumberReader) throws IOException {
+	public String readScript(LineNumberReader aLineNumberReader) throws IOException {
 
-        String currentStatement = aLineNumberReader.readLine();
+		String currentStatement = aLineNumberReader.readLine();
 
-        StringBuilder scriptBuilder = new StringBuilder();
+		StringBuilder scriptBuilder = new StringBuilder();
 
-        while (currentStatement != null) {
+		while (currentStatement != null) {
 
-            if (StringUtils.hasText(currentStatement) && (getCommentPrefix() != null && !currentStatement.startsWith(getCommentPrefix()))) {
-                if (scriptBuilder.length() > 0) {
-                    scriptBuilder.append('\n');
-                }
-                scriptBuilder.append(currentStatement);
-            }
+			if (StringUtils.hasText(currentStatement) && (getCommentPrefix() != null && !currentStatement.startsWith(getCommentPrefix()))) {
+				if (scriptBuilder.length() > 0) {
+					scriptBuilder.append('\n');
+				}
+				scriptBuilder.append(currentStatement);
+			}
 
-            currentStatement = aLineNumberReader.readLine();
-        }
+			currentStatement = aLineNumberReader.readLine();
+		}
 
-        return scriptBuilder.toString();
-    }
+		return scriptBuilder.toString();
+	}
 
-    public boolean containsSqlScriptDelimiters(String aScript, char aDelimiter) {
+	public boolean containsSqlScriptDelimiters(String aScript, char aDelimiter) {
 
-        boolean inLiteral = false;
+		boolean inLiteral = false;
 
-        char[] content = aScript.toCharArray();
+		char[] content = aScript.toCharArray();
 
-        for (int i = 0; i < aScript.length(); i++) {
-            if (content[i] == '\'') {
-                inLiteral = !inLiteral;
-            }
-            if (content[i] == aDelimiter && !inLiteral) {
-                return true;
-            }
-        }
+		for (int i = 0; i < aScript.length(); i++) {
+			if (content[i] == '\'') {
+				inLiteral = !inLiteral;
+			}
+			if (content[i] == aDelimiter && !inLiteral) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    private boolean startsWithDelimiter(String aSource, int aStartIndex, String aDelimiter) {
+	private boolean startsWithDelimiter(String aSource, int aStartIndex, String aDelimiter) {
 
-        int endIndex = aStartIndex + aDelimiter.length();
+		int endIndex = aStartIndex + aDelimiter.length();
 
-        return aSource.length() >= endIndex && aSource.substring(aStartIndex, endIndex).equals(aDelimiter);
-    }
+		return aSource.length() >= endIndex && aSource.substring(aStartIndex, endIndex).equals(aDelimiter);
+	}
 
-    private String removeSqlComments(String aSource) {
-        if (StringUtils.isEmpty(aSource)) {
-            return aSource;
-        }
+	private String removeSqlComments(String aSource) {
+		if (StringUtils.isEmpty(aSource)) {
+			return aSource;
+		}
 
-        String commentPrefix = getCommentPrefix();
-        String sqlCommentsRegExp =
-                "(?m)^((?:(?!" + commentPrefix + "|').|'(?:''|[^'])*')*)" + commentPrefix + ".*$";
+		String commentPrefix = getCommentPrefix();
+		String sqlCommentsRegExp =
+				"(?m)^((?:(?!" + commentPrefix + "|').|'(?:''|[^'])*')*)" + commentPrefix + ".*$";
 
-        return aSource.replaceAll(sqlCommentsRegExp, "$1");
-    }
+		return aSource.replaceAll(sqlCommentsRegExp, "$1");
+	}
 }

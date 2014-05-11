@@ -19,7 +19,7 @@ public class InstallationServiceIT {
 	@Before
 	public void setUp() throws Exception {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
 
 		service = context.getBean(InstallationService.class);
 

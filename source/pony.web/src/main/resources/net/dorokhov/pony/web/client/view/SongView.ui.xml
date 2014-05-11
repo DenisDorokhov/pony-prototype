@@ -1,14 +1,14 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
+	<ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
 
-    <g:FocusPanel ui:field="songView" styleName="{res.songlist.songView}">
-        <g:FlowPanel>
-            <g:Label ui:field="trackNumberLabel" styleName="{res.songlist.songTrackNumber}" />
-            <g:Label ui:field="nameLabel" styleName="{res.songlist.songName}" />
-            <g:Label ui:field="durationLabel" styleName="{res.songlist.songDuration}" />
-        </g:FlowPanel>
-    </g:FocusPanel>
+	<g:FocusPanel ui:field="songView" styleName="{res.cssAlbumList.songView}">
+		<g:FlowPanel>
+			<g:Label ui:field="trackNumberLabel" styleName="{res.cssAlbumList.songTrackNumber}" />
+			<g:Label ui:field="nameLabel" styleName="{res.cssAlbumList.songName}" />
+			<g:Label ui:field="durationLabel" styleName="{res.cssAlbumList.songDuration}" />
+		</g:FlowPanel>
+	</g:FocusPanel>
 
 </ui:UiBinder>

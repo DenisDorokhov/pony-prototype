@@ -1,4 +1,4 @@
-.artistName {
+.albumArtistName {
     font-size: 24px;
     font-weight: bold;
     margin: 10px;
@@ -107,7 +107,7 @@
 }
 
 @sprite .songView_activated .songTrackNumber {
-    gwt-image: "speaker";
+    gwt-image: "imgSpeaker";
     background-position: center right;
     background-repeat: no-repeat;
     color: transparent;
@@ -121,7 +121,7 @@
 }
 
 @sprite .songView_paused .songTrackNumber {
-    gwt-image: "pause";
+    gwt-image: "imgPause";
     background-position: center right;
     background-repeat: no-repeat;
     color: transparent;

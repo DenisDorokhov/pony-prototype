@@ -57,7 +57,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	public AlbumView() {
 
-		Resources.IMPL.songlist().ensureInjected();
+		Resources.IMPL.cssAlbumList().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -141,11 +141,11 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		String imageUrl = album != null ? album.getArtworkUrl() : null;
 
-		if (imageUrl == null) {
-			imageUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
+		if (imageUrl != null) {
+			albumImage.setUrl(imageUrl);
+		} else {
+			albumImage.setResource(Resources.IMPL.imgUnknown());
 		}
-
-		albumImage.setUrl(imageUrl);
 
 		albumNameLabel.setText(album != null ? album.getName() : null);
 		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);

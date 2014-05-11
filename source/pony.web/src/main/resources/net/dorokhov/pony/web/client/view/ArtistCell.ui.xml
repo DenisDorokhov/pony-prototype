@@ -1,8 +1,0 @@
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
-
-	<ui:with field="artist" type="net.dorokhov.pony.web.shared.ArtistDto" />
-	<ui:with field="artworkUrl" type="com.google.gwt.safehtml.shared.SafeUri" />
-
-	<span><img src="{artworkUrl}" width="40" height="40" /><ui:text from="{artist.getName}" /></span>
-
-</ui:UiBinder>

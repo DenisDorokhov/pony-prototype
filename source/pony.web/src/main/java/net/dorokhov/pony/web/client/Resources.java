@@ -7,37 +7,57 @@ import com.google.gwt.resources.client.ImageResource;
 
 public interface Resources  extends ClientBundle {
 
-    public static final Resources IMPL = GWT.create(Resources.class);
+	public static final Resources IMPL = GWT.create(Resources.class);
 
-    @Source("img/speaker.png")
-    ImageResource speaker();
+	@Source("img/unknown.png")
+	ImageResource imgUnknown();
 
-    @Source("img/pause.png")
-    ImageResource pause();
+	@Source("img/speaker.png")
+	ImageResource imgSpeaker();
 
-    @Source("css/global.css")
-    CssResource global();
+	@Source("img/pause.png")
+	ImageResource imgPause();
 
-    @Source("css/songlist.css")
-    SongListCssResource songlist();
+	@Source("css/global.css")
+	CssResource cssGlobal();
 
-    public interface SongListCssResource extends CssResource {
-        String artistName();
-        String album();
-        String albumImage();
-        String albumInfo();
-        String albumHeader();
-        String albumName();
-        String albumYear();
-        String albumDisc();
-        String albumDiscHeader();
-        String songList();
-        String songView();
-        String songView_selected();
-        String songView_activated();
-        String songView_paused();
-        String songTrackNumber();
-        String songName();
-        String songDuration();
-    }
+	@Source("css/artistList.css")
+	ArtistListCssResource cssArtistList();
+
+	@Source("css/albumList.css")
+	AlbumListCssResource cssAlbumList();
+
+	public interface ArtistListCssResource extends CssResource {
+
+		String artistView();
+		String artistView_selected();
+
+		String artistName();
+		String artistImage();
+	}
+
+	public interface AlbumListCssResource extends CssResource {
+
+		String albumArtistName();
+
+		String album();
+		String albumImage();
+		String albumInfo();
+		String albumHeader();
+		String albumName();
+		String albumYear();
+		String albumDisc();
+		String albumDiscHeader();
+
+		String songList();
+
+		String songView();
+		String songView_selected();
+		String songView_activated();
+		String songView_paused();
+
+		String songTrackNumber();
+		String songName();
+		String songDuration();
+	}
 }

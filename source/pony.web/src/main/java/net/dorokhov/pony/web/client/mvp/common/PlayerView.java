@@ -242,20 +242,18 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		String artworkUrl = null;
 
 		if (getSong() != null) {
-
 			name = getSong().getName();
 			artist = getSong().getArtistName();
-
 			artworkUrl = getSong().getAlbumArtworkUrl();
-			if (artworkUrl == null) {
-				artworkUrl = GWT.getHostPageBaseURL() + "img/unknown.png";
-			}
 		}
 
 		doSendUnityState(aIsPlaying, name, artist, artworkUrl);
 	}
 
 	private native void doSendUnityState(boolean aIsPlaying, String aName, String aArtist, String aArtwork) /*-{
+
+		// TODO: show pony logo if no artwork defined: GWT.getHostPageBaseURL() + "img/logo.png";
+
 		$wnd.UnityMusicShim().sendState({
 			playing: aIsPlaying,
 			title: aName,

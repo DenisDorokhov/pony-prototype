@@ -1,19 +1,19 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
+	<ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
 
-	<g:FlowPanel styleName="{res.songlist.album}">
-		<g:FlowPanel styleName="{res.songlist.albumImage}">
+	<g:FlowPanel styleName="{res.cssAlbumList.album}">
+		<g:FlowPanel styleName="{res.cssAlbumList.albumImage}">
 			<g:Image ui:field="albumImage" />
 		</g:FlowPanel>
-        <g:FlowPanel styleName="{res.songlist.albumInfo}">
-            <g:FlowPanel styleName="{res.songlist.albumHeader}" >
-                <g:Label ui:field="albumNameLabel" styleName="{res.songlist.albumName}" />
-                <g:Label ui:field="albumYearLabel" styleName="{res.songlist.albumYear}" />
-            </g:FlowPanel>
-            <g:FlowPanel ui:field="songListPanel" />
-        </g:FlowPanel>
+		<g:FlowPanel styleName="{res.cssAlbumList.albumInfo}">
+			<g:FlowPanel styleName="{res.cssAlbumList.albumHeader}" >
+				<g:Label ui:field="albumNameLabel" styleName="{res.cssAlbumList.albumName}" />
+				<g:Label ui:field="albumYearLabel" styleName="{res.cssAlbumList.albumYear}" />
+			</g:FlowPanel>
+			<g:FlowPanel ui:field="songListPanel" />
+		</g:FlowPanel>
 	</g:FlowPanel>
 
 </ui:UiBinder>

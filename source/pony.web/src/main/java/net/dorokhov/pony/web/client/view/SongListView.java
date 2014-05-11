@@ -19,9 +19,9 @@ import java.util.*;
 
 public class SongListView extends Composite implements SongRequestEvent.HasHandler, SelectionChangeEvent.Handler, SongRequestEvent.Handler {
 
-	interface SongListUiBinder extends UiBinder<Widget, SongListView> {}
+	interface MyUiBinder extends UiBinder<Widget, SongListView> {}
 
-	private static final SongListUiBinder uiBinder = GWT.create(SongListUiBinder.class);
+	private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private static final List<SongView> viewCache = new ArrayList<SongView>();
 
@@ -34,8 +34,6 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
 	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
-
-	private final HashMap<Long, SongView> songToSongView = new HashMap<Long, SongView>();
 
 	@UiField
 	Label captionLabel;
@@ -57,7 +55,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	public SongListView() {
 
-		Resources.IMPL.songlist().ensureInjected();
+		Resources.IMPL.cssAlbumList().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -187,8 +185,6 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 		handlerRegistrations.clear();
 
-		songToSongView.clear();
-
 		if (songs != null) {
 			for (SongDto song : songs) {
 
@@ -203,7 +199,6 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 				handlerRegistrations.add(songView.addSongSelectionRequestHandler(this));
 				handlerRegistrations.add(songView.addSongActivationRequestHandler(this));
 
-				songToSongView.put(song.getId(), songView);
 				songListView.add(songView);
 			}
 		}
@@ -213,26 +208,23 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	private void updateSongViews() {
 
-		Set<SongDto> selectedSongs = null;
-		Set<SongDto> activatedSongs = null;
+		for (int i = 0; i < songListView.getWidgetCount(); i++) {
 
-		if (getSelectionModel() != null) {
-			selectedSongs = getSelectionModel().getSelectedSet();
-		}
-		if (getActivationModel() != null) {
-			activatedSongs = getActivationModel().getSelectedSet();
-		}
+			Widget widget = songListView.getWidget(i);
 
-		for (Map.Entry<Long, SongView> entry : songToSongView.entrySet()) {
+			if (widget instanceof SongView) {
 
-			if (selectedSongs != null) {
-				entry.getValue().setSelected(selectedSongs.contains(entry.getValue().getSong()));
+				SongView songView = (SongView) widget;
+
+				if (getSelectionModel() != null) {
+					songView.setSelected(getSelectionModel().isSelected(songView.getSong()));
+				}
+				if (getActivationModel() != null) {
+					songView.setActivated(getActivationModel().isSelected(songView.getSong()));
+				}
+
+				songView.setPlaying(isPlaying());
 			}
-			if (activatedSongs != null) {
-				entry.getValue().setActivated(activatedSongs.contains(entry.getValue().getSong()));
-			}
-
-			entry.getValue().setPlaying(isPlaying());
 		}
 	}
 }

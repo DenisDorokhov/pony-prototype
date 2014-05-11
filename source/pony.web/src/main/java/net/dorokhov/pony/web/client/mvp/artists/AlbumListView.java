@@ -227,11 +227,11 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 					albumView = new AlbumView();
 				}
 
+				albumView.setAlbum(album);
+
 				albumView.setSelectionModel(selectionModel);
 				albumView.setActivationModel(activationModel);
 				albumView.setPlaying(isPlaying());
-
-				albumView.setAlbum(album);
 
 				handlerRegistrations.add(albumView.addSongSelectionRequestHandler(this));
 				handlerRegistrations.add(albumView.addSongActivationRequestHandler(this));

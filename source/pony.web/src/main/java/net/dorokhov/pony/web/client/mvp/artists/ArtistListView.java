@@ -1,31 +1,36 @@
 package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.client.ui.DeckLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
-import net.dorokhov.pony.web.client.view.ArtistCell;
+import net.dorokhov.pony.web.client.view.ArtistView;
+import net.dorokhov.pony.web.client.view.event.ArtistRequestEvent;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> implements ArtistListPresenter.MyView {
+public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> implements ArtistListPresenter.MyView, ArtistRequestEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, ArtistListView> {}
 
 	private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
+	private static final List<ArtistView> viewCache = new ArrayList<ArtistView>();
+
+	static {
+		for (int i = 0; i < 30; i++) {
+			viewCache.add(new ArtistView());
+		}
+	}
+
+	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	@UiField
 	DeckLayoutPanel deck;
@@ -42,27 +47,29 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	@UiField
 	ScrollPanel scroller;
 
-	@UiField(provided = true)
-	CellList<ArtistDto> list;
+	@UiField
+	FlowPanel artistsPanel;
 
 	private ContentState contentState;
 
 	private List<ArtistDto> artists;
 
-	private ListDataProvider<ArtistDto> dataProvider;
-
 	private SingleSelectionModel<ArtistDto> selectionModel;
 
 	public ArtistListView() {
 
-		initList();
-
 		initWidget(uiBinder.createAndBindUi(this));
 
-		scroller.addScrollHandler(new ScrollHandler() {
+		selectionModel = new SingleSelectionModel<ArtistDto>();
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
-			public void onScroll(ScrollEvent event) {
-				GWT.log("!!!scroll!!!!");
+			public void onSelectionChange(SelectionChangeEvent aEvent) {
+
+				updateArtistViews();
+
+				ArtistDto artist = selectionModel.getSelectedObject();
+
+				ArtistListView.this.getUiHandlers().onArtistSelection(artist);
 			}
 		});
 	}
@@ -102,35 +109,13 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 		selectionModel.setSelected(aArtist, true);
 
 		if (aShouldScroll && artists != null) {
-
-			int index = list.getVisibleItems().indexOf(selectionModel.getSelectedObject());
-
-			if (index > -1) {
-				list.setKeyboardSelectedRow(index); // Scroll to selected item
-			}
+			// TODO: scroll to artist
 		}
 	}
 
-	private void initList() {
-
-		selectionModel = new SingleSelectionModel<ArtistDto>();
-
-		list = new CellList<ArtistDto>(new ArtistCell());
-		list.setSelectionModel(selectionModel);
-		list.setVisibleRange(0, Integer.MAX_VALUE);
-
-		dataProvider = new ListDataProvider<ArtistDto>();
-		dataProvider.addDataDisplay(list);
-
-		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent aEvent) {
-
-				ArtistDto artist = selectionModel.getSelectedObject();
-
-				ArtistListView.this.getUiHandlers().onArtistSelection(artist);
-			}
-		});
+	@Override
+	public void onArtistRequest(ArtistRequestEvent aEvent) {
+		selectionModel.setSelected(aEvent.getArtist(), true);
 	}
 
 	private void updateContentState() {
@@ -165,45 +150,60 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 	private void updateArtists() {
 
-		if (getArtists() == null) {
-			dataProvider.getList().clear();
-		} else {
+		while (artistsPanel.getWidgetCount() > 0) {
 
-			List<ArtistDto> provider = dataProvider.getList();
-			List<ArtistDto> updatedList = getArtists();
+			Widget widget = artistsPanel.getWidget(0);
 
-			List<Integer> indicesToRemove = new ArrayList<Integer>();
+			artistsPanel.remove(0);
 
-			for (int i = 0; i < provider.size(); i++) {
+			if (widget instanceof ArtistView) {
 
-				ArtistDto artist = provider.get(i);
+				ArtistView albumView = (ArtistView) widget;
 
-				if (!updatedList.contains(artist)) {
-					indicesToRemove.add(i);
-				}
+				albumView.setArtist(null);
+
+				viewCache.add(albumView);
 			}
+		}
 
-			while (indicesToRemove.size() > 0) {
+		for (HandlerRegistration registration : handlerRegistrations) {
+			registration.removeHandler();
+		}
 
-				int i = indicesToRemove.remove(0);
+		handlerRegistrations.clear();
 
-				provider.remove(i);
+		if (artists != null) {
+
+			for (ArtistDto artist : artists) {
+
+				ArtistView artistView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+
+				if (artistView == null) {
+					artistView = new ArtistView();
+				}
+
+				artistView.setArtist(artist);
+
+				handlerRegistrations.add(artistView.addArtistSelectionRequestHandler(this));
+
+				artistsPanel.add(artistView);
 			}
+		}
 
-			for (int i = 0; i < updatedList.size(); i++) {
+		updateArtistViews();
+	}
 
-				ArtistDto oldArtist = null;
-				if (provider.size() > i) {
-					oldArtist = provider.get(i);
-				}
+	private void updateArtistViews() {
 
-				ArtistDto newArtist = updatedList.get(i);
+		for (int i = 0; i < artistsPanel.getWidgetCount(); i++) {
 
-				if (newArtist.equals(oldArtist)) {
-					provider.set(i, newArtist);
-				} else {
-					provider.add(i, newArtist);
-				}
+			Widget widget = artistsPanel.getWidget(i);
+
+			if (widget instanceof ArtistView) {
+
+				ArtistView artistView = (ArtistView) widget;
+
+				artistView.setSelected(selectionModel.isSelected(artistView.getArtist()));
 			}
 		}
 	}

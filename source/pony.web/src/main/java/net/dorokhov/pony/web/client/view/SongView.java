@@ -20,9 +20,9 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
-	interface SongListItemUiBinder extends UiBinder<Widget, SongView> {}
+	interface MyUiBinder extends UiBinder<Widget, SongView> {}
 
-	private static SongListItemUiBinder uiBinder = GWT.create(SongListItemUiBinder.class);
+	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	private final HandlerManager handlerManager = new HandlerManager(this);
 
@@ -48,11 +48,13 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 	public SongView() {
 
-		Resources.IMPL.songlist().ensureInjected();
+		Resources.IMPL.cssAlbumList().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		setSelected(false);
+		setActivated(false);
+		setPlaying(false);
 	}
 
 	public void setSong(SongDto aSong) {
@@ -74,7 +76,7 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 		selected = aSelected;
 
-		updateStyles();
+		updateStyle();
 	}
 
 	public boolean isActivated() {
@@ -85,7 +87,7 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 		activated = aActivated;
 
-		updateStyles();
+		updateStyle();
 	}
 
 	public boolean isPlaying() {
@@ -96,7 +98,7 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 		playing = aPlaying;
 
-		updateStyles();
+		updateStyle();
 	}
 
 	@Override
@@ -134,20 +136,20 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 		}
 	}
 
-	private void updateStyles() {
+	private void updateStyle() {
 
-		songView.setStyleName(Resources.IMPL.songlist().songView());
+		songView.setStyleName(Resources.IMPL.cssAlbumList().songView());
 
 		if (isActivated()) {
 
-			songView.addStyleName(Resources.IMPL.songlist().songView_activated());
+			songView.addStyleName(Resources.IMPL.cssAlbumList().songView_activated());
 
 			if (!isPlaying()) {
-				songView.addStyleName(Resources.IMPL.songlist().songView_paused());
+				songView.addStyleName(Resources.IMPL.cssAlbumList().songView_paused());
 			}
 		}
 		if (isSelected()) {
-			songView.addStyleName(Resources.IMPL.songlist().songView_selected());
+			songView.addStyleName(Resources.IMPL.cssAlbumList().songView_selected());
 		}
 	}
 }

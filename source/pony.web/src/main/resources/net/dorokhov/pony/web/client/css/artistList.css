@@ -1,0 +1,14 @@
+.artistView {
+
+}
+.artistView_selected {
+	background-color: yellow;
+}
+
+.artistName {
+
+}
+.artistImage {
+	width: 40px;
+	height: 40px;
+}

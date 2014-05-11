@@ -18,11 +18,11 @@ import java.util.List;
 @Indexed
 public class Artist extends BaseEntity<Long> implements Comparable<Artist> {
 
-    private String name;
+	private String name;
 
 	private StoredFile artwork;
 
-    private List<Album> albums;
+	private List<Album> albums;
 
 	@Column(name = "name", unique = true)
 	@NotBlank
