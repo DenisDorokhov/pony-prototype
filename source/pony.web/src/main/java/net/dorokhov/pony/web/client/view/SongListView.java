@@ -53,6 +53,8 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 	private HandlerRegistration selectionRegistration;
 	private HandlerRegistration activationRegistration;
 
+	private boolean playing;
+
 	public SongListView() {
 
 		Resources.IMPL.songlist().ensureInjected();
@@ -77,7 +79,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 			selectionRegistration = selectionModel.addSelectionChangeHandler(this);
 		}
 
-		updateSelection();
+		updateSongViews();
 	}
 
 	public SetSelectionModel<SongDto> getActivationModel() {
@@ -97,7 +99,18 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 			activationRegistration = activationModel.addSelectionChangeHandler(this);
 		}
 
-		updateSelection();
+		updateSongViews();
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean aPlaying) {
+
+		playing = aPlaying;
+
+		updateSongViews();
 	}
 
 	public List<SongDto> getSongs() {
@@ -134,7 +147,7 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 
 	@Override
 	public void onSelectionChange(SelectionChangeEvent aEvent) {
-		updateSelection();
+		updateSongViews();
 	}
 
 	@Override
@@ -195,10 +208,10 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 			}
 		}
 
-		updateSelection();
+		updateSongViews();
 	}
 
-	private void updateSelection() {
+	private void updateSongViews() {
 
 		Set<SongDto> selectedSongs = null;
 		Set<SongDto> activatedSongs = null;
@@ -211,12 +224,15 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		}
 
 		for (Map.Entry<Long, SongView> entry : songToSongView.entrySet()) {
+
 			if (selectedSongs != null) {
 				entry.getValue().setSelected(selectedSongs.contains(entry.getValue().getSong()));
 			}
 			if (activatedSongs != null) {
 				entry.getValue().setActivated(activatedSongs.contains(entry.getValue().getSong()));
 			}
+
+			entry.getValue().setPlaying(isPlaying());
 		}
 	}
 }

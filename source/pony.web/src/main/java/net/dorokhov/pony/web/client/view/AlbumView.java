@@ -51,6 +51,8 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 	private SetSelectionModel<SongDto> selectionModel;
 	private SetSelectionModel<SongDto> activationModel;
 
+	private boolean playing;
+
 	private AlbumSongsDto album;
 
 	public AlbumView() {
@@ -86,6 +88,21 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		for (Widget widget : songListPanel) {
 			if (widget instanceof SongListView) {
 				((SongListView) widget).setActivationModel(activationModel);
+			}
+		}
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean aPlaying) {
+
+		playing = aPlaying;
+
+		for (Widget widget : songListPanel) {
+			if (widget instanceof SongListView) {
+				((SongListView) widget).setPlaying(playing);
 			}
 		}
 	}
@@ -178,6 +195,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 			songListView.setSelectionModel(getSelectionModel());
 			songListView.setActivationModel(getActivationModel());
+			songListView.setPlaying(isPlaying());
 
 			songListView.setSongs(songList);
 

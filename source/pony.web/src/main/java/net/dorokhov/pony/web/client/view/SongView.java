@@ -44,6 +44,8 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 
 	private boolean activated;
 
+	private boolean playing;
+
 	public SongView() {
 
 		Resources.IMPL.songlist().ensureInjected();
@@ -82,6 +84,17 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 	public void setActivated(boolean aActivated) {
 
 		activated = aActivated;
+
+		updateStyles();
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean aPlaying) {
+
+		playing = aPlaying;
 
 		updateStyles();
 	}
@@ -126,7 +139,12 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 		songView.setStyleName(Resources.IMPL.songlist().songView());
 
 		if (isActivated()) {
+
 			songView.addStyleName(Resources.IMPL.songlist().songView_activated());
+
+			if (!isPlaying()) {
+				songView.addStyleName(Resources.IMPL.songlist().songView_paused());
+			}
 		}
 		if (isSelected()) {
 			songView.addStyleName(Resources.IMPL.songlist().songView_selected());

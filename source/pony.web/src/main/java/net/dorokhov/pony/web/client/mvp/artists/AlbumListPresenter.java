@@ -40,6 +40,10 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void setActiveSong(SongDto aSong);
 
+		public boolean isPlaying();
+
+		public void setPlaying(boolean aPlaying);
+
 	}
 
 	private final Logger log = Logger.getLogger(getClass().getName());
@@ -72,6 +76,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 		addRegisteredHandler(SongEvent.SONG_STARTED, this);
+		addRegisteredHandler(SongEvent.SONG_PAUSED, this);
 	}
 
 	@Override
@@ -110,11 +115,20 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	@Override
 	public void onSongEvent(SongEvent aEvent) {
-		if (!aEvent.getSong().equals(getView().getActiveSong())) {
+		if (aEvent.getAssociatedType() == SongEvent.SONG_STARTED) {
 
-			shouldHandleSongActivation = false;
+			if (!aEvent.getSong().equals(getView().getActiveSong())) {
 
-			getView().setActiveSong(aEvent.getSong());
+				shouldHandleSongActivation = false;
+
+				getView().setActiveSong(aEvent.getSong());
+			}
+
+			getView().setPlaying(true);
+
+		} else if (aEvent.getAssociatedType() == SongEvent.SONG_PAUSED) {
+
+			getView().setPlaying(false);
 		}
 	}
 

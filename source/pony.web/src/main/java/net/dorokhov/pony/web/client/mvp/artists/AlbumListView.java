@@ -67,6 +67,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	private SingleSelectionModel<SongDto> selectionModel;
 	private SingleSelectionModel<SongDto> activationModel;
 
+	private boolean playing;
+
 	public AlbumListView() {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -133,6 +135,23 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	@Override
+	public void setPlaying(boolean aPlaying) {
+
+		playing = aPlaying;
+
+		for (Widget widget : albumsPanel) {
+			if (widget instanceof AlbumView) {
+				((AlbumView) widget).setPlaying(playing);
+			}
+		}
+	}
+
+	@Override
 	public ContentState getContentState() {
 		return contentState;
 	}
@@ -184,6 +203,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 				albumView.setSelectionModel(null);
 				albumView.setActivationModel(null);
+				albumView.setPlaying(false);
 
 				albumView.setAlbum(null);
 
@@ -209,6 +229,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 				albumView.setSelectionModel(selectionModel);
 				albumView.setActivationModel(activationModel);
+				albumView.setPlaying(isPlaying());
 
 				albumView.setAlbum(album);
 
