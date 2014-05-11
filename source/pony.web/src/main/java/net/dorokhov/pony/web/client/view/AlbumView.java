@@ -37,6 +37,9 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	@UiField
+	FlowPanel albumView;
+
+	@UiField
 	Image albumImage;
 
 	@UiField
@@ -139,17 +142,6 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 	private void updateAlbum() {
 
-		String imageUrl = album != null ? album.getArtworkUrl() : null;
-
-		if (imageUrl != null) {
-			albumImage.setUrl(imageUrl);
-		} else {
-			albumImage.setResource(Resources.IMPL.imgUnknown());
-		}
-
-		albumNameLabel.setText(album != null ? album.getName() : null);
-		albumYearLabel.setText(album != null ? ObjectUtils.nullSafeToString(album.getYear()) : null);
-
 		while (songListPanel.getWidgetCount() > 0) {
 
 			Widget widget = songListPanel.getWidget(0);
@@ -175,7 +167,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 		handlerRegistrations.clear();
 
-		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(album != null ? album.getSongs() : new ArrayList<SongDto>());
+		Map<Integer, List<SongDto>> albumDiscs = splitIntoDiscs(getAlbum() != null ? getAlbum().getSongs() : new ArrayList<SongDto>());
 
 		for (Map.Entry<Integer, List<SongDto>> albumDiscEntry : albumDiscs.entrySet()) {
 
@@ -205,6 +197,24 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 			handlerRegistrations.add(songListView.addSongActivationRequestHandler(this));
 
 			songListPanel.add(songListView);
+		}
+
+		// avoid refresh flickering by not clearing image sources
+		if (getAlbum() != null) {
+
+			albumView.setVisible(true);
+
+			if (getAlbum().getArtworkUrl() != null) {
+				albumImage.setUrl(getAlbum().getArtworkUrl());
+			} else {
+				albumImage.setResource(Resources.IMPL.imgUnknown());
+			}
+
+			albumNameLabel.setText(getAlbum().getName());
+			albumYearLabel.setText(ObjectUtils.nullSafeToString(getAlbum().getYear()));
+
+		} else {
+			albumView.setVisible(false);
 		}
 	}
 

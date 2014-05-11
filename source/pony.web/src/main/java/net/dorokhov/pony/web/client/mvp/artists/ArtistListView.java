@@ -29,7 +29,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	private static final List<ArtistView> viewCache = new ArrayList<ArtistView>();
 
 	static {
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 150; i++) {
 			viewCache.add(new ArtistView());
 		}
 	}
@@ -166,9 +166,11 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 		while (artistsPanel.getWidgetCount() > 0) {
 
-			Widget widget = artistsPanel.getWidget(0);
+			int i = artistsPanel.getWidgetCount() - 1;
 
-			artistsPanel.remove(0);
+			Widget widget = artistsPanel.getWidget(i);
+
+			artistsPanel.remove(i);
 
 			if (widget instanceof ArtistView) {
 
@@ -176,7 +178,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 				albumView.setArtist(null);
 
-				viewCache.add(albumView);
+				viewCache.add(0, albumView); // keep original ordering to re-use the same views when refreshing
 			}
 		}
 

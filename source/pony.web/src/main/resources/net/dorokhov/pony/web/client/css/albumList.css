@@ -15,8 +15,8 @@
 }
 
 .albumImage img {
-	max-width: 140px;
-	max-height: 140px;
+	width: 140px;
+	height: 140px;
 	box-shadow: 0 5px 10px #ccc;
 	border: 1px solid #8a8a8a;
 }

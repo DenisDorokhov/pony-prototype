@@ -193,9 +193,11 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 		while (albumsPanel.getWidgetCount() > 0) {
 
-			Widget widget = albumsPanel.getWidget(0);
+			int i = albumsPanel.getWidgetCount() - 1;
 
-			albumsPanel.remove(0);
+			Widget widget = albumsPanel.getWidget(i);
+
+			albumsPanel.remove(i);
 
 			if (widget instanceof AlbumView) {
 
@@ -207,7 +209,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 				albumView.setAlbum(null);
 
-				viewCache.add(albumView);
+				viewCache.add(0, albumView); // keep original ordering to re-use the same views when refreshing
 			}
 		}
 

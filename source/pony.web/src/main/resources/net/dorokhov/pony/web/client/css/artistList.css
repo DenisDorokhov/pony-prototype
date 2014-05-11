@@ -1,5 +1,6 @@
 .artistView {
 	cursor: pointer;
+	border: 1px solid transparent;
 }
 .artistView_selected {
 	background-color: #8ba7c9;
