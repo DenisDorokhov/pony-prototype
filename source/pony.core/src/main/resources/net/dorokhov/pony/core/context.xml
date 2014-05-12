@@ -33,6 +33,7 @@
 		</property>
 		<property name="jpaPropertyMap">
 			<map>
+				<entry key="hibernate.dialect" value="${db.dialect}" />
 				<entry key="javax.persistence.validation.factory" value-ref="validatorFactory" />
 				<entry key="hibernate.search.default.directory_provider" value="filesystem"/>
 				<entry key="hibernate.search.default.indexBase" value="${user.home}/${indexBase.path}"/>
