@@ -10,6 +10,8 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.io.File;
 
 @Service
 public class SongDataReaderImpl implements SongDataReader {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private ChecksumService checksumService;
 
@@ -71,6 +75,8 @@ public class SongDataReaderImpl implements SongDataReader {
 				metaData.setArtwork(new SongData.Artwork(artwork.getBinaryData(), checksumService.calculateChecksum(artwork.getBinaryData()), artwork.getMimeType()));
 			}
 		}
+
+		log.debug("read file data: {}", metaData);
 
 		return metaData;
 	}

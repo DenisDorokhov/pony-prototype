@@ -202,6 +202,36 @@ public class SongData {
 		public String getChecksum() {
 			return checksum;
 		}
+
+		@Override
+		public String toString() {
+			return "Artwork{" +
+					"mimeType='" + mimeType + '\'' +
+					", checksum='" + checksum + '\'' +
+					'}';
+		}
 	}
 
+	@Override
+	public String toString() {
+		return "SongData{" +
+				"path='" + path + '\'' +
+				", format='" + format + '\'' +
+				", mimeType='" + mimeType + '\'' +
+				", size=" + size +
+				", duration=" + duration +
+				", bitRate=" + bitRate +
+				", discNumber=" + discNumber +
+				", discCount=" + discCount +
+				", trackNumber=" + trackNumber +
+				", trackCount=" + trackCount +
+				", name='" + name + '\'' +
+				", artist='" + artist + '\'' +
+				", albumArtist='" + albumArtist + '\'' +
+				", album='" + album + '\'' +
+				", year=" + year +
+				", genre='" + genre + '\'' +
+				", artwork=" + artwork +
+				'}';
+	}
 }
