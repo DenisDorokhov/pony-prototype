@@ -241,7 +241,7 @@ public class DtoServiceImpl implements DtoService {
 			request = attributes.getRequest();
 
 		} catch (Exception e) {
-			log.warn("could not get current request", e);
+			log.warn("could not get current request, is it a web application?");
 		}
 
 		return request;

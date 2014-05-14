@@ -22,7 +22,7 @@
 		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
-		<property name="password" value="${db.username}" />
+		<property name="password" value="${db.password}" />
 	</bean>
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -33,6 +33,7 @@
 		</property>
 		<property name="jpaPropertyMap">
 			<map>
+				<entry key="hibernate.dialect" value="${db.dialect}" />
 				<entry key="javax.persistence.validation.factory" value-ref="validatorFactory" />
 				<entry key="hibernate.search.default.directory_provider" value="filesystem"/>
 				<entry key="hibernate.search.default.indexBase" value="${user.home}/${indexBase.path}"/>

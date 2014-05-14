@@ -2,7 +2,6 @@ package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -35,8 +34,6 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	}
 
 	private final Map<ArtistDto, ArtistView> artistToArtistView = new HashMap<ArtistDto, ArtistView>();
-
-	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	@UiField
 	DeckLayoutPanel deck;
@@ -164,60 +161,50 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 	private void updateArtists() {
 
-		final int scrollPosition = scroller.getVerticalScrollPosition();
+		List<ArtistDto> artistList = getArtists() != null ? getArtists() : new ArrayList<ArtistDto>();
 
-		while (artistsPanel.getWidgetCount() > 0) {
+		while (artistsPanel.getWidgetCount() > artistList.size()) {
 
 			int i = artistsPanel.getWidgetCount() - 1;
 
-			Widget widget = artistsPanel.getWidget(i);
+			ArtistView artistView = (ArtistView) artistsPanel.getWidget(i);
 
 			artistsPanel.remove(i);
 
-			if (widget instanceof ArtistView) {
+			artistView.setArtist(null);
 
-				ArtistView albumView = (ArtistView) widget;
-
-				albumView.setArtist(null);
-
-				viewCache.add(0, albumView); // keep original ordering to re-use the same views when refreshing
-			}
+			viewCache.add(artistView);
 		}
 
-		for (HandlerRegistration registration : handlerRegistrations) {
-			registration.removeHandler();
-		}
-
-		handlerRegistrations.clear();
 		artistToArtistView.clear();
 
-		if (artists != null) {
+		for (int i = 0; i < artistList.size(); i++) {
 
-			for (ArtistDto artist : artists) {
+			ArtistDto artist = artistList.get(i);
 
-				ArtistView artistView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+			ArtistView artistView;
+
+			if (i < artistsPanel.getWidgetCount()) {
+				artistView = (ArtistView) artistsPanel.getWidget(i);
+			} else {
+
+				artistView = viewCache.size() > 0 ? viewCache.remove(0) : null;
 
 				if (artistView == null) {
 					artistView = new ArtistView();
 				}
 
-				artistView.setArtist(artist);
+				artistView.addArtistSelectionRequestHandler(this);
 
-				handlerRegistrations.add(artistView.addArtistSelectionRequestHandler(this));
-
-				artistToArtistView.put(artist, artistView);
 				artistsPanel.add(artistView);
 			}
+
+			artistView.setArtist(artist);
+
+			artistToArtistView.put(artist, artistView);
 		}
 
 		updateArtistViews();
-
-		Scheduler.get().scheduleDeferred(new Command() {
-			@Override
-			public void execute() {
-				scroller.setVerticalScrollPosition(scrollPosition);
-			}
-		});
 	}
 
 	private void updateArtistViews() {
