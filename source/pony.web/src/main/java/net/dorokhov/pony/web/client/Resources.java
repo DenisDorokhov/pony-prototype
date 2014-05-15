@@ -43,6 +43,8 @@ public interface Resources  extends ClientBundle {
 
 	public interface ArtistListCssResource extends CssResource {
 
+        String artistList();
+
 		String artistView();
 		String artistView_selected();
 
