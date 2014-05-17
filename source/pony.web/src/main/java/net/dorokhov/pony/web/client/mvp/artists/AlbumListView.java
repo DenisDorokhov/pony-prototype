@@ -9,7 +9,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.view.AlbumView;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongRequestEvent.Handler {
+public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
@@ -195,12 +195,12 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public void onSongRequest(SongRequestEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
+	public void onSongViewEvent(SongViewEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongViewEvent.SONG_SELECTION_REQUESTED) {
 
 			selectionModel.setSelected(aEvent.getSong(), true);
 
-		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
+		} else if (aEvent.getAssociatedType() == SongViewEvent.SONG_ACTIVATION_REQUESTED) {
 
 			if (!aEvent.getSong().equals(activationModel.getSelectedObject())) {
 				activationModel.setSelected(aEvent.getSong(), true);

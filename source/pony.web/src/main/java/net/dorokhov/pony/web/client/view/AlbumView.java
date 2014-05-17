@@ -10,13 +10,13 @@ import com.google.gwt.view.client.SetSelectionModel;
 import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.*;
 
-public class AlbumView extends Composite implements SongRequestEvent.HasHandler, SongRequestEvent.Handler {
+public class AlbumView extends Composite implements SongViewEvent.HasHandler, SongViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
@@ -127,21 +127,21 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 	}
 
 	@Override
-	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	public HandlerRegistration addSongSelectionRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_SELECTION_REQUESTED, aHandler);
 	}
 
 	@Override
-	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	public HandlerRegistration addSongActivationRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_ACTIVATION_REQUESTED, aHandler);
 	}
 
 	@Override
-	public void onSongRequest(SongRequestEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
-		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
+	public void onSongViewEvent(SongViewEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongViewEvent.SONG_SELECTION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
+		} else if (aEvent.getAssociatedType() == SongViewEvent.SONG_ACTIVATION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
 		}
 	}
 

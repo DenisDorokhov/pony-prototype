@@ -9,10 +9,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import net.dorokhov.pony.web.client.Resources;
-import net.dorokhov.pony.web.client.view.event.ArtistRequestEvent;
+import net.dorokhov.pony.web.client.view.event.ArtistViewEvent;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
-public class ArtistView extends Composite implements ArtistRequestEvent.HasHandler {
+public class ArtistView extends Composite implements ArtistViewEvent.HasHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, ArtistView> {}
 
@@ -63,13 +63,13 @@ public class ArtistView extends Composite implements ArtistRequestEvent.HasHandl
 	}
 
 	@Override
-	public HandlerRegistration addArtistSelectionRequestHandler(ArtistRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(ArtistRequestEvent.ARTIST_SELECTION_REQUESTED, aHandler);
+	public HandlerRegistration addArtistSelectionRequestHandler(ArtistViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(ArtistViewEvent.ARTIST_SELECTION_REQUESTED, aHandler);
 	}
 
 	@UiHandler("artistView")
 	void onArtistViewClick(ClickEvent aEvent) {
-		handlerManager.fireEvent(new ArtistRequestEvent(ArtistRequestEvent.ARTIST_SELECTION_REQUESTED, getArtist()));
+		handlerManager.fireEvent(new ArtistViewEvent(ArtistViewEvent.ARTIST_SELECTION_REQUESTED, getArtist()));
 	}
 
 	private void updateArtist() {

@@ -11,7 +11,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.view.ArtistView;
-import net.dorokhov.pony.web.client.view.event.ArtistRequestEvent;
+import net.dorokhov.pony.web.client.view.event.ArtistViewEvent;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> implements ArtistListPresenter.MyView, ArtistRequestEvent.Handler {
+public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> implements ArtistListPresenter.MyView, ArtistViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, ArtistListView> {}
 
@@ -125,7 +125,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 	}
 
 	@Override
-	public void onArtistRequest(ArtistRequestEvent aEvent) {
+	public void onArtistViewEvent(ArtistViewEvent aEvent) {
 		selectionModel.setSelected(aEvent.getArtist(), true);
 	}
 

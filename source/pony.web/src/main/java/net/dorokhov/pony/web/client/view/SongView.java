@@ -15,10 +15,10 @@ import com.google.gwt.user.client.ui.Widget;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.StringUtils;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
-public class SongView extends Composite implements SongRequestEvent.HasHandler {
+public class SongView extends Composite implements SongViewEvent.HasHandler {
 
 	interface MyUiBinder extends UiBinder<Widget, SongView> {}
 
@@ -102,23 +102,23 @@ public class SongView extends Composite implements SongRequestEvent.HasHandler {
 	}
 
 	@Override
-	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	public HandlerRegistration addSongSelectionRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_SELECTION_REQUESTED, aHandler);
 	}
 
 	@Override
-	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	public HandlerRegistration addSongActivationRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_ACTIVATION_REQUESTED, aHandler);
 	}
 
 	@UiHandler("songView")
 	void onSongViewClick(ClickEvent aEvent) {
-		handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, getSong()));
+		handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_SELECTION_REQUESTED, getSong()));
 	}
 
 	@UiHandler("songView")
 	void onSongViewDoubleClick(DoubleClickEvent aEvent) {
-		handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, getSong()));
+		handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_ACTIVATION_REQUESTED, getSong()));
 	}
 
 	private void updateSong() {
