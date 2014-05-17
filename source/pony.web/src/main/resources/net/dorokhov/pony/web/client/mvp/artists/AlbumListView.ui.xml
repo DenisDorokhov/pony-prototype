@@ -2,14 +2,15 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
+	<ui:with field="mes" type="net.dorokhov.pony.web.client.LocaleMessages" />
 
 	<g:DeckLayoutPanel ui:field="deck">
 
-		<g:Label ui:field="loadingLabel" text="Loading..." />
+		<g:Label ui:field="loadingLabel" text="{mes.commonLoadingLabel}" />
 
-		<g:Label ui:field="errorLabel" text="Error!" />
+		<g:Label ui:field="errorLabel" text="{mes.commonErrorLabel}" />
 
-		<g:Label ui:field="noDataLabel" text="No data!" />
+		<g:Label ui:field="noDataLabel" text="{mes.commonNoDataLabel}" />
 
 		<g:DockLayoutPanel ui:field="content">
 

@@ -1,37 +1,43 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:with field="mes" type="net.dorokhov.pony.web.client.LocaleMessages" />
+
 	<g:PopupPanel autoHideOnHistoryEventsEnabled="true" autoHideEnabled="true" glassEnabled="true">
 
 		<g:HTMLPanel width="400px" height="200px">
 
-			Scan progress: <g:InlineLabel ui:field="progressLabel" /> <g:Button ui:field="scanButton" text="Scan" /><br />
-			Last scan: <g:InlineLabel ui:field="scanResultLabel" /><br />
+			<ui:text from="{mes.settingsScanProgress}" />
+			<g:InlineLabel ui:field="progressLabel" />
+			<g:Button ui:field="scanButton" text="Scan" /><br />
+
+			<ui:text from="{mes.settingsLastScan}" />
+			<g:InlineLabel ui:field="scanResultLabel" /><br />
 
 			<g:DeckPanel ui:field="deck">
 
-				<g:Label ui:field="loadingLabel" text="Loading..." />
+				<g:Label ui:field="loadingLabel" text="{mes.commonLoadingLabel}" />
 
-				<g:Label ui:field="errorLabel" text="Error!" />
+				<g:Label ui:field="errorLabel" text="{mes.commonErrorLabel}" />
 
 				<g:HTMLPanel ui:field="formPanel">
 
 					<p>
-						Music folders (separated by ";"):<br />
+						<ui:text from="{mes.settingsLibraryFiles}" /><br />
 						<g:TextBox ui:field="libraryFoldersText" width="300px" />
 					</p>
 
 					<p>
-						Automatic scan:<br />
+						<ui:text from="{mes.settingsAutoScan}" /><br />
 						<g:ListBox ui:field="autoScanIntervalList">
-							<g:item value="3600">Every hour</g:item>
-							<g:item value="86400">Once a day</g:item>
-							<g:item value="604800">Once a week</g:item>
-							<g:item value="0">Off</g:item>
+							<g:item value="3600" text=""><ui:text from="{mes.settingsAutoScanEveryHour}" /></g:item>
+							<g:item value="86400"><ui:text from="{mes.settingsAutoScanEveryDay}" /></g:item>
+							<g:item value="604800"><ui:text from="{mes.settingsAutoScanEveryWeek}" /></g:item>
+							<g:item value="0"><ui:text from="{mes.settingsAutoScanOff}" /></g:item>
 						</g:ListBox>
 					</p>
 
-					<p><g:Button ui:field="saveButton" text="Save" /></p>
+					<p><g:Button ui:field="saveButton" text="{mes.commonSaveLabel}" /></p>
 
 				</g:HTMLPanel>
 

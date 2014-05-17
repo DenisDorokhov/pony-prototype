@@ -126,8 +126,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 			getView().setPlaying(true);
 
-		} else if (aEvent.getAssociatedType() == SongEvent.SONG_PAUSED) {
-
+		} else if (aEvent.getAssociatedType() == SongEvent.SONG_PAUSED || aEvent.getAssociatedType() == SongEvent.SONG_FAILED) {
 			getView().setPlaying(false);
 		}
 	}

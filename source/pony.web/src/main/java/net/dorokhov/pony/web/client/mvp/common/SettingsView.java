@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
+import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
@@ -182,18 +183,18 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	private void updateScanResultState() {
 		if (getScanResultState() == ContentState.LOADING) {
 
-			scanResultLabel.setText("Loading...");
+			scanResultLabel.setText(LocaleMessages.IMPL.commonLoadingLabel());
 
 		} else if (getScanResultState() == ContentState.LOADED) {
 
 			if (getScanResult() != null && getScanResult().getDate() != null) {
 				scanResultLabel.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(getScanResult().getDate()));
 			} else {
-				scanResultLabel.setText("Not scanned yet");
+				scanResultLabel.setText(LocaleMessages.IMPL.settingsNoLastScan());
 			}
 
 		} else {
-			scanResultLabel.setText("Error!");
+			scanResultLabel.setText(LocaleMessages.IMPL.commonErrorLabel());
 		}
 	}
 
@@ -203,19 +204,22 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 		if (getScannerState() == ScannerState.SCAN_STARTING) {
 
-			progressLabel.setText("Starting...");
+			progressLabel.setText(LocaleMessages.IMPL.settingsStartingScan());
 
 		} else if (getScannerState() == ScannerState.SCANNING) {
 
 			if (getProgress() != null) {
-				progressLabel.setText("Scanning " + PROGRESS_FORMAT.format(getProgress().getProgress()) +
-						" (" + getProgress().getStep() + "/" + getProgress().getTotalSteps() + ")");
+
+				String percentProgress = PROGRESS_FORMAT.format(getProgress().getProgress());
+
+				progressLabel.setText(LocaleMessages.IMPL.settingsScanningWithProgress(percentProgress, getProgress().getStep(), getProgress().getTotalSteps()));
+
 			} else {
-				progressLabel.setText("Scanning...");
+				progressLabel.setText(LocaleMessages.IMPL.settingsScanningUnknownProgress());
 			}
 
 		} else {
-			progressLabel.setText("Inactive");
+			progressLabel.setText(LocaleMessages.IMPL.settingsScanningInactive());
 			scanButton.setEnabled(true);
 		}
 	}

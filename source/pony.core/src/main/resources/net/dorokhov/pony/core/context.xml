@@ -18,7 +18,7 @@
 
 	<bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
