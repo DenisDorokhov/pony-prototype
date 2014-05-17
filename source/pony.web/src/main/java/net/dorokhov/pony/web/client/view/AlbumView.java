@@ -117,6 +117,15 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		updateAlbum();
 	}
 
+	public void scrollToSong(SongDto aSong) {
+		for (int i = 0; i < songsPanel.getWidgetCount(); i++) {
+
+			SongListView songListView = (SongListView) songsPanel.getWidget(i);
+
+			songListView.scrollToSong(aSong);
+		}
+	}
+
 	@Override
 	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
 		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);

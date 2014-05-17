@@ -9,6 +9,7 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
+import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
@@ -37,6 +38,10 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void setAlbums(List<AlbumSongsDto> aAlbums);
 
+		public SongDto getSelectedSong();
+
+		public void setSelectedSong(SongDto aSong);
+
 		public SongDto getActiveSong();
 
 		public void setActiveSong(SongDto aSong);
@@ -44,6 +49,12 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		public boolean isPlaying();
 
 		public void setPlaying(boolean aPlaying);
+
+		public void scrollToTop();
+
+		public void scrollToSelectedSong();
+
+		public void scrollToActiveSong();
 
 	}
 
@@ -54,6 +65,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	private Request currentRequest;
 
 	private boolean shouldHandleSongActivation = true;
+	private boolean shouldScrollToSong = false;
 
 	@Inject
 	public AlbumListPresenter(EventBus aEventBus, AlbumListPresenter.MyView aView, AlbumServiceRpcAsync aAlbumService) {
@@ -145,7 +157,16 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	private void doUpdateAlbums(ArtistDto aArtist, boolean aShouldShowLoadingState) {
 
+		ArtistDto oldArtist = getView().getArtist();
+
 		getView().setArtist(aArtist);
+
+		if (!ObjectUtils.nullSafeEquals(aArtist, oldArtist)) {
+
+			getView().scrollToTop();
+
+			shouldScrollToSong = true;
+		}
 
 		if (aArtist != null) {
 			log.fine("updating albums of artist " + aArtist + "...");
@@ -181,6 +202,14 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 					getView().setContentState(ContentState.LOADED);
 
 					log.fine("albums updated");
+
+					if (shouldScrollToSong) {
+
+						getView().scrollToSelectedSong();
+						getView().scrollToActiveSong();
+
+						shouldScrollToSong = false;
+					}
 				}
 
 				@Override

@@ -115,7 +115,7 @@ public class ArtistListView extends ViewWithUiHandlers<ArtistListUiHandlers> imp
 
 			final ArtistView artistView = artistToArtistView.get(aArtist);
 
-			Scheduler.get().scheduleDeferred(new Command() {
+			Scheduler.get().scheduleFinally(new Command() {
 				@Override
 				public void execute() {
 					artistView.getElement().scrollIntoView();

@@ -91,7 +91,7 @@
 }
 
 .songView_selected {
-	background-color: #8ba7c9;
+	background-color: #8ba7c9 !important;
 	border: 1px solid #829dbc;
 	color: #fff;
 	text-shadow: 0 1px 1px #547191;
@@ -103,7 +103,7 @@
 }
 
 .songView_activated {
-
+	background-color: #e0e0e0;
 }
 
 @sprite .songView_activated .songTrackNumber {

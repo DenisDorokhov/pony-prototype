@@ -8,7 +8,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
-import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.view.AlbumView;
 import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -16,7 +15,9 @@ import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongRequestEvent.Handler {
 
@@ -31,6 +32,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 			viewCache.add(new AlbumView());
 		}
 	}
+
+	private final Map<Long, AlbumView> albumIdToAlbumView = new HashMap<Long, AlbumView>();
 
 	@UiField
 	DeckLayoutPanel deck;
@@ -96,11 +99,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	@Override
 	public void setArtist(ArtistDto aArtist) {
 
-		ArtistDto oldArtist = artist;
-
 		artist = aArtist;
 
-		updateArtist(oldArtist);
+		updateArtist();
 	}
 
 	@Override
@@ -114,6 +115,22 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		albums = aAlbums;
 
 		updateAlbums();
+	}
+
+	@Override
+	public SongDto getSelectedSong() {
+		return selectionModel.getSelectedObject();
+	}
+
+	@Override
+	public void setSelectedSong(SongDto aSong) {
+		if (aSong != null) {
+			selectionModel.setSelected(aSong, true);
+		} else {
+			if (selectionModel.getSelectedObject() != null) {
+				selectionModel.setSelected(selectionModel.getSelectedObject(), false);
+			}
+		}
 	}
 
 	@Override
@@ -150,6 +167,21 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
+	public void scrollToTop() {
+		scroller.scrollToTop();
+	}
+
+	@Override
+	public void scrollToSelectedSong() {
+		scrollToSong(getSelectedSong());
+	}
+
+	@Override
+	public void scrollToActiveSong() {
+		scrollToSong(getActiveSong());
+	}
+
+	@Override
 	public ContentState getContentState() {
 		return contentState;
 	}
@@ -178,13 +210,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		}
 	}
 
-	private void updateArtist(ArtistDto aOldArtist) {
-
+	private void updateArtist() {
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
-
-		if (!ObjectUtils.nullSafeEquals(artist, aOldArtist)) {
-			scroller.scrollToTop();
-		}
 	}
 
 	private void updateAlbums() {
@@ -207,6 +234,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 			viewCache.add(albumView);
 		}
+
+		albumIdToAlbumView.clear();
 
 		for (int i = 0; i < albumList.size(); i++) {
 
@@ -235,6 +264,8 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 			}
 
 			albumView.setAlbum(album);
+
+			albumIdToAlbumView.put(album.getId(), albumView);
 		}
 	}
 
@@ -264,6 +295,17 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 				default:
 					deck.showWidget(errorLabel);
 					break;
+			}
+		}
+	}
+
+	private void scrollToSong(SongDto aSong) {
+		if (aSong != null) {
+
+			AlbumView view = albumIdToAlbumView.get(aSong.getAlbumId());
+
+			if (view != null) {
+				view.scrollToSong(aSong);
 			}
 		}
 	}

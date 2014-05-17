@@ -1,10 +1,12 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -134,6 +136,20 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		caption = aCaption;
 
 		updateCaption();
+	}
+
+	public void scrollToSong(SongDto aSong) {
+
+		final SongView view = songToSongView.get(aSong);
+
+		if (view != null) {
+			Scheduler.get().scheduleFinally(new Command() {
+				@Override
+				public void execute() {
+					view.getElement().scrollIntoView();
+				}
+			});
+		}
 	}
 
 	@Override
