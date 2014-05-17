@@ -138,6 +138,14 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	}
 
 	@Override
+	public void onSongNavigationRequested() {
+
+		log.fine("song " + getView().getSong() + " navigation requested");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_SELECTION_REQUESTED, getView().getSong()));
+	}
+
+	@Override
 	public void onPlayListEvent(PlayListEvent aEvent) {
 
 		playListNavigator.setPlayList(aEvent.getPlayList());

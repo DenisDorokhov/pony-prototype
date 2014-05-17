@@ -52,9 +52,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		public void scrollToTop();
 
-		public void scrollToSelectedSong();
-
-		public void scrollToActiveSong();
+		public void scrollToSong(SongDto aSong);
 
 	}
 
@@ -91,6 +89,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 		addRegisteredHandler(SongEvent.SONG_STARTED, this);
 		addRegisteredHandler(SongEvent.SONG_PAUSED, this);
+		addRegisteredHandler(SongEvent.SONG_SELECTION_REQUESTED, this);
 	}
 
 	@Override
@@ -150,6 +149,11 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 			getView().setPlaying(true);
 
+		} else if (aEvent.getAssociatedType() == SongEvent.SONG_SELECTION_REQUESTED) {
+
+			getView().setSelectedSong(aEvent.getSong());
+			getView().scrollToSong(aEvent.getSong());
+
 		} else if (aEvent.getAssociatedType() == SongEvent.SONG_PAUSED || aEvent.getAssociatedType() == SongEvent.SONG_FAILED) {
 			getView().setPlaying(false);
 		}
@@ -205,8 +209,12 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 					if (shouldScrollToSong) {
 
-						getView().scrollToSelectedSong();
-						getView().scrollToActiveSong();
+						if (getView().getSelectedSong() != null) {
+							getView().scrollToSong(getView().getSelectedSong());
+						}
+						if (getView().getActiveSong() != null) {
+							getView().scrollToSong(getView().getActiveSong());
+						}
 
 						shouldScrollToSong = false;
 					}

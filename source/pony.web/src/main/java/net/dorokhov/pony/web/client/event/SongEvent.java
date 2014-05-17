@@ -10,6 +10,7 @@ public class SongEvent extends AbstractEvent<SongEvent.Handler> {
 		public void onSongEvent(SongEvent aEvent);
 	}
 
+	public static final Type<Handler> SONG_SELECTION_REQUESTED = new Type<Handler>();
 	public static final Type<Handler> SONG_SELECTED = new Type<Handler>();
 
 	public static final Type<Handler> SONG_STARTED = new Type<Handler>();

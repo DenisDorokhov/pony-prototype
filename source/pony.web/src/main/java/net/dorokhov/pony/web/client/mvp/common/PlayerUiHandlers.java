@@ -15,5 +15,6 @@ public interface PlayerUiHandlers extends UiHandlers {
 
 	public void onPreviousSongRequested();
 	public void onNextSongRequested();
+	public void onSongNavigationRequested();
 
 }

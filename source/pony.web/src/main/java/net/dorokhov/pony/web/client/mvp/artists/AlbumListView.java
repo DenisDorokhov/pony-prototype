@@ -172,13 +172,13 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public void scrollToSelectedSong() {
-		scrollToSong(getSelectedSong());
-	}
+	public void scrollToSong(SongDto aSong) {
 
-	@Override
-	public void scrollToActiveSong() {
-		scrollToSong(getActiveSong());
+		AlbumView view = albumIdToAlbumView.get(aSong.getAlbumId());
+
+		if (view != null) {
+			view.scrollToSong(aSong);
+		}
 	}
 
 	@Override
@@ -295,17 +295,6 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 				default:
 					deck.showWidget(errorLabel);
 					break;
-			}
-		}
-	}
-
-	private void scrollToSong(SongDto aSong) {
-		if (aSong != null) {
-
-			AlbumView view = albumIdToAlbumView.get(aSong.getAlbumId());
-
-			if (view != null) {
-				view.scrollToSong(aSong);
 			}
 		}
 	}

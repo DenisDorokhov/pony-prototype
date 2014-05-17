@@ -2,11 +2,14 @@ package net.dorokhov.pony.web.client.mvp.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -40,6 +43,9 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	@UiField(provided = true)
 	String playerId = PLAYER_ID;
+
+	@UiField
+	Label titleLabel;
 
 	private State state;
 
@@ -95,14 +101,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		song = aSong;
 
 		if (song != null) {
-
-			JSONObject options = new JSONObject();
-
-			options.put("mp3", new JSONString(aSong.getFileUrl()));
-
-			updateMedia(PLAYER_ID, CONTAINER_ID, song.getArtist() + " - " + song.getName(), options.getJavaScriptObject());
-
-			setPosition(0.0);
+			updateSong();
 		}
 
 		updateUnityOptions();
@@ -150,6 +149,11 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	@Override
 	public State getState() {
 		return state;
+	}
+
+	@UiHandler("titleLabel")
+	void onScanClick(ClickEvent aEvent) {
+		getUiHandlers().onSongNavigationRequested();
 	}
 
 	private JSONObject createOptions() {
@@ -202,9 +206,21 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		});
 	}-*/;
 
-	private native void updateMedia(String aPlayerId, String aSkinId, String aName, JavaScriptObject aOptions) /*-{
+	private void updateSong() {
+
+		JSONObject options = new JSONObject();
+
+		options.put("mp3", new JSONString(getSong().getFileUrl()));
+
+		updateMedia(PLAYER_ID, CONTAINER_ID, options.getJavaScriptObject());
+
+		setPosition(0.0);
+
+		titleLabel.setText(song.getArtist() + " - " + song.getName());
+	}
+
+	private native void updateMedia(String aPlayerId, String aSkinId, JavaScriptObject aOptions) /*-{
 		$wnd.$("#" + aPlayerId).jPlayer("setMedia", aOptions);
-		$wnd.$("#" + aSkinId + " .jp-title ul li").text(aName);
 	}-*/;
 
 	private native void updateVolume(String aPlayerId, double aVolume) /*-{
