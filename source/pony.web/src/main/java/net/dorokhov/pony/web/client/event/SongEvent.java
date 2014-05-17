@@ -17,7 +17,7 @@ public class SongEvent extends AbstractEvent<SongEvent.Handler> {
 	public static final Type<Handler> SONG_ENDED = new Type<Handler>();
 	public static final Type<Handler> SONG_FAILED = new Type<Handler>();
 
-	private SongDto song;
+	private final SongDto song;
 
 	public SongEvent(Type<Handler> aAssociatedType, SongDto aSong) {
 

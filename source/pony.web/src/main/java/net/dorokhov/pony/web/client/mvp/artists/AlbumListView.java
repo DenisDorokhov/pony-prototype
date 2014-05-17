@@ -8,6 +8,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
+import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.view.AlbumView;
 import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
@@ -181,7 +182,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
 
-		if (artist != aOldArtist) {
+		if (!ObjectUtils.nullSafeEquals(artist, aOldArtist)) {
 			scroller.scrollToTop();
 		}
 	}

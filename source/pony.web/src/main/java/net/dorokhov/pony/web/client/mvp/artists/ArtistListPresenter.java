@@ -126,6 +126,8 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 				if (aResult.size() == 0) {
 					getEventBus().fireEvent(new NoDataEvent(NoDataEvent.NO_DATA_DETECTED));
+				} else {
+					getEventBus().fireEvent(new ArtistEvent(ArtistEvent.ARTIST_UPDATED, aResult));
 				}
 
 				doSelectArtist(artistToSelect, aShouldScroll);

@@ -9,6 +9,7 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
+import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, RefreshEvent.Handler, SongEvent.Handler {
+public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, ArtistEvent.Handler, RefreshEvent.Handler, SongEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<AlbumListUiHandlers>, HasContentState {
 
@@ -74,6 +75,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		super.onBind();
 
+		addRegisteredHandler(ArtistEvent.ARTIST_UPDATED, this);
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 		addRegisteredHandler(SongEvent.SONG_STARTED, this);
 		addRegisteredHandler(SongEvent.SONG_PAUSED, this);
@@ -104,6 +106,16 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		}
 
 		shouldHandleSongActivation = true;
+	}
+
+	@Override
+	public void onArtistEvent(ArtistEvent aEvent) {
+		if (aEvent.getAssociatedType() == ArtistEvent.ARTIST_UPDATED) {
+
+			if (getView().getArtist() != null && aEvent.hasArtist(getView().getArtist())) {
+				getView().setArtist(aEvent.getArtist(getView().getArtist().getId()));
+			}
+		}
 	}
 
 	@Override
