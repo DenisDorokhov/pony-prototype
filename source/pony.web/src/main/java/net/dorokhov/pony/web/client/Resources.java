@@ -18,8 +18,8 @@ public interface Resources  extends ClientBundle {
 	@Source("img/pause.png")
 	ImageResource imgPause();
 
-	@Source("css/global.css")
-	CssResource cssGlobal();
+	@Source("css/common.css")
+	CssResource cssCommon();
 
 	@Source("css/artistList.css")
 	ArtistListCssResource cssArtistList();

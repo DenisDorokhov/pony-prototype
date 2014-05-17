@@ -29,7 +29,7 @@ public class ApplicationView extends ViewImpl implements ApplicationPresenter.My
 
 	public ApplicationView() {
 
-		Resources.IMPL.cssGlobal().ensureInjected();
+		Resources.IMPL.cssCommon().ensureInjected();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
