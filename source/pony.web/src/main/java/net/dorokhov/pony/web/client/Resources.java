@@ -49,6 +49,7 @@ public interface Resources  extends ClientBundle {
 		String artistView_selected();
 
 		String artistName();
+        String artistImageContainer();
 		String artistImage();
 	}
 

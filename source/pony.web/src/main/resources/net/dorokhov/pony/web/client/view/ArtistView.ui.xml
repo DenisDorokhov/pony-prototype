@@ -5,7 +5,9 @@
 
 	<g:FocusPanel ui:field="artistView" styleName="{res.cssArtistList.artistView}">
 		<g:FlowPanel>
-			<g:Image ui:field="artistImage" styleName="{res.cssArtistList.artistImage}" />
+            <g:FlowPanel styleName="{res.cssArtistList.artistImageContainer}">
+			    <g:Image ui:field="artistImage" styleName="{res.cssArtistList.artistImage}" />
+            </g:FlowPanel>
 			<g:InlineLabel ui:field="artistName" styleName="{res.cssArtistList.artistName}" />
 		</g:FlowPanel>
 	</g:FocusPanel>

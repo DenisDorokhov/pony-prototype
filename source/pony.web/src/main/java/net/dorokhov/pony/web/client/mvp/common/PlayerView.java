@@ -9,15 +9,15 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.shared.SongDto;
 
 public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements PlayerPresenter.MyView {
 
-	private class RootPanel extends SimpleLayoutPanel {
+	private class RootPanel extends FlowPanel {
 
 		@Override
 		protected void onLoad() {
@@ -36,7 +36,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	private static final String CONTAINER_ID = "jp_container_1";
 
 	@UiField(provided = true)
-	SimpleLayoutPanel rootPanel;
+    FlowPanel rootPanel;
 
 	@UiField(provided = true)
 	String containerId = CONTAINER_ID;

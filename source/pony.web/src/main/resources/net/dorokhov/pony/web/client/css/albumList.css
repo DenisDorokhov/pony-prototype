@@ -10,15 +10,17 @@
 }
 
 .albumImage {
+    width: 140px;
+    height: 140px;
 	float: left;
 	margin: 0 10px 10px;
+    box-shadow: 0 5px 10px #ccc;
+    border: 1px solid #8a8a8a;
 }
 
 .albumImage img {
 	width: 140px;
 	height: 140px;
-	box-shadow: 0 5px 10px #ccc;
-	border: 1px solid #8a8a8a;
 }
 
 .albumInfo {
