@@ -5,7 +5,7 @@
 
 	<g:FlowPanel styleName="{res.cssAlbumList.albumDisc}">
 		<g:Label ui:field="captionLabel" styleName="{res.cssAlbumList.albumDiscHeader}" />
-		<g:FlowPanel ui:field="songListView" styleName="{res.cssAlbumList.songList}" />
+		<g:FlowPanel ui:field="songsPanel" styleName="{res.cssAlbumList.songList}" />
 	</g:FlowPanel>
 
 </ui:UiBinder>

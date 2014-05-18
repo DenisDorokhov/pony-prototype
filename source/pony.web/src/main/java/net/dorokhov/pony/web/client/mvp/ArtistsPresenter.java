@@ -68,10 +68,12 @@ public class ArtistsPresenter extends Presenter<ArtistsPresenter.MyView, Artists
 
 	@Override
 	public void onArtistEvent(ArtistEvent aEvent) {
+		if (aEvent.getAssociatedType() == ArtistEvent.ARTIST_SELECTED) {
 
-		albumListPresenter.updateAlbums(aEvent.getArtist());
+			albumListPresenter.updateAlbums(aEvent.getFirstArtist());
 
-		goToArtist(aEvent.getArtist());
+			goToArtist(aEvent.getFirstArtist());
+		}
 	}
 
 	@Override

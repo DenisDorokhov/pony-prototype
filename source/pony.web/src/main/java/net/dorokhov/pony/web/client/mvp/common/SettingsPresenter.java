@@ -9,6 +9,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PopupView;
 import com.gwtplatform.mvp.client.PresenterWidget;
+import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
@@ -154,11 +155,11 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 		refreshTimer = null;
 
 		if (aCaught instanceof LibraryNotDefinedException) {
-			Window.alert("Music folders not defined!");
+			Window.alert(LocaleMessages.IMPL.alertLibraryNotDefined());
 		} else if (aCaught instanceof ConcurrentScanException) {
-			Window.alert("Music folders are already being scanned!");
+			Window.alert(LocaleMessages.IMPL.alertLibraryAlreadyScanning());
 		} else {
-			Window.alert("Could not start scanning!");
+			Window.alert(LocaleMessages.IMPL.alertCouldNotStartScanning());
 		}
 	}
 
@@ -215,7 +216,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 					log.fine("configuration saved successfully");
 
 					if (shouldOfferScan(getLibraryConfig(aResult), originalLibraryConfig)) {
-						if (Window.confirm("Library configuration has been changed. Do you want to start scanning?")) {
+						if (Window.confirm(LocaleMessages.IMPL.confirmationScanAfterConfigurationChange())) {
 							libraryScanner.scan();
 						}
 					}
@@ -232,7 +233,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 					log.log(Level.SEVERE, "could not save configuration", aCaught);
 
-					Window.alert("Could not save configuration!");
+					Window.alert(LocaleMessages.IMPL.alertCouldNotSaveConfiguration());
 				}
 			});
 		}

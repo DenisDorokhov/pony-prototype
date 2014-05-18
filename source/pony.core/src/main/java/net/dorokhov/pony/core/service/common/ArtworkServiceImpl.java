@@ -65,9 +65,17 @@ public class ArtworkServiceImpl implements ArtworkService {
 		File artwork = doFetchArtwork(aFolder);
 
 		if (artwork == null) {
-			for (String artworkFolder : artworkFolderNames) {
 
-				artwork = doFetchArtwork(new File(aFolder, artworkFolder));
+			File[] folderFiles = aFolder.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File aFile) {
+					return artworkFolderNames.contains(aFile.getName().toLowerCase());
+				}
+			});
+
+			for (File file : folderFiles) {
+
+				artwork = doFetchArtwork(file);
 
 				if (artwork != null) {
 					break;

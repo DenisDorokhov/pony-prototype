@@ -8,9 +8,15 @@
 	<ui:style>
 		.htmlPanel {
 		}
+		.titleContainer {
+			height: 20px;
+		}
+		.title {
+			cursor: pointer;
+		}
 	</ui:style>
 
-	<g:FlowPanel ui:field="rootPanel">
+	<g:SimpleLayoutPanel ui:field="rootPanel">
 
 		<g:HTMLPanel styleName="{style.htmlPanel}">
 
@@ -39,7 +45,7 @@
                         <div class="jp-song-info-holder">
                             <div class="jp-title">
                                 <ul>
-                                    <li>&nbsp;</li>
+                                    <li class="{style.titleContainer}"><g:InlineLabel ui:field="titleLabel" styleName="{style.title}" /></li>
                                 </ul>
                             </div>
                             <div class="jp-progress">
@@ -63,6 +69,6 @@
 
 		</g:HTMLPanel>
 
-	</g:FlowPanel>
+	</g:SimpleLayoutPanel>
 
 </ui:UiBinder>

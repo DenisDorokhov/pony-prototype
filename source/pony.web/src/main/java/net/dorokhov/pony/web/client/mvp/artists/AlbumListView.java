@@ -1,7 +1,6 @@
 package net.dorokhov.pony.web.client.mvp.artists;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -10,15 +9,17 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.view.AlbumView;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.ArtistDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongRequestEvent.Handler {
+public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> implements AlbumListPresenter.MyView, SongViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumListView> {}
 
@@ -32,7 +33,7 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		}
 	}
 
-	private final List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
+	private final Map<Long, AlbumView> albumIdToAlbumView = new HashMap<Long, AlbumView>();
 
 	@UiField
 	DeckLayoutPanel deck;
@@ -98,11 +99,9 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	@Override
 	public void setArtist(ArtistDto aArtist) {
 
-		ArtistDto oldArtist = artist;
-
 		artist = aArtist;
 
-		updateArtist(oldArtist);
+		updateArtist();
 	}
 
 	@Override
@@ -116,6 +115,22 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		albums = aAlbums;
 
 		updateAlbums();
+	}
+
+	@Override
+	public SongDto getSelectedSong() {
+		return selectionModel.getSelectedObject();
+	}
+
+	@Override
+	public void setSelectedSong(SongDto aSong) {
+		if (aSong != null) {
+			selectionModel.setSelected(aSong, true);
+		} else {
+			if (selectionModel.getSelectedObject() != null) {
+				selectionModel.setSelected(selectionModel.getSelectedObject(), false);
+			}
+		}
 	}
 
 	@Override
@@ -152,6 +167,21 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
+	public void scrollToTop() {
+		scroller.scrollToTop();
+	}
+
+	@Override
+	public void scrollToSong(SongDto aSong) {
+
+		AlbumView view = albumIdToAlbumView.get(aSong.getAlbumId());
+
+		if (view != null) {
+			view.scrollToSong(aSong);
+		}
+	}
+
+	@Override
 	public ContentState getContentState() {
 		return contentState;
 	}
@@ -165,12 +195,12 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 	}
 
 	@Override
-	public void onSongRequest(SongRequestEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
+	public void onSongViewEvent(SongViewEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongViewEvent.SONG_SELECTION_REQUESTED) {
 
 			selectionModel.setSelected(aEvent.getSong(), true);
 
-		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
+		} else if (aEvent.getAssociatedType() == SongViewEvent.SONG_ACTIVATION_REQUESTED) {
 
 			if (!aEvent.getSong().equals(activationModel.getSelectedObject())) {
 				activationModel.setSelected(aEvent.getSong(), true);
@@ -180,66 +210,62 @@ public class AlbumListView extends ViewWithUiHandlers<AlbumListUiHandlers> imple
 		}
 	}
 
-	private void updateArtist(ArtistDto aOldArtist) {
-
+	private void updateArtist() {
 		artistNameLabel.setText(artist != null ? artist.getName() : null);
-
-		if (artist != aOldArtist) {
-			scroller.scrollToTop();
-		}
 	}
 
 	private void updateAlbums() {
 
-		while (albumsPanel.getWidgetCount() > 0) {
+		List<AlbumSongsDto> albumList = getAlbums() != null ? getAlbums() : new ArrayList<AlbumSongsDto>();
+
+		while (albumsPanel.getWidgetCount() > albumList.size()) {
 
 			int i = albumsPanel.getWidgetCount() - 1;
 
-			Widget widget = albumsPanel.getWidget(i);
+			AlbumView albumView = (AlbumView) albumsPanel.getWidget(i);
 
 			albumsPanel.remove(i);
 
-			if (widget instanceof AlbumView) {
+			albumView.setSelectionModel(null);
+			albumView.setActivationModel(null);
+			albumView.setPlaying(false);
 
-				AlbumView albumView = (AlbumView) widget;
+			albumView.setAlbum(null);
 
-				albumView.setSelectionModel(null);
-				albumView.setActivationModel(null);
-				albumView.setPlaying(false);
-
-				albumView.setAlbum(null);
-
-				viewCache.add(0, albumView); // keep original ordering to re-use the same views when refreshing
-			}
+			viewCache.add(albumView);
 		}
 
-		for (HandlerRegistration registration : handlerRegistrations) {
-			registration.removeHandler();
-		}
+		albumIdToAlbumView.clear();
 
-		handlerRegistrations.clear();
+		for (int i = 0; i < albumList.size(); i++) {
 
-		if (albums != null) {
+			AlbumSongsDto album = albumList.get(i);
 
-			for (AlbumSongsDto album : albums) {
+			AlbumView albumView;
 
-				AlbumView albumView = viewCache.size() > 0 ? viewCache.remove(0) : null;
+			if (i < albumsPanel.getWidgetCount()) {
+				albumView = (AlbumView) albumsPanel.getWidget(i);
+			} else {
+
+				albumView = viewCache.size() > 0 ? viewCache.remove(0) : null;
 
 				if (albumView == null) {
 					albumView = new AlbumView();
 				}
 
-				albumView.setAlbum(album);
-
 				albumView.setSelectionModel(selectionModel);
 				albumView.setActivationModel(activationModel);
 				albumView.setPlaying(isPlaying());
 
-				handlerRegistrations.add(albumView.addSongSelectionRequestHandler(this));
-				handlerRegistrations.add(albumView.addSongActivationRequestHandler(this));
+				albumView.addSongSelectionRequestHandler(this);
+				albumView.addSongActivationRequestHandler(this);
 
 				albumsPanel.add(albumView);
 			}
+
+			albumView.setAlbum(album);
+
+			albumIdToAlbumView.put(album.getId(), albumView);
 		}
 	}
 

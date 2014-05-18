@@ -1,10 +1,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:with field="mes" type="net.dorokhov.pony.web.client.LocaleMessages" />
+
 	<g:HTMLPanel>
 
-		<g:Button ui:field="refreshButton" text="Refresh" />
-		<g:Button ui:field="settingsButton" text="Settings" />
+		<g:Button ui:field="refreshButton" text="{mes.toolbarRefresh}" />
+		<g:Button ui:field="settingsButton" text="{mes.toolbarSettings}" />
 
 	</g:HTMLPanel>
 

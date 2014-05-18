@@ -5,15 +5,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import net.dorokhov.pony.web.client.common.AbstractEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
-public class SongRequestEvent extends AbstractEvent<SongRequestEvent.Handler> {
+public class SongViewEvent extends AbstractEvent<SongViewEvent.Handler> {
 
 	public static interface Handler extends EventHandler {
-		public void onSongRequest(SongRequestEvent aEvent);
+		public void onSongViewEvent(SongViewEvent aEvent);
 	}
 
 	public static interface HasHandler {
-		public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler);
-		public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler);
+		public HandlerRegistration addSongSelectionRequestHandler(SongViewEvent.Handler aHandler);
+		public HandlerRegistration addSongActivationRequestHandler(SongViewEvent.Handler aHandler);
 	}
 
 	public static final Type<Handler> SONG_SELECTION_REQUESTED = new Type<Handler>();
@@ -21,7 +21,7 @@ public class SongRequestEvent extends AbstractEvent<SongRequestEvent.Handler> {
 
 	private SongDto song;
 
-	public SongRequestEvent(Type<Handler> aAssociatedType, SongDto aSong) {
+	public SongViewEvent(Type<Handler> aAssociatedType, SongDto aSong) {
 
 		super(aAssociatedType);
 
@@ -34,6 +34,6 @@ public class SongRequestEvent extends AbstractEvent<SongRequestEvent.Handler> {
 
 	@Override
 	protected void dispatch(Handler aHandler) {
-		aHandler.onSongRequest(this);
+		aHandler.onSongViewEvent(this);
 	}
 }

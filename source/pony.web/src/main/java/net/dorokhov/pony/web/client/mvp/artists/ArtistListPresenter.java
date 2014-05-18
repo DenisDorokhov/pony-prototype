@@ -12,6 +12,7 @@ import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.event.ArtistEvent;
 import net.dorokhov.pony.web.client.event.NoDataEvent;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
+import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.rpc.ArtistServiceRpcAsync;
 import net.dorokhov.pony.web.shared.ArtistDto;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyView> implements ArtistListUiHandlers, RefreshEvent.Handler {
+public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyView> implements ArtistListUiHandlers, RefreshEvent.Handler, SongEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<ArtistListUiHandlers>, HasContentState {
 
@@ -70,6 +71,7 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 		super.onBind();
 
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
+		addRegisteredHandler(SongEvent.SONG_SELECTION_REQUESTED, this);
 	}
 
 	@Override
@@ -88,6 +90,16 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 	@Override
 	public void onRefreshEvent(RefreshEvent aEvent) {
 		loadArtists(false, false);
+	}
+
+	@Override
+	public void onSongEvent(SongEvent aEvent) {
+
+		ArtistDto artist = artistMap.get(aEvent.getSong().getArtistId().toString());
+
+		if (artist != null) {
+			getView().setSelectedArtist(artist, true);
+		}
 	}
 
 	private void loadArtists(boolean aShouldShowLoadingState, final boolean aShouldScroll) {
@@ -126,6 +138,8 @@ public class ArtistListPresenter extends PresenterWidget<ArtistListPresenter.MyV
 
 				if (aResult.size() == 0) {
 					getEventBus().fireEvent(new NoDataEvent(NoDataEvent.NO_DATA_DETECTED));
+				} else {
+					getEventBus().fireEvent(new ArtistEvent(ArtistEvent.ARTIST_UPDATED, aResult));
 				}
 
 				doSelectArtist(artistToSelect, aShouldScroll);

@@ -21,8 +21,8 @@ public interface Resources  extends ClientBundle {
     @Source("img/logo.png")
     ImageResource imgLogo();
 
-	@Source("css/global.css")
-	CssResource cssGlobal();
+	@Source("css/common.css")
+	CssResource cssCommon();
 
     @Source("css/header.css")
     HeaderCssResource cssHeader();

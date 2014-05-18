@@ -12,9 +12,9 @@ public class PlayListEvent extends AbstractEvent<PlayListEvent.Handler> {
 
 	public static final Type<Handler> PLAYLIST_CHANGE = new Type<Handler>();
 
-	private PlayList playList;
+	private final PlayList playList;
 
-	private int startIndex;
+	private final int startIndex;
 
 	public PlayListEvent(Type<Handler> aAssociatedType, PlayList aPlayList, int aStartIndex) {
 
