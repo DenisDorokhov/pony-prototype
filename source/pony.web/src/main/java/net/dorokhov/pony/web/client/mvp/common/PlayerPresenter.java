@@ -9,6 +9,7 @@ import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
+import net.dorokhov.pony.web.client.event.PlaybackEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.PlayListNavigator;
 import net.dorokhov.pony.web.client.service.PlayListNavigatorImpl;
@@ -126,6 +127,11 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	@Override
 	public void onVolumeChange() {}
+
+	@Override
+	public void onPlaybackRequested() {
+		getEventBus().fireEvent(new PlaybackEvent(PlaybackEvent.PLAYBACK_REQUESTED));
+	}
 
 	@Override
 	public void onPreviousSongRequested() {

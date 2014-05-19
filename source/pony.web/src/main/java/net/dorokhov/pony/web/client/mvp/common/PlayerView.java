@@ -170,39 +170,43 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private native void initPlayer(String aPlayerId, JavaScriptObject aOptions) /*-{
 
-		var instance = this;
+		var self = this;
 
 		aOptions.volumechange = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onVolumeChange(F)(event.jPlayer.options.volume);
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onVolumeChange(F)(event.jPlayer.options.volume);
 		};
 		aOptions.timeupdate = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPositionChange(F)(event.jPlayer.status.currentTime);
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPositionChange(F)(event.jPlayer.status.currentTime);
 		};
 		aOptions.play = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlay()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlay()();
 		};
 		aOptions.pause = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPause()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPause()();
 		};
 		aOptions.ended = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onEnd()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onEnd()();
 		};
 		aOptions.error = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
 		};
 
 		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
 		$wnd.UnityMusicShim().setCallbackObject({
 			pause: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
 			},
 			next: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onNextRequested()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onNextRequested()();
 			},
 			previous: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPreviousRequested()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPreviousRequested()();
 			}
+		});
+
+		$wnd.$(".jp-play").click(function() {
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayClick()();
 		});
 	}-*/;
 
@@ -329,6 +333,12 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			pause();
 		} else {
 			play();
+		}
+	}
+
+	private void onPlayClick() {
+		if (getSong() == null) {
+			getUiHandlers().onPlaybackRequested();
 		}
 	}
 
