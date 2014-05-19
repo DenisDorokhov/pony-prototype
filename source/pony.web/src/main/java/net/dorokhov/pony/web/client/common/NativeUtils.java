@@ -1,6 +1,6 @@
 package net.dorokhov.pony.web.client.common;
 
-public class GuiUtils {
+public class NativeUtils {
 
 	public static native void clearSelection() /*-{
 		if ($wnd.getSelection) {
@@ -8,6 +8,10 @@ public class GuiUtils {
 		} else if ($doc.selection) {
 			$doc.selection.empty();
 		}
+	}-*/;
+
+	public static native boolean isTouchDevice() /*-{
+		return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 	}-*/;
 
 }
