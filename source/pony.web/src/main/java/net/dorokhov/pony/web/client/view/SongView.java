@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import net.dorokhov.pony.web.client.Resources;
+import net.dorokhov.pony.web.client.common.GuiUtils;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.common.StringUtils;
 import net.dorokhov.pony.web.client.view.event.SongViewEvent;
@@ -118,6 +119,9 @@ public class SongView extends Composite implements SongViewEvent.HasHandler {
 
 	@UiHandler("songView")
 	void onSongViewDoubleClick(DoubleClickEvent aEvent) {
+
+		GuiUtils.clearSelection();
+
 		handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_ACTIVATION_REQUESTED, getSong()));
 	}
 

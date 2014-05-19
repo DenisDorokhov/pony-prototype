@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -9,6 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import net.dorokhov.pony.web.client.Resources;
+import net.dorokhov.pony.web.client.common.GuiUtils;
 import net.dorokhov.pony.web.client.view.event.ArtistViewEvent;
 import net.dorokhov.pony.web.shared.ArtistDto;
 
@@ -70,6 +72,11 @@ public class ArtistView extends Composite implements ArtistViewEvent.HasHandler 
 	@UiHandler("artistView")
 	void onArtistViewClick(ClickEvent aEvent) {
 		handlerManager.fireEvent(new ArtistViewEvent(ArtistViewEvent.ARTIST_SELECTION_REQUESTED, getArtist()));
+	}
+
+	@UiHandler("artistView")
+	void onArtistViewDoubleClick(DoubleClickEvent aEvent) {
+		GuiUtils.clearSelection();
 	}
 
 	private void updateArtist() {
