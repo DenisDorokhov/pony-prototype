@@ -1,9 +1,10 @@
-package net.dorokhov.pony.core.service.entity;
+package net.dorokhov.pony.core.service.search;
 
 import net.dorokhov.pony.core.domain.Album;
 import net.dorokhov.pony.core.domain.Artist;
 import net.dorokhov.pony.core.domain.Song;
 import net.dorokhov.pony.core.service.SearchService;
+import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.search.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -118,11 +119,11 @@ public class SearchServiceImpl implements SearchService {
 
 		BooleanQuery luceneQuery = new BooleanQuery();
 
-		for (String word : aQuery.trim().split("\\s+")) {
+		for (String word : aQuery.trim().toLowerCase().split("\\s+")) {
 
 			Query nameQuery = queryBuilder.keyword().wildcard().onField(aField).matching(word + "*").createQuery();
 
-			luceneQuery.add(nameQuery, BooleanClause.Occur.MUST);
+			luceneQuery.add(nameQuery, StopAnalyzer.ENGLISH_STOP_WORDS_SET.contains(word) ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST);
 		}
 
 		return fullTextEntityManager.createFullTextQuery(luceneQuery, aClass);
