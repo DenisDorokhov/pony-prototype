@@ -209,11 +209,11 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 					if (shouldScrollToSong) {
 
-						if (getView().getSelectedSong() != null) {
-							getView().scrollToSong(getView().getSelectedSong());
-						}
 						if (getView().getActiveSong() != null) {
 							getView().scrollToSong(getView().getActiveSong());
+						}
+						if (getView().getSelectedSong() != null) {
+							getView().scrollToSong(getView().getSelectedSong());
 						}
 
 						shouldScrollToSong = false;
