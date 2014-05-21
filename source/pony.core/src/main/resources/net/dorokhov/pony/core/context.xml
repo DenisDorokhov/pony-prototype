@@ -23,6 +23,7 @@
 		<property name="jdbcUrl" value="${db.url}" />
 		<property name="user" value="${db.username}" />
 		<property name="password" value="${db.password}" />
+		<property name="testConnectionOnCheckout" value="true" />
 	</bean>
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
