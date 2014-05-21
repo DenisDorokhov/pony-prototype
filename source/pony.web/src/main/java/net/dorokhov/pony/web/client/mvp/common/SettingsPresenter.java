@@ -9,7 +9,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PopupView;
 import com.gwtplatform.mvp.client.PresenterWidget;
-import net.dorokhov.pony.web.client.LocaleMessages;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.event.RefreshEvent;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
@@ -62,6 +62,8 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 		public ConfigurationState getConfigurationState();
 
 		public void setConfigurationState(ConfigurationState aConfigurationState);
+
+		public boolean isModified();
 	}
 
 	private static final int REFRESH_INTERVAL = 10000;
@@ -155,11 +157,11 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 		refreshTimer = null;
 
 		if (aCaught instanceof LibraryNotDefinedException) {
-			Window.alert(LocaleMessages.IMPL.alertLibraryNotDefined());
+			Window.alert(Messages.IMPL.alertLibraryNotDefined());
 		} else if (aCaught instanceof ConcurrentScanException) {
-			Window.alert(LocaleMessages.IMPL.alertLibraryAlreadyScanning());
+			Window.alert(Messages.IMPL.alertLibraryAlreadyScanning());
 		} else {
-			Window.alert(LocaleMessages.IMPL.alertCouldNotStartScanning());
+			Window.alert(Messages.IMPL.alertCouldNotStartScanning());
 		}
 	}
 
@@ -178,7 +180,21 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 	@Override
 	public void onScanRequested() {
-		libraryScanner.scan();
+
+		if (getView().isModified()) {
+
+			Window.alert(Messages.IMPL.alertScanRequiresConfigurationSaving());
+
+		} else {
+
+			ConfigurationDto libraryConfig = getLibraryConfig(getView().getConfiguration());
+
+			if (libraryConfig != null && libraryConfig.getValue() != null) {
+				libraryScanner.scan();
+			} else {
+				Window.alert(Messages.IMPL.alertLibraryNotDefined());
+			}
+		}
 	}
 
 	@Override
@@ -216,7 +232,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 					log.fine("configuration saved successfully");
 
 					if (shouldOfferScan(getLibraryConfig(aResult), originalLibraryConfig)) {
-						if (Window.confirm(LocaleMessages.IMPL.confirmationScanAfterConfigurationChange())) {
+						if (Window.confirm(Messages.IMPL.confirmationScanAfterConfigurationChange())) {
 							libraryScanner.scan();
 						}
 					}
@@ -233,7 +249,7 @@ public class SettingsPresenter extends PresenterWidget<SettingsPresenter.MyView>
 
 					log.log(Level.SEVERE, "could not save configuration", aCaught);
 
-					Window.alert(LocaleMessages.IMPL.alertCouldNotSaveConfiguration());
+					Window.alert(Messages.IMPL.alertCouldNotSaveConfiguration());
 				}
 			});
 		}

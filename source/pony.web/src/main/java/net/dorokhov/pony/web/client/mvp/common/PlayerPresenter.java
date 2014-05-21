@@ -7,7 +7,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
-import net.dorokhov.pony.web.client.LocaleMessages;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.PlaybackEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
@@ -166,7 +166,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	@Override
 	public void onWindowClosing(Window.ClosingEvent aEvent) {
 		if (getView().getState() == MyView.State.PLAYING) {
-			aEvent.setMessage(LocaleMessages.IMPL.alertPlaybackWillBeStopped());
+			aEvent.setMessage(Messages.IMPL.alertPlaybackWillBeStopped());
 		}
 	}
 

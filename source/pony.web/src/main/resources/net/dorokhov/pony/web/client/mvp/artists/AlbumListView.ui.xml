@@ -2,7 +2,7 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
-	<ui:with field="mes" type="net.dorokhov.pony.web.client.LocaleMessages" />
+	<ui:with field="mes" type="net.dorokhov.pony.web.client.Messages" />
 
 	<g:DeckLayoutPanel ui:field="deck">
 
