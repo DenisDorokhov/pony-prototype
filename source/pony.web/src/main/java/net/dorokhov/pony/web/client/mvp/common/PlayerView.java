@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.shared.SongDto;
 
 public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements PlayerPresenter.MyView {
@@ -26,8 +27,13 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 			initPlayer(PLAYER_ID, createOptions().getJavaScriptObject());
 
-			updateUnityOptions();
-			sendUnityState(false);
+			if (getSong() == null) {
+
+				updateUnityOptions();
+
+				sendUnityState(true); // hack to initialize Unity default state
+				sendUnityState(false);
+			}
 		}
 	}
 
@@ -260,9 +266,9 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private void sendUnityState(boolean aIsPlaying) {
 
-		String name = null;
+		String name = Messages.IMPL.playerNoSongTitle();
 		String artist = null;
-		String artworkUrl = null;
+		String artworkUrl = GWT.getHostPageBaseURL() + "img/logo.png";
 
 		if (getSong() != null) {
 			name = getSong().getName();
@@ -274,9 +280,6 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}
 
 	private native void doSendUnityState(boolean aIsPlaying, String aName, String aArtist, String aArtwork) /*-{
-
-		// TODO: show pony logo if no artwork defined: GWT.getHostPageBaseURL() + "img/logo.png";
-
 		$wnd.UnityMusicShim().sendState({
 			playing: aIsPlaying,
 			title: aName,

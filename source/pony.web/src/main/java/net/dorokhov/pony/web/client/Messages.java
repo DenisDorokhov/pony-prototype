@@ -20,6 +20,8 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
 
 	public String confirmationScanAfterConfigurationChange();
 
+	public String playerNoSongTitle();
+
 	public String toolbarRefresh();
 	public String toolbarSettings();
 
