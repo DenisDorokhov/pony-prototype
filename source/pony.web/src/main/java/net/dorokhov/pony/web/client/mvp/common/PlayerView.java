@@ -25,6 +25,9 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			super.onLoad();
 
 			initPlayer(PLAYER_ID, createOptions().getJavaScriptObject());
+
+			updateUnityOptions();
+			sendUnityState(false);
 		}
 	}
 
@@ -244,7 +247,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}-*/;
 
 	private void updateUnityOptions() {
-		doUpdateUnityOptions(getSong() != null, isPreviousSongAvailable(), isNextSongAvailable());
+		doUpdateUnityOptions(true, isPreviousSongAvailable(), isNextSongAvailable());
 	}
 
 	private native void doUpdateUnityOptions(boolean aCanPlay, boolean aPreviousSongAvailable, boolean aNextSongAvailable) /*-{
@@ -329,10 +332,14 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}
 
 	private void onPlayPause() {
-		if (state == State.PLAYING) {
-			pause();
+		if (getSong() != null) {
+			if (state == State.PLAYING) {
+				pause();
+			} else {
+				play();
+			}
 		} else {
-			play();
+			getUiHandlers().onPlaybackRequested();
 		}
 	}
 
