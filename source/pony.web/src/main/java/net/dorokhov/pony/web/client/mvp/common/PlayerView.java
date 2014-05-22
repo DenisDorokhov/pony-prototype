@@ -2,6 +2,7 @@ package net.dorokhov.pony.web.client.mvp.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -9,6 +10,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -31,8 +33,20 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 				updateUnityOptions();
 
-				sendUnityState(true); // hack to initialize Unity default state
-				sendUnityState(false);
+				// beginning of Unity default state initialization hack (to support startup with media key)
+
+				sendUnityState(true);
+
+				Scheduler.get().scheduleDeferred(new Command() {
+					@Override
+					public void execute() {
+						if (getSong() == null) {
+							sendUnityState(false);
+						}
+					}
+				});
+
+				// end of Unity default state initialization hack
 			}
 		}
 	}
@@ -268,12 +282,16 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		String name = Messages.IMPL.playerNoSongTitle();
 		String artist = null;
-		String artworkUrl = GWT.getHostPageBaseURL() + "img/logo.png";
+		String artworkUrl = null;
 
 		if (getSong() != null) {
 			name = getSong().getName();
 			artist = getSong().getArtistName();
 			artworkUrl = getSong().getAlbumArtworkUrl();
+		}
+
+		if (artworkUrl == null) {
+			artworkUrl = GWT.getHostPageBaseURL() + "img/logo.png";
 		}
 
 		doSendUnityState(aIsPlaying, name, artist, artworkUrl);
