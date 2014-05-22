@@ -7,15 +7,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SetSelectionModel;
+import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.AlbumSongsDto;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.*;
 
-public class AlbumView extends Composite implements SongRequestEvent.HasHandler, SongRequestEvent.Handler {
+public class AlbumView extends Composite implements SongViewEvent.HasHandler, SongViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, AlbumView> {}
 
@@ -116,22 +117,31 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 		updateAlbum();
 	}
 
-	@Override
-	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	public void scrollToSong(SongDto aSong) {
+		for (int i = 0; i < songsPanel.getWidgetCount(); i++) {
+
+			SongListView songListView = (SongListView) songsPanel.getWidget(i);
+
+			songListView.scrollToSong(aSong);
+		}
 	}
 
 	@Override
-	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	public HandlerRegistration addSongSelectionRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_SELECTION_REQUESTED, aHandler);
 	}
 
 	@Override
-	public void onSongRequest(SongRequestEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
-		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
+	public HandlerRegistration addSongActivationRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	}
+
+	@Override
+	public void onSongViewEvent(SongViewEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongViewEvent.SONG_SELECTION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
+		} else if (aEvent.getAssociatedType() == SongViewEvent.SONG_ACTIVATION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
 		}
 	}
 
@@ -190,7 +200,7 @@ public class AlbumView extends Composite implements SongRequestEvent.HasHandler,
 
 			songListView.setSongs(entry.getValue());
 
-			songListView.setCaption(discNumber != null ? "Disc " + discNumber : null);
+			songListView.setCaption(discNumber != null ? LocaleMessages.IMPL.albumDiscCaption(discNumber) : null);
 
 			i++;
 		}

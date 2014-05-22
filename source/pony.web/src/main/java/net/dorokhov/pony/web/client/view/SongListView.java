@@ -1,10 +1,12 @@
 package net.dorokhov.pony.web.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -12,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SetSelectionModel;
 import net.dorokhov.pony.web.client.Resources;
-import net.dorokhov.pony.web.client.view.event.SongRequestEvent;
+import net.dorokhov.pony.web.client.view.event.SongViewEvent;
 import net.dorokhov.pony.web.shared.SongDto;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SongListView extends Composite implements SongRequestEvent.HasHandler, SelectionChangeEvent.Handler, SongRequestEvent.Handler {
+public class SongListView extends Composite implements SongViewEvent.HasHandler, SelectionChangeEvent.Handler, SongViewEvent.Handler {
 
 	interface MyUiBinder extends UiBinder<Widget, SongListView> {}
 
@@ -136,14 +138,28 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 		updateCaption();
 	}
 
-	@Override
-	public HandlerRegistration addSongSelectionRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_SELECTION_REQUESTED, aHandler);
+	public void scrollToSong(SongDto aSong) {
+
+		final SongView view = songToSongView.get(aSong);
+
+		if (view != null) {
+			Scheduler.get().scheduleFinally(new Command() {
+				@Override
+				public void execute() {
+					view.getElement().scrollIntoView();
+				}
+			});
+		}
 	}
 
 	@Override
-	public HandlerRegistration addSongActivationRequestHandler(SongRequestEvent.Handler aHandler) {
-		return handlerManager.addHandler(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aHandler);
+	public HandlerRegistration addSongSelectionRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_SELECTION_REQUESTED, aHandler);
+	}
+
+	@Override
+	public HandlerRegistration addSongActivationRequestHandler(SongViewEvent.Handler aHandler) {
+		return handlerManager.addHandler(SongViewEvent.SONG_ACTIVATION_REQUESTED, aHandler);
 	}
 
 	@Override
@@ -152,11 +168,11 @@ public class SongListView extends Composite implements SongRequestEvent.HasHandl
 	}
 
 	@Override
-	public void onSongRequest(SongRequestEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongRequestEvent.SONG_SELECTION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
-		} else if (aEvent.getAssociatedType() == SongRequestEvent.SONG_ACTIVATION_REQUESTED) {
-			handlerManager.fireEvent(new SongRequestEvent(SongRequestEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
+	public void onSongViewEvent(SongViewEvent aEvent) {
+		if (aEvent.getAssociatedType() == SongViewEvent.SONG_SELECTION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_SELECTION_REQUESTED, aEvent.getSong()));
+		} else if (aEvent.getAssociatedType() == SongViewEvent.SONG_ACTIVATION_REQUESTED) {
+			handlerManager.fireEvent(new SongViewEvent(SongViewEvent.SONG_ACTIVATION_REQUESTED, aEvent.getSong()));
 		}
 	}
 

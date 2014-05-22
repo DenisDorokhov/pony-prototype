@@ -7,6 +7,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
+import net.dorokhov.pony.web.client.LocaleMessages;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.PlayListNavigator;
@@ -114,7 +115,10 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 	@Override
 	public void onError() {
+
 		log.fine("song " + getView().getSong() + " playback failed");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_FAILED, getView().getSong()));
 	}
 
 	@Override
@@ -134,6 +138,14 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	}
 
 	@Override
+	public void onSongNavigationRequested() {
+
+		log.fine("song " + getView().getSong() + " selection requested");
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_SELECTION_REQUESTED, getView().getSong()));
+	}
+
+	@Override
 	public void onPlayListEvent(PlayListEvent aEvent) {
 
 		playListNavigator.setPlayList(aEvent.getPlayList());
@@ -148,7 +160,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	@Override
 	public void onWindowClosing(Window.ClosingEvent aEvent) {
 		if (getView().getState() == MyView.State.PLAYING) {
-			aEvent.setMessage("Playback will be stopped!");
+			aEvent.setMessage(LocaleMessages.IMPL.alertPlaybackWillBeStopped());
 		}
 	}
 
