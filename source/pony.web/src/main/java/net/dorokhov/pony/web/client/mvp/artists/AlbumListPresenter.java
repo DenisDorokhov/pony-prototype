@@ -85,6 +85,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 		addRegisteredHandler(ArtistEvent.ARTIST_UPDATED, this);
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
 		addRegisteredHandler(PlaybackEvent.PLAYBACK_REQUESTED, this);
+		addRegisteredHandler(SongEvent.SONG_CHANGED, this);
 		addRegisteredHandler(SongEvent.SONG_STARTED, this);
 		addRegisteredHandler(SongEvent.SONG_PAUSED, this);
 		addRegisteredHandler(SongEvent.SONG_SELECTION_REQUESTED, this);
@@ -155,7 +156,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 	@Override
 	public void onSongEvent(SongEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongEvent.SONG_STARTED) {
+		if (aEvent.getAssociatedType() == SongEvent.SONG_CHANGED || aEvent.getAssociatedType() == SongEvent.SONG_STARTED) {
 
 			if (!aEvent.getSong().equals(getView().getActiveSong())) {
 
@@ -164,7 +165,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 				getView().setActiveSong(aEvent.getSong());
 			}
 
-			getView().setPlaying(true);
+			getView().setPlaying(aEvent.getAssociatedType() == SongEvent.SONG_STARTED);
 
 		} else if (aEvent.getAssociatedType() == SongEvent.SONG_SELECTION_REQUESTED) {
 

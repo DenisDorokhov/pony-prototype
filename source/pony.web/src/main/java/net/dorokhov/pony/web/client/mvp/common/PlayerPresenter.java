@@ -201,6 +201,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 
 		getView().setSong(aSong);
 
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_CHANGED, aSong));
+
 		getView().setPreviousSongAvailable(playListNavigator.hasPrevious());
 		getView().setNextSongAvailable(playListNavigator.hasNext());
 

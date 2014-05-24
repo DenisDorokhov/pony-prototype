@@ -6,6 +6,10 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
 
 	public static final Messages IMPL = GWT.create(Messages.class);
 
+	public String titlePrefix();
+	public String titleBodyNoSong();
+	public String titleBodyWithSong(String aArtist, String aSong);
+
 	public String commonLoadingLabel();
 	public String commonErrorLabel();
 	public String commonNoDataLabel();
