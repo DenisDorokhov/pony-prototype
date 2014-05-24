@@ -74,7 +74,7 @@ public class StringScroller {
 
 	private void updateResult() {
 
-		characterOffset = (int)(getNormalizedOffset() * getTarget().length());
+		characterOffset = (int)Math.round(getNormalizedOffset() * getTarget().length());
 
 		String beginning = getTarget().substring(characterOffset);
 		String ending = getTarget().substring(0, characterOffset);

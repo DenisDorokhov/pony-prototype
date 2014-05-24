@@ -9,8 +9,8 @@ import net.dorokhov.pony.web.shared.SongDto;
 
 public class TitleManager {
 
-	private static final int START_DELAY = 3000;
-	private static final int STEP_DELAY = 500;
+	private static final int START_DELAY = 4000;
+	private static final int STEP_DELAY = 1000;
 
 	private StringScroller scroller;
 
