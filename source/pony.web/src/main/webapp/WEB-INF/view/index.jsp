@@ -7,6 +7,8 @@
 
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
+	<link rel="icon" type="image/png" href="img/favicon.png">
+
 	<link href="css/reset.css" rel="stylesheet" type="text/css">
 	<link href="js/jplayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
 
