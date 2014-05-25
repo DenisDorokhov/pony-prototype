@@ -50,10 +50,12 @@
                                     <g:InlineLabel ui:field="titleLabel" styleName="{style.title}" />
                                 </div>
                             </div>
-                            <div class="jp-progress">
+                            <div class="jp-song-play-bar">
                                 <div class="jp-current-time" />
-                                <div class="jp-seek-bar">
-                                    <div class="jp-play-bar" />
+                                <div class="jp-progress">
+                                    <div class="jp-seek-bar">
+                                        <div class="jp-play-bar" />
+                                    </div>
                                 </div>
                                 <div class="jp-duration" />
                             </div>
