@@ -8,12 +8,6 @@
 	<ui:style>
 		.htmlPanel {
 		}
-		.titleContainer {
-			height: 20px;
-		}
-		.title {
-			cursor: pointer;
-		}
 	</ui:style>
 
 	<g:FlowPanel ui:field="rootPanel">
@@ -45,9 +39,8 @@
 
                         <div class="jp-song-info-holder">
                             <div class="jp-title">
-                                <div class="{style.titleContainer}">
-                                    Song Artist - Song Name
-                                    <g:InlineLabel ui:field="titleLabel" styleName="{style.title}" />
+                                <div>
+                                    <g:InlineLabel ui:field="titleLabel" />
                                 </div>
                             </div>
                             <div class="jp-song-play-bar">
