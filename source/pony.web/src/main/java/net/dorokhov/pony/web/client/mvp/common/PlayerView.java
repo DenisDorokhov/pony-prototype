@@ -233,7 +233,6 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private native void updateMedia(String aPlayerId, String aSkinId, JavaScriptObject aOptions) /*-{
 		$wnd.$("#" + aPlayerId).jPlayer("setMedia", aOptions);
-		$wnd.$("#" + aSkinId + " .jp-title ul li").text(aName);
 	}-*/;
 
 	private native void updateVolume(String aPlayerId, double aVolume) /*-{
