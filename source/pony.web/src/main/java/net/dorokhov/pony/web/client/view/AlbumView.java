@@ -7,7 +7,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SetSelectionModel;
-import net.dorokhov.pony.web.client.LocaleMessages;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.client.Resources;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
 import net.dorokhov.pony.web.client.view.event.SongViewEvent;
@@ -200,7 +200,7 @@ public class AlbumView extends Composite implements SongViewEvent.HasHandler, So
 
 			songListView.setSongs(entry.getValue());
 
-			songListView.setCaption(discNumber != null ? LocaleMessages.IMPL.albumDiscCaption(discNumber) : null);
+			songListView.setCaption(discNumber != null ? Messages.IMPL.albumDiscCaption(discNumber) : null);
 
 			i++;
 		}

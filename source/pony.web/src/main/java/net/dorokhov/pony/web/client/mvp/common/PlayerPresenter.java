@@ -7,8 +7,9 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.View;
-import net.dorokhov.pony.web.client.LocaleMessages;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.client.event.PlayListEvent;
+import net.dorokhov.pony.web.client.event.PlaybackEvent;
 import net.dorokhov.pony.web.client.event.SongEvent;
 import net.dorokhov.pony.web.client.service.PlayListNavigator;
 import net.dorokhov.pony.web.client.service.PlayListNavigatorImpl;
@@ -128,6 +129,11 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	public void onVolumeChange() {}
 
 	@Override
+	public void onPlaybackRequested() {
+		getEventBus().fireEvent(new PlaybackEvent(PlaybackEvent.PLAYBACK_REQUESTED));
+	}
+
+	@Override
 	public void onPreviousSongRequested() {
 		playPreviousSong();
 	}
@@ -160,7 +166,7 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	@Override
 	public void onWindowClosing(Window.ClosingEvent aEvent) {
 		if (getView().getState() == MyView.State.PLAYING) {
-			aEvent.setMessage(LocaleMessages.IMPL.alertPlaybackWillBeStopped());
+			aEvent.setMessage(Messages.IMPL.alertPlaybackWillBeStopped());
 		}
 	}
 
@@ -194,6 +200,8 @@ public class PlayerPresenter extends PresenterWidget<PlayerPresenter.MyView> imp
 	private void doPlaySong(SongDto aSong) {
 
 		getView().setSong(aSong);
+
+		getEventBus().fireEvent(new SongEvent(SongEvent.SONG_CHANGED, aSong));
 
 		getView().setPreviousSongAvailable(playListNavigator.hasPrevious());
 		getView().setNextSongAvailable(playListNavigator.hasNext());

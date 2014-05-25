@@ -1,6 +1,7 @@
 package net.dorokhov.pony.web.client.mvp.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -11,7 +12,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
-import net.dorokhov.pony.web.client.LocaleMessages;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import net.dorokhov.pony.web.shared.ConfigurationOptions;
@@ -75,6 +76,8 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 	private ConfigurationState configurationState;
 
+	private boolean modified;
+
 	@Inject
 	public SettingsView(EventBus aEventBus) {
 
@@ -124,6 +127,8 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 		}
 
 		updateConfiguration();
+
+		modified = false;
 	}
 
 	@Override
@@ -170,6 +175,21 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 		updateConfigurationState();
 	}
 
+	@Override
+	public boolean isModified() {
+		return modified;
+	}
+
+	@UiHandler("libraryFoldersText")
+	void onLibraryFoldersChange(ChangeEvent aEvent) {
+		modified = true;
+	}
+
+	@UiHandler("autoScanIntervalList")
+	void onAutoScanIntervalChange(ChangeEvent aEvent) {
+		modified = true;
+	}
+
 	@UiHandler("scanButton")
 	void onScanClick(ClickEvent aEvent) {
 		getUiHandlers().onScanRequested();
@@ -183,18 +203,18 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	private void updateScanResultState() {
 		if (getScanResultState() == ContentState.LOADING) {
 
-			scanResultLabel.setText(LocaleMessages.IMPL.commonLoadingLabel());
+			scanResultLabel.setText(Messages.IMPL.commonLoadingLabel());
 
 		} else if (getScanResultState() == ContentState.LOADED) {
 
 			if (getScanResult() != null && getScanResult().getDate() != null) {
 				scanResultLabel.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(getScanResult().getDate()));
 			} else {
-				scanResultLabel.setText(LocaleMessages.IMPL.settingsNoLastScan());
+				scanResultLabel.setText(Messages.IMPL.settingsNoLastScan());
 			}
 
 		} else {
-			scanResultLabel.setText(LocaleMessages.IMPL.commonErrorLabel());
+			scanResultLabel.setText(Messages.IMPL.commonErrorLabel());
 		}
 	}
 
@@ -204,7 +224,7 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 		if (getScannerState() == ScannerState.SCAN_STARTING) {
 
-			progressLabel.setText(LocaleMessages.IMPL.settingsStartingScan());
+			progressLabel.setText(Messages.IMPL.settingsStartingScan());
 
 		} else if (getScannerState() == ScannerState.SCANNING) {
 
@@ -212,14 +232,14 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 
 				String percentProgress = PROGRESS_FORMAT.format(getProgress().getProgress());
 
-				progressLabel.setText(LocaleMessages.IMPL.settingsScanningWithProgress(percentProgress, getProgress().getStep(), getProgress().getTotalSteps()));
+				progressLabel.setText(Messages.IMPL.settingsScanningWithProgress(percentProgress, getProgress().getStep(), getProgress().getTotalSteps()));
 
 			} else {
-				progressLabel.setText(LocaleMessages.IMPL.settingsScanningUnknownProgress());
+				progressLabel.setText(Messages.IMPL.settingsScanningUnknownProgress());
 			}
 
 		} else {
-			progressLabel.setText(LocaleMessages.IMPL.settingsScanningInactive());
+			progressLabel.setText(Messages.IMPL.settingsScanningInactive());
 			scanButton.setEnabled(true);
 		}
 	}

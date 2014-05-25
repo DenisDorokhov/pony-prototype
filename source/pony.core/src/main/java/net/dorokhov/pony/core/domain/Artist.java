@@ -1,7 +1,9 @@
 package net.dorokhov.pony.core.domain;
 
 import net.dorokhov.pony.core.dao.entity.BaseEntity;
+import net.dorokhov.pony.core.service.search.SearchAnalyzer;
 import org.apache.commons.lang3.ObjectUtils;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotBlank;
@@ -26,7 +28,7 @@ public class Artist extends BaseEntity<Long> implements Comparable<Artist> {
 
 	@Column(name = "name", unique = true)
 	@NotBlank
-	@Field
+	@Field(analyzer = @Analyzer(impl = SearchAnalyzer.class))
 	public String getName() {
 		return name;
 	}

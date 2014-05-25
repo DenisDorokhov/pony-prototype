@@ -13,6 +13,8 @@ public interface PlayerUiHandlers extends UiHandlers {
 
 	public void onVolumeChange();
 
+	public void onPlaybackRequested();
+
 	public void onPreviousSongRequested();
 	public void onNextSongRequested();
 	public void onSongNavigationRequested();

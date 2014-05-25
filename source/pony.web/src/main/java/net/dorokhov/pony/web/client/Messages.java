@@ -1,11 +1,14 @@
 package net.dorokhov.pony.web.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
 
-public interface LocaleMessages extends Messages {
+public interface Messages extends com.google.gwt.i18n.client.Messages {
 
-	public static final LocaleMessages IMPL = GWT.create(LocaleMessages.class);
+	public static final Messages IMPL = GWT.create(Messages.class);
+
+	public String titlePrefix();
+	public String titleBodyNoSong();
+	public String titleBodyWithSong(String aArtist, String aSong);
 
 	public String commonLoadingLabel();
 	public String commonErrorLabel();
@@ -17,8 +20,11 @@ public interface LocaleMessages extends Messages {
 	public String alertLibraryAlreadyScanning();
 	public String alertCouldNotStartScanning();
 	public String alertCouldNotSaveConfiguration();
+	public String alertScanRequiresConfigurationSaving();
 
 	public String confirmationScanAfterConfigurationChange();
+
+	public String playerNoSongTitle();
 
 	public String toolbarRefresh();
 	public String toolbarSettings();

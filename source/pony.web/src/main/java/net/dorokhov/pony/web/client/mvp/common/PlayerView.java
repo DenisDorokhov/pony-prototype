@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import net.dorokhov.pony.web.client.Messages;
 import net.dorokhov.pony.web.shared.SongDto;
 
 public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements PlayerPresenter.MyView {
@@ -25,6 +26,13 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			super.onLoad();
 
 			initPlayer(PLAYER_ID, createOptions().getJavaScriptObject());
+
+			if (getSong() == null) {
+
+				updateUnityOptions();
+
+				sendUnityState(false);
+			}
 		}
 	}
 
@@ -170,39 +178,43 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private native void initPlayer(String aPlayerId, JavaScriptObject aOptions) /*-{
 
-		var instance = this;
+		var self = this;
 
 		aOptions.volumechange = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onVolumeChange(F)(event.jPlayer.options.volume);
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onVolumeChange(F)(event.jPlayer.options.volume);
 		};
 		aOptions.timeupdate = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPositionChange(F)(event.jPlayer.status.currentTime);
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPositionChange(F)(event.jPlayer.status.currentTime);
 		};
 		aOptions.play = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlay()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlay()();
 		};
 		aOptions.pause = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPause()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPause()();
 		};
 		aOptions.ended = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onEnd()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onEnd()();
 		};
 		aOptions.error = function(event) {
-			instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
 		};
 
 		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
 
 		$wnd.UnityMusicShim().setCallbackObject({
 			pause: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayPause()();
 			},
 			next: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onNextRequested()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onNextRequested()();
 			},
 			previous: function() {
-				instance.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPreviousRequested()();
+				self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPreviousRequested()();
 			}
+		});
+
+		$wnd.$(".jp-play").click(function() {
+			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayClick()();
 		});
 	}-*/;
 
@@ -241,7 +253,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}-*/;
 
 	private void updateUnityOptions() {
-		doUpdateUnityOptions(getSong() != null, isPreviousSongAvailable(), isNextSongAvailable());
+		doUpdateUnityOptions(true, isPreviousSongAvailable(), isNextSongAvailable());
 	}
 
 	private native void doUpdateUnityOptions(boolean aCanPlay, boolean aPreviousSongAvailable, boolean aNextSongAvailable) /*-{
@@ -254,7 +266,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private void sendUnityState(boolean aIsPlaying) {
 
-		String name = null;
+		String name = Messages.IMPL.playerNoSongTitle();
 		String artist = null;
 		String artworkUrl = null;
 
@@ -264,13 +276,14 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			artworkUrl = getSong().getAlbumArtworkUrl();
 		}
 
+		if (artworkUrl == null) {
+			artworkUrl = GWT.getHostPageBaseURL() + "img/logo.png";
+		}
+
 		doSendUnityState(aIsPlaying, name, artist, artworkUrl);
 	}
 
 	private native void doSendUnityState(boolean aIsPlaying, String aName, String aArtist, String aArtwork) /*-{
-
-		// TODO: show pony logo if no artwork defined: GWT.getHostPageBaseURL() + "img/logo.png";
-
 		$wnd.UnityMusicShim().sendState({
 			playing: aIsPlaying,
 			title: aName,
@@ -326,10 +339,20 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	}
 
 	private void onPlayPause() {
-		if (state == State.PLAYING) {
-			pause();
+		if (getSong() != null) {
+			if (state == State.PLAYING) {
+				pause();
+			} else {
+				play();
+			}
 		} else {
-			play();
+			getUiHandlers().onPlaybackRequested();
+		}
+	}
+
+	private void onPlayClick() {
+		if (getSong() == null) {
+			getUiHandlers().onPlaybackRequested();
 		}
 	}
 

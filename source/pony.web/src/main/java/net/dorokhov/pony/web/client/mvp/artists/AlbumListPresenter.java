@@ -10,10 +10,7 @@ import com.gwtplatform.mvp.client.View;
 import net.dorokhov.pony.web.client.common.ContentState;
 import net.dorokhov.pony.web.client.common.HasContentState;
 import net.dorokhov.pony.web.client.common.ObjectUtils;
-import net.dorokhov.pony.web.client.event.ArtistEvent;
-import net.dorokhov.pony.web.client.event.PlayListEvent;
-import net.dorokhov.pony.web.client.event.RefreshEvent;
-import net.dorokhov.pony.web.client.event.SongEvent;
+import net.dorokhov.pony.web.client.event.*;
 import net.dorokhov.pony.web.client.service.BusyIndicator;
 import net.dorokhov.pony.web.client.service.PlayListImpl;
 import net.dorokhov.pony.web.client.service.rpc.AlbumServiceRpcAsync;
@@ -26,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, ArtistEvent.Handler, RefreshEvent.Handler, SongEvent.Handler {
+public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyView> implements AlbumListUiHandlers, ArtistEvent.Handler, RefreshEvent.Handler, PlaybackEvent.Handler, SongEvent.Handler {
 
 	public interface MyView extends View, HasUiHandlers<AlbumListUiHandlers>, HasContentState {
 
@@ -87,6 +84,8 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 		addRegisteredHandler(ArtistEvent.ARTIST_UPDATED, this);
 		addRegisteredHandler(RefreshEvent.REFRESH_REQUESTED, this);
+		addRegisteredHandler(PlaybackEvent.PLAYBACK_REQUESTED, this);
+		addRegisteredHandler(SongEvent.SONG_CHANGED, this);
 		addRegisteredHandler(SongEvent.SONG_STARTED, this);
 		addRegisteredHandler(SongEvent.SONG_PAUSED, this);
 		addRegisteredHandler(SongEvent.SONG_SELECTION_REQUESTED, this);
@@ -137,8 +136,27 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 	}
 
 	@Override
+	public void onPlaybackEvent(PlaybackEvent aEvent) {
+
+		SongDto song = getView().getSelectedSong();
+
+		if (song == null) {
+
+			AlbumSongsDto album = getView().getAlbums() != null && getView().getAlbums().size() > 0 ? getView().getAlbums().get(0) : null;
+
+			if (album != null) {
+				song = album.getSongs().size() > 0 ? album.getSongs().get(0) : null;
+			}
+		}
+
+		if (song != null) {
+			getView().setActiveSong(song);
+		}
+	}
+
+	@Override
 	public void onSongEvent(SongEvent aEvent) {
-		if (aEvent.getAssociatedType() == SongEvent.SONG_STARTED) {
+		if (aEvent.getAssociatedType() == SongEvent.SONG_CHANGED || aEvent.getAssociatedType() == SongEvent.SONG_STARTED) {
 
 			if (!aEvent.getSong().equals(getView().getActiveSong())) {
 
@@ -147,7 +165,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 				getView().setActiveSong(aEvent.getSong());
 			}
 
-			getView().setPlaying(true);
+			getView().setPlaying(aEvent.getAssociatedType() == SongEvent.SONG_STARTED);
 
 		} else if (aEvent.getAssociatedType() == SongEvent.SONG_SELECTION_REQUESTED) {
 
@@ -211,8 +229,7 @@ public class AlbumListPresenter extends PresenterWidget<AlbumListPresenter.MyVie
 
 						if (getView().getSelectedSong() != null) {
 							getView().scrollToSong(getView().getSelectedSong());
-						}
-						if (getView().getActiveSong() != null) {
+						} else if (getView().getActiveSong() != null) {
 							getView().scrollToSong(getView().getActiveSong());
 						}
 
