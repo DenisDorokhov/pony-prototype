@@ -52,8 +52,14 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 	@UiField(provided = true)
 	String playerId = PLAYER_ID;
 
-	@UiField
-	Label titleLabel;
+//	@UiField
+//	Label titleLabel;
+
+    @UiField
+    Label artistNameLabel;
+
+    @UiField
+    Label songNameLabel;
 
 	private State state;
 
@@ -159,7 +165,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		return state;
 	}
 
-	@UiHandler("titleLabel")
+	@UiHandler("artistNameLabel")
 	void onScanClick(ClickEvent aEvent) {
 		getUiHandlers().onSongNavigationRequested();
 	}
@@ -228,7 +234,8 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 		setPosition(0.0);
 
-		titleLabel.setText(song.getArtist() + " - " + song.getName());
+        artistNameLabel.setText(song.getArtist());
+        songNameLabel.setText(song.getName());
 	}
 
 	private native void updateMedia(String aPlayerId, String aSkinId, JavaScriptObject aOptions) /*-{

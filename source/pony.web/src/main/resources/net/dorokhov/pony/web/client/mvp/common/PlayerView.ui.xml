@@ -39,8 +39,11 @@
 
                         <div class="jp-song-info-holder">
                             <div class="jp-title">
-                                <div>
-                                    <g:InlineLabel ui:field="titleLabel" />
+                                <div class="jp-artist-name">
+                                    <g:Label ui:field="artistNameLabel" />
+                                </div>
+                                <div class="jp-song-name">
+                                    <g:Label ui:field="songNameLabel" />
                                 </div>
                             </div>
                             <div class="jp-song-play-bar">
