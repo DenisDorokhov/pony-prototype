@@ -12,7 +12,7 @@
 
 	<g:DockLayoutPanel unit="PX" styleName="{style.rootContainer}">
 
-		<g:north size="112">
+		<g:north size="82">
             <g:FlowPanel styleName="{res.cssHeader.headerBlock}">
                 <g:FlowPanel ui:field="logoContainer" styleName="{res.cssHeader.logo}" />
                 <g:FlowPanel ui:field="playerContainer" styleName="{res.cssHeader.playerContainer}" />

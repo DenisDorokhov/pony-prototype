@@ -32,10 +32,6 @@ div.jp-interface {
     width:100%;
 }
 
-div.jp-audio div.jp-type-single div.jp-interface {
-    height:80px;
-}
-
 /* @group CONTROLS */
 
 div.jp-controls-holder {
@@ -47,15 +43,13 @@ div.jp-controls-holder {
 }
 
 div.jp-interface ul.jp-controls {
-    list-style-type:none;
-    margin:0;
-    padding: 0;
+    list-style-type: none;
     overflow:hidden;
 }
 
 div.jp-audio ul.jp-controls {
     float: left;
-    padding:20px 20px 0 20px;
+    padding: 20px 20px 0 20px;
 }
 div.jp-interface ul.jp-controls li {
     display:inline;
@@ -72,16 +66,22 @@ div.jp-interface ul.jp-controls a {
 div.jp-audio .jp-volume-bar-holder {
     float: left;
     overflow: visible;
-    padding: 30px 0 0;
+    padding: 30px 41px 0 26px;
+    position: relative;
+    width: 8%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    min-width: 100px;
 }
 
 div.jp-audio .jp-song-info-holder {
-    float: left;
-    width: 300px;
+    width: 30%;
+    min-width: 300px;
     height: 60px;
     background-image: linear-gradient(to top, #fff, #c0c0c0);
     box-shadow: inset 0 0 7px #696969;
-    margin-top: 10px;
+    margin: 0 auto;
     position: relative;
     padding: 5px;
     border-radius: 5px;
@@ -143,17 +143,19 @@ a.jp-next:active {
 /* @group progress bar */
 
 div.jp-progress {
-    width:178px;
+    width: 100%;
     height: 6px;
     float: left;
-    margin: 5px 10px;
+    margin: 5px 0;
     overflow:hidden;
     border: 1px solid #646464;
     border-radius: 3px;
     background-image: linear-gradient(to top, #eee, #bdbdbd);
 }
 .jp-song-play-bar {
-    overflow: auto;
+    overflow: hidden;
+    position: relative;
+    padding: 0 60px;
 }
 div.jp-play-bar {
     width: 0;
@@ -191,11 +193,15 @@ a.jp-volume-max {
 div.jp-audio a.jp-mute,
 div.jp-audio a.jp-unmute {
     float: left;
-    margin: -6px 5px 0 0;
+    position: absolute;
+    left: 0;
+    margin-top: -6px;
 }
 div.jp-audio a.jp-volume-max {
     float: left;
-    margin: -6px 0 0 20px;
+    position: absolute;
+    right: 0;
+    margin-top: -6px;
 }
 
 a.jp-mute {
@@ -236,6 +242,7 @@ div.jp-audio div.jp-volume-bar {
     box-shadow: inset 0 0 6px #707070;
     border-radius: 10px;
     border-bottom: 1px solid rgba(255,255,255,0.9);
+    width: 100%;
 }
 div.jp-volume-bar-value {
     height: 10px;
@@ -268,6 +275,7 @@ div.jp-volume-bar-value {
 
 div.jp-current-time,
 div.jp-duration {
+    position: absolute;
     width:50px;
     font-size:.64em;
     font-style:oblique;
@@ -275,10 +283,12 @@ div.jp-duration {
 }
 div.jp-current-time {
     float: left;
+    left: 0;
     text-align: right;
     display: inline;
 }
 div.jp-duration {
+    right: 0;
     float: right;
     display:inline;
     text-align: left;
@@ -428,3 +438,10 @@ a.jp-shuffle-off:hover {
 }
 
 /* @end */
+
+@media (max-width: 1140px) {
+    div.jp-audio .jp-song-info-holder {
+        margin: 0 20px;
+        float: left;
+    }
+}

@@ -3,21 +3,36 @@
     background-image: -o-linear-gradient(top, #eee 0%, #c7c5c6 100%);
     background-image: linear-gradient(to bottom, #eee 0%, #c7c5c6 100%);
     background-repeat: repeat-x;
+    padding-left: 100px;
+    padding-right: 140px;
+    min-width: 650px;
 }
 
 @sprite .logo {
+    position: absolute;
+    left: 0;
+    top: 0;
     gwt-image: "imgLogo";
     background-repeat: no-repeat;
-    width: 130px;
-    height: 112px;
-    float: left;
+    width: 100px;
+    height: 82px;
     background-position: center center;
+    -webkit-background-size: 70px;
+    background-size: 70px;
 }
 
 .playerContainer {
+    width: 100%;
     float: left;
+    padding-right: 120px;
+    padding-left: 100px;
+    min-width: 650px;
+    padding: 5px 0;
 }
 
 .searchContainer {
-
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 28px 20px 28px 0;
 }
