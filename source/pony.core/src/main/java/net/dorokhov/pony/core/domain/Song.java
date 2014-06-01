@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;

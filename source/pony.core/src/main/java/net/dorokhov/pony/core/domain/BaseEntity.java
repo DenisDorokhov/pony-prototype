@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.dao.entity;
+package net.dorokhov.pony.core.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,8 +17,6 @@ public abstract class BaseEntity<T extends Serializable> implements AbstractEnti
 	private Date creationDate;
 
 	private Date updateDate;
-
-	private Long version;
 
 	@Override
 	@Id
@@ -57,18 +55,6 @@ public abstract class BaseEntity<T extends Serializable> implements AbstractEnti
 		updateDate = aUpdateDate;
 	}
 
-	@Override
-	@Version
-	@Column(name = "version")
-	public Long getVersion() {
-		return version;
-	}
-
-	@Override
-	public void setVersion(Long aVersion) {
-		version = aVersion;
-	}
-	
 	@Override
 	public int hashCode() {
 		return getId() != null ? getId().hashCode() : super.hashCode();

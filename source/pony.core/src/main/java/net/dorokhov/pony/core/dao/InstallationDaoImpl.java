@@ -3,16 +3,17 @@ package net.dorokhov.pony.core.dao;
 import net.dorokhov.pony.core.domain.Installation;
 import net.dorokhov.pony.core.utility.SqlSplitter;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
 /**
@@ -55,10 +56,10 @@ public class InstallationDaoImpl implements InstallationDao {
 
 		try {
 			installation = doFindInstallation();
-		} catch (NonUniqueResultException e) {
-			throw new RuntimeException(e);
 		} catch (Exception e) {
-			// Do nothing here to prevent errors because of not created tables.
+			if (!(e.getCause() instanceof SQLGrammarException)) { // Accept errors because of not created tables.
+				throw new RuntimeException(e);
+			}
 		}
 
 		return installation;
@@ -131,12 +132,20 @@ public class InstallationDaoImpl implements InstallationDao {
 
 	private String buildScriptPath(String aName) throws Exception {
 
-		DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+		Connection connection = null;
 
-		StringBuilder builder = new StringBuilder(SCRIPT_PACKAGE);
+		try {
 
-		builder.append("/").append(metaData.getDatabaseProductName().toLowerCase()).append("/").append(aName);
+			connection = dataSource.getConnection();
 
-		return builder.toString();
+			DatabaseMetaData metaData = connection.getMetaData();
+
+			return SCRIPT_PACKAGE + "/" + metaData.getDatabaseProductName().toLowerCase() + "/" + aName;
+
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+		}
 	}
 }

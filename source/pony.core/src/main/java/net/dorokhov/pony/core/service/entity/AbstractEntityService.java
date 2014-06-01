@@ -1,6 +1,6 @@
 package net.dorokhov.pony.core.service.entity;
 
-import net.dorokhov.pony.core.dao.entity.AbstractEntity;
+import net.dorokhov.pony.core.domain.AbstractEntity;
 import net.dorokhov.pony.core.utility.ValidationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +28,7 @@ public abstract class AbstractEntityService<EntityType extends AbstractEntity<Id
 
 	protected Validator validator;
 
+	@SuppressWarnings("SpringJavaAutowiringInspection")
 	@Autowired
 	public void setDao(RepositoryType aDao) {
 		dao = aDao;

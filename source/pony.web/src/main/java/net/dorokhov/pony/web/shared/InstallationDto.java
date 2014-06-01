@@ -4,20 +4,20 @@ import java.io.Serializable;
 
 public class InstallationDto extends AbstractEntityDto<Long> implements Serializable {
 
-	private String systemVersion;
+	private String version;
 
-	public String getSystemVersion() {
-		return systemVersion;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setSystemVersion(String aSystemVersion) {
-		systemVersion = aSystemVersion;
+	public void setVersion(String aVersion) {
+		version = aVersion;
 	}
 
 	@Override
 	public String toString() {
 		return "InstallationDto{" +
-				"systemVersion='" + systemVersion + '\'' +
+				"version='" + version + '\'' +
 				'}';
 	}
 }

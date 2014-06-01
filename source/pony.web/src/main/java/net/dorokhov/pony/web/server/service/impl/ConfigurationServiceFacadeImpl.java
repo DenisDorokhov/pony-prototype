@@ -7,12 +7,7 @@ import net.dorokhov.pony.web.server.service.DtoService;
 import net.dorokhov.pony.web.shared.ConfigurationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -25,8 +20,6 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 
 	private DtoService dtoService;
 
-	private TransactionTemplate transactionTemplate;
-
 	@Autowired
 	public void setConfigurationService(ConfigurationService aConfigurationService) {
 		configurationService = aConfigurationService;
@@ -35,11 +28,6 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	@Autowired
 	public void setDtoService(DtoService aDtoService) {
 		dtoService = aDtoService;
-	}
-
-	@Autowired
-	public void setTransactionManager(PlatformTransactionManager aTransactionManager) {
-		transactionTemplate = new TransactionTemplate(aTransactionManager);
 	}
 
 	@Override
@@ -56,23 +44,14 @@ public class ConfigurationServiceFacadeImpl implements ConfigurationServiceFacad
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional
 	public List<ConfigurationDto> save(final List<ConfigurationDto> aConfigurations) throws ConstraintViolationException {
 
-		// Run new transaction to get updated entity versions in DTOs
-		List<Configuration> savedConfiguration = transactionTemplate.execute(new TransactionCallback<List<Configuration>>() {
-			@Override
-			public List<Configuration> doInTransaction(TransactionStatus status) {
+		List<Configuration> savedConfiguration = new ArrayList<Configuration>();
 
-				List<Configuration> result = new ArrayList<Configuration>();
-
-				for (ConfigurationDto dto : aConfigurations) {
-					result.add(configurationService.save(dtoService.dtoToConfiguration(dto)));
-				}
-
-				return result;
-			}
-		});
+		for (ConfigurationDto dto : aConfigurations) {
+			savedConfiguration.add(configurationService.save(dtoService.dtoToConfiguration(dto)));
+		}
 
 		List<ConfigurationDto> result = new ArrayList<ConfigurationDto>();
 

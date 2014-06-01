@@ -28,14 +28,12 @@ public class DtoServiceImplTest {
 		Installation installation = new Installation();
 
 		installation.setId(1L);
-		installation.setVersion(10L);
-		installation.setSystemVersion("1.1");
+		installation.setVersion("1.1");
 
 		InstallationDto dto = service.installationToDto(installation);
 
 		Assert.assertEquals(Long.valueOf(1), dto.getId());
-		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
-		Assert.assertEquals("1.1", dto.getSystemVersion());
+		Assert.assertEquals("1.1", dto.getVersion());
 	}
 
 	@Test
@@ -44,19 +42,16 @@ public class DtoServiceImplTest {
 		Configuration config = new Configuration();
 
 		config.setId("config1");
-		config.setVersion(10L);
 		config.setValue("value1");
 
 		ConfigurationDto dto = service.configurationToDto(config);
 
 		Assert.assertEquals("config1", dto.getId());
-		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
 		Assert.assertEquals("value1", dto.getValue());
 
 		config = service.dtoToConfiguration(dto);
 
 		Assert.assertEquals("config1", config.getId());
-		Assert.assertEquals(Long.valueOf(10), config.getVersion());
 		Assert.assertEquals("value1", config.getValue());
 	}
 
@@ -66,7 +61,6 @@ public class DtoServiceImplTest {
 		ScanResult scanResult = new ScanResult();
 
 		scanResult.setId(1L);
-		scanResult.setVersion(10L);
 		scanResult.setDate(new Date());
 		scanResult.setDuration(1000L);
 		scanResult.setSuccess(true);
@@ -84,7 +78,6 @@ public class DtoServiceImplTest {
 		ScanResultDto dto = service.scanResultToDto(scanResult);
 
 		Assert.assertEquals(Long.valueOf(1), dto.getId());
-		Assert.assertEquals(Long.valueOf(10), dto.getVersion());
 		Assert.assertEquals(scanResult.getDate(), dto.getDate());
 		Assert.assertEquals(Long.valueOf(1000), dto.getDuration());
 		Assert.assertEquals(true, dto.isSuccess());
@@ -149,7 +142,6 @@ public class DtoServiceImplTest {
 		ArtistDto dto = service.artistToDto(buildArtist());
 
 		Assert.assertEquals(Long.valueOf(10), dto.getId());
-		Assert.assertEquals(Long.valueOf(2), dto.getVersion());
 		Assert.assertEquals("artist1", dto.getName());
 		Assert.assertEquals(Long.valueOf(20), dto.getArtwork());
 		Assert.assertNull(dto.getArtworkUrl());
@@ -198,7 +190,6 @@ public class DtoServiceImplTest {
 		Artist artist = new Artist();
 
 		artist.setId(10L);
-		artist.setVersion(2L);
 		artist.setName("artist1");
 
 		StoredFile artwork = new StoredFile();
@@ -215,7 +206,6 @@ public class DtoServiceImplTest {
 		Album album = new Album();
 
 		album.setId(30L);
-		album.setVersion(3L);
 		album.setName("album1");
 		album.setYear(1986);
 
@@ -237,14 +227,12 @@ public class DtoServiceImplTest {
 
 		Song song = new Song();
 
-		song.setId((long)aIndex);
-		song.setVersion(5L);
+		song.setId((long) aIndex);
 		song.setAlbum(aAlbum);
 
 		SongFile songFile = new SongFile();
 
-		songFile.setId((long)aIndex);
-		songFile.setVersion(6L);
+		songFile.setId((long) aIndex);
 		songFile.setName("song" + aIndex);
 		songFile.setArtist("artist1");
 		songFile.setDuration(65);
@@ -258,7 +246,6 @@ public class DtoServiceImplTest {
 
 	private void checkAlbum(AlbumDto aDto) {
 		Assert.assertEquals(Long.valueOf(30), aDto.getId());
-		Assert.assertEquals(Long.valueOf(3), aDto.getVersion());
 		Assert.assertEquals("album1", aDto.getName());
 		Assert.assertEquals(Integer.valueOf(1986), aDto.getYear());
 		Assert.assertEquals(Long.valueOf(40), aDto.getArtwork());
@@ -268,7 +255,6 @@ public class DtoServiceImplTest {
 
 	private void checkSong(int aIndex, SongDto aDto) {
 		Assert.assertEquals(Long.valueOf(aIndex), aDto.getId());
-		Assert.assertEquals(Long.valueOf(5), aDto.getVersion());
 		Assert.assertNull(aDto.getFileUrl());
 		Assert.assertEquals(Integer.valueOf(65), aDto.getDuration());
 		Assert.assertEquals(Integer.valueOf(2), aDto.getDiscNumber());

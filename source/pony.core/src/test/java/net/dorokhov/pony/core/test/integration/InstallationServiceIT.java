@@ -74,9 +74,8 @@ public class InstallationServiceIT {
 
 	private void checkInstallation(Installation aInstallation) {
 		Assert.assertNotNull(aInstallation.getId());
-		Assert.assertNotNull(aInstallation.getVersion());
 		Assert.assertNotNull(aInstallation.getCreationDate());
 		Assert.assertNotNull(aInstallation.getUpdateDate());
-		Assert.assertNotNull(aInstallation.getSystemVersion());
+		Assert.assertNotNull(aInstallation.getVersion());
 	}
 }

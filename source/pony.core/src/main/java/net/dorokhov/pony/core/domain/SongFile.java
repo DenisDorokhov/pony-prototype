@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import net.dorokhov.pony.core.service.search.SearchAnalyzer;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;

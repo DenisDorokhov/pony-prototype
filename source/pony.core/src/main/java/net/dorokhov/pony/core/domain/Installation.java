@@ -1,7 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.dao.entity.BaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -15,22 +13,22 @@ import javax.persistence.Table;
 @Table(name = "installation")
 public class Installation extends BaseEntity<Long> {
 
-	private String systemVersion;
+	private String version;
 
-	@Column(name = "system_version")
-	public String getSystemVersion() {
-		return systemVersion;
+	@Column(name = "version")
+	public String getVersion() {
+		return version;
 	}
 
-	public void setSystemVersion(String aVersion) {
-		systemVersion = aVersion;
+	public void setVersion(String aVersion) {
+		version = aVersion;
 	}
 
 	@Override
 	public String toString() {
 		return "Installation{" +
 				"id=" + getId() +
-				", version='" + systemVersion + '\'' +
+				", version='" + version + '\'' +
 				'}';
 	}
 }

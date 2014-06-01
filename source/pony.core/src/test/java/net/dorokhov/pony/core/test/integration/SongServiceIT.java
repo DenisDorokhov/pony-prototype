@@ -144,8 +144,6 @@ public class SongServiceIT extends AbstractIntegrationCase {
 	private void checkSong(Song aEntity, int aIndex, Album aAlbum) {
 
 		Assert.assertNotNull(aEntity.getId());
-		Assert.assertNotNull(aEntity.getVersion());
-
 		Assert.assertNotNull(aEntity.getCreationDate());
 		Assert.assertNotNull(aEntity.getUpdateDate());
 

@@ -134,7 +134,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 
 		ScanResult scanResult;
 
-		AtomicResult atomicResult = new AtomicResult(aTargetFiles);
+		final AtomicResult atomicResult = new AtomicResult(aTargetFiles);
 
 		try {
 
@@ -160,12 +160,16 @@ public class LibraryScannerImpl implements LibraryScanner {
 			scanResult = buildScanResult(atomicResult, false);
 
 			try {
+
+				final ScanResult resultToSave = scanResult;
+
 				scanResult = transactionTemplate.execute(new TransactionCallback<ScanResult>() {
 					@Override
 					public ScanResult doInTransaction(TransactionStatus aStatus) {
-						return null;
+						return scanResultDao.save(resultToSave);
 					}
 				});
+
 			} catch (Exception e) {
 				log.error("could not save scan result", e);
 			}

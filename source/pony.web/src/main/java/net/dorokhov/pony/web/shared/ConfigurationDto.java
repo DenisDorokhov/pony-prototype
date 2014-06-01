@@ -8,10 +8,9 @@ public class ConfigurationDto extends AbstractEntityDto<String> implements Seria
 
 	public ConfigurationDto() {}
 
-	public ConfigurationDto(String aId, String aValue, Long aVersion) {
+	public ConfigurationDto(String aId, String aValue) {
 		setId(aId);
 		setValue(aValue);
-		setVersion(aVersion);
 	}
 
 	public String getValue() {
