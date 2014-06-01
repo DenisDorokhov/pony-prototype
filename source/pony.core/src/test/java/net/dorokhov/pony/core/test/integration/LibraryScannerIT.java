@@ -3,9 +3,11 @@ package net.dorokhov.pony.core.test.integration;
 import net.dorokhov.pony.core.domain.ScanResult;
 import net.dorokhov.pony.core.service.LibraryScanner;
 import net.dorokhov.pony.core.test.AbstractIntegrationCase;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -15,9 +17,13 @@ import java.util.List;
 
 public class LibraryScannerIT extends AbstractIntegrationCase {
 
+	private static final String TEST_FOLDER_PATH = "data/library";
+
 	private final Format progressFormatter = new DecimalFormat("###.##");
 
 	private LibraryScanner service;
+
+	private LibraryScanner.Delegate delegate;
 
 	private boolean didCallStart;
 	private boolean didCallFinish;
@@ -32,7 +38,7 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 
 		service = context.getBean(LibraryScanner.class);
 
-		service.addDelegate(new LibraryScanner.Delegate() {
+		delegate = new LibraryScanner.Delegate() {
 
 			@Override
 			public void onScanStart() {
@@ -53,19 +59,24 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 			public void onScanFail(ScanResult aResult, Exception e) {
 				didCallFail = true;
 			}
-		});
+		};
+
+		service.addDelegate(delegate);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		service.removeDelegate(delegate);
 	}
 
 	@Test
 	public void testScan() throws Exception {
 
-		for (int i = 0; i < 2; i++) {
-
-			// TODO: change path to test MP3 files stored in VCS
+		for (int i = 0; i <= 1; i++) {
 
 			List<File> filesToScan = new ArrayList<File>();
 
-			filesToScan.add(new File("/Volumes/Volume_1/Shared/Music/Denis/Dio"));
+			filesToScan.add(new ClassPathResource(TEST_FOLDER_PATH).getFile());
 
 			ScanResult result = service.scan(filesToScan);
 
@@ -74,15 +85,15 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 
 			Assert.assertTrue(result.getSuccess());
 
-			Assert.assertTrue(result.getTargetFiles().size() == 1);
-			Assert.assertEquals("/Volumes/Volume_1/Shared/Music/Denis/Dio", result.getTargetFiles().get(0));
+			Assert.assertEquals(1, result.getTargetFiles().size());
+			Assert.assertEquals(filesToScan.get(0).getAbsolutePath(), result.getTargetFiles().get(0));
 
 			Assert.assertTrue(result.getDuration() > 0);
 
-			Assert.assertTrue(result.getScannedFolderCount() > 0);
-			Assert.assertTrue(result.getScannedFileCount() > 0);
+			Assert.assertEquals(Long.valueOf(1L), result.getScannedFolderCount());
+			Assert.assertEquals(Long.valueOf(14L), result.getScannedFileCount());
 
-			Assert.assertTrue(i > 0 || result.getImportedFileCount() > 0);
+			Assert.assertTrue(i > 0 || result.getImportedFileCount() == 14);
 
 			Assert.assertTrue(didCallStart);
 			Assert.assertTrue(didCallFinish);
@@ -90,8 +101,6 @@ public class LibraryScannerIT extends AbstractIntegrationCase {
 		}
 
 		ScanResult result = service.getLastResult();
-
-		result.getTargetFiles();
 
 		Assert.assertNotNull(result);
 	}
