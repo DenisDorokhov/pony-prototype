@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionCallback;
@@ -113,7 +114,7 @@ public class LibraryScannerImpl implements LibraryScanner {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public ScanResult scan(List<File> aTargetFiles) throws ConcurrentScanException {
 
 		if (statusReference.get() != null) {
