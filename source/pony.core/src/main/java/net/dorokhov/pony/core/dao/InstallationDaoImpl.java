@@ -49,7 +49,7 @@ public class InstallationDaoImpl implements InstallationDao {
 	 * @return database installation or null if the database is not installed
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public Installation findInstallation() {
 
 		Installation installation = null;
@@ -73,7 +73,7 @@ public class InstallationDaoImpl implements InstallationDao {
 	 * 3) Runs SQL statements one by one.
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Installation install() {
 
 		try {
@@ -99,7 +99,7 @@ public class InstallationDaoImpl implements InstallationDao {
 	 * 3) Runs SQL statements one by one.
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public void uninstall() {
 
 		try {
