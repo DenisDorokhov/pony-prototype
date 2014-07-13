@@ -20,8 +20,8 @@
 	<logger name="net.dorokhov.pony" level="DEBUG" />
 	<logger name="net.dorokhov.pony.core.service.common.SongDataReaderImpl" level="INFO" />
 	<logger name="net.dorokhov.pony.web.server.service.impl.LibraryServiceFacadeImpl" level="INFO" />
+	<logger name="org.springframework.web" level="DEBUG" />
 	<!-- logger name="org.hibernate.SQL" level="DEBUG" /-->
-	<!-- logger name="org.springframework.web" level="DEBUG" /-->
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />

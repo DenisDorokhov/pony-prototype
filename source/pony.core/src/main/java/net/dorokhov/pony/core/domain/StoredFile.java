@@ -1,6 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.dao.entity.BaseEntity;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;

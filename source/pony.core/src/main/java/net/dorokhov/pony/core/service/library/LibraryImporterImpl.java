@@ -1,7 +1,7 @@
 package net.dorokhov.pony.core.service.library;
 
 import net.dorokhov.pony.core.domain.*;
-import net.dorokhov.pony.core.dao.entity.BaseEntity;
+import net.dorokhov.pony.core.domain.BaseEntity;
 import net.dorokhov.pony.core.service.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;

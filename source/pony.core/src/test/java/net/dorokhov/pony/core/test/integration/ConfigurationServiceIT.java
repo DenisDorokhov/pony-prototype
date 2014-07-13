@@ -136,7 +136,6 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 	private void checkCreatedConfig(Configuration aEntity) {
 
 		Assert.assertEquals("stringTest", aEntity.getId());
-		Assert.assertNotNull(aEntity.getVersion());
 
 		Assert.assertNotNull(aEntity.getCreationDate());
 		Assert.assertNotNull(aEntity.getUpdateDate());
@@ -147,7 +146,6 @@ public class ConfigurationServiceIT extends AbstractIntegrationCase {
 	private void checkUpdatedConfig(Configuration aEntity, Date aCreationDate, Date aUpdateDate) {
 
 		Assert.assertEquals("stringTest", aEntity.getId());
-		Assert.assertNotNull(aEntity.getVersion());
 
 		Assert.assertEquals(aCreationDate, aEntity.getCreationDate());
 		Assert.assertTrue(aEntity.getUpdateDate().after(aUpdateDate));

@@ -1,4 +1,4 @@
-package net.dorokhov.pony.core.dao.entity;
+package net.dorokhov.pony.core.domain;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,9 +16,5 @@ public interface AbstractEntity<T extends Serializable> {
 	public Date getUpdateDate();
 
 	public void setUpdateDate(Date aUpdateDate);
-
-	public Long getVersion();
-
-	public void setVersion(Long aVersion);
 
 }

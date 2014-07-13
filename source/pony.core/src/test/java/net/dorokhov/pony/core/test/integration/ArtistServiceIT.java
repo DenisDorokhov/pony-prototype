@@ -120,8 +120,6 @@ public class ArtistServiceIT extends AbstractIntegrationCase {
 	private void checkArtist(Artist aEntity, int aIndex) {
 
 		Assert.assertNotNull(aEntity.getId());
-		Assert.assertNotNull(aEntity.getVersion());
-
 		Assert.assertNotNull(aEntity.getCreationDate());
 		Assert.assertNotNull(aEntity.getUpdateDate());
 

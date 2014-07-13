@@ -142,8 +142,6 @@ public class AlbumServiceIT extends AbstractIntegrationCase {
 	private void checkAlbum(Album aAlbum, int aIndex, Artist aArtist) {
 
 		Assert.assertNotNull(aAlbum.getId());
-		Assert.assertNotNull(aAlbum.getVersion());
-
 		Assert.assertNotNull(aAlbum.getCreationDate());
 		Assert.assertNotNull(aAlbum.getUpdateDate());
 

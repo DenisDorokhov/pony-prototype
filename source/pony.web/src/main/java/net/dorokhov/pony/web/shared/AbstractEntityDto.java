@@ -6,22 +6,12 @@ public abstract class AbstractEntityDto<T> implements Serializable {
 
 	private T id;
 
-	private Long version;
-
 	public T getId() {
 		return id;
 	}
 
 	public void setId(T aId) {
 		id = aId;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long aVersion) {
-		version = aVersion;
 	}
 
 	@Override

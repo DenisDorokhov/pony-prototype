@@ -5,9 +5,7 @@ CREATE TABLE installation (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	version BIGINT NOT NULL,
-
-	system_version VARCHAR(255) NOT NULL,
+	version VARCHAR(255) NOT NULL,
 
 	PRIMARY KEY (id)
 
@@ -20,8 +18,6 @@ CREATE TABLE configuration (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	version BIGINT NOT NULL,
-
 	value TEXT,
 
 	PRIMARY KEY (id)
@@ -31,8 +27,6 @@ CREATE TABLE configuration (
 CREATE TABLE scan_result (
 
 	id BIGINT NOT NULL AUTO_INCREMENT,
-
-	version BIGINT NOT NULL,
 
 	date TIMESTAMP NOT NULL,
 
@@ -68,8 +62,6 @@ CREATE TABLE stored_file (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	version BIGINT NOT NULL,
-
 	name VARCHAR(255) NOT NULL,
 	mime_type VARCHAR(255) NOT NULL,
 	checksum VARCHAR(255) NOT NULL,
@@ -85,7 +77,6 @@ CREATE TABLE stored_file (
 
 CREATE INDEX index_stored_file_checksum ON stored_file(checksum);
 CREATE INDEX index_stored_file_tag ON stored_file(tag);
-CREATE INDEX index_stored_file_tag_checksum ON stored_file(tag, checksum);
 
 CREATE TABLE song_file (
 
@@ -93,8 +84,6 @@ CREATE TABLE song_file (
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
-
-	version BIGINT NOT NULL,
 
 	path VARCHAR(255) NOT NULL,
 	format VARCHAR(255) NOT NULL,
@@ -135,8 +124,6 @@ CREATE TABLE artist (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	version BIGINT NOT NULL,
-
 	name VARCHAR(255) NOT NULL,
 	artwork_stored_file_id BIGINT,
 
@@ -153,8 +140,6 @@ CREATE TABLE album (
 
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
-
-	version BIGINT NOT NULL,
 
 	name VARCHAR(255) NOT NULL,
 	year INT,
@@ -180,8 +165,6 @@ CREATE TABLE song (
 	creation_date TIMESTAMP NOT NULL,
 	update_date TIMESTAMP NOT NULL,
 
-	version BIGINT NOT NULL,
-
 	song_file_id BIGINT NOT NULL,
 	album_id BIGINT NOT NULL,
 
@@ -193,4 +176,4 @@ CREATE TABLE song (
 
 ) CHARSET=UTF8 ENGINE=InnoDB;
 
-INSERT INTO installation (creation_date, update_date, version, system_version) VALUES (NOW(), NOW(), '0', '1.0');
+INSERT INTO installation (creation_date, update_date, version) VALUES (NOW(), NOW(), '1.0');

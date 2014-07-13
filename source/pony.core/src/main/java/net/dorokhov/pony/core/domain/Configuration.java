@@ -1,7 +1,5 @@
 package net.dorokhov.pony.core.domain;
 
-import net.dorokhov.pony.core.dao.entity.AbstractEntity;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -20,8 +18,6 @@ public class Configuration implements AbstractEntity<String> {
 	private Date creationDate;
 
 	private Date updateDate;
-
-	private Long version;
 
 	private String value;
 
@@ -81,18 +77,6 @@ public class Configuration implements AbstractEntity<String> {
 	@Override
 	public void setUpdateDate(Date aUpdateDate) {
 		updateDate = aUpdateDate;
-	}
-
-	@Override
-	@Version
-	@Column(name = "version")
-	public Long getVersion() {
-		return version;
-	}
-
-	@Override
-	public void setVersion(Long aVersion) {
-		version = aVersion;
 	}
 
 	@Column(name = "value")

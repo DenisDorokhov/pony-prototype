@@ -143,8 +143,6 @@ public class SongFileServiceIT extends AbstractIntegrationCase {
 	private void checkSongFile(SongFile aEntity, int aIndex) {
 
 		Assert.assertNotNull(aEntity.getId());
-		Assert.assertNotNull(aEntity.getVersion());
-
 		Assert.assertNotNull(aEntity.getCreationDate());
 		Assert.assertNotNull(aEntity.getUpdateDate());
 

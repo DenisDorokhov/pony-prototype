@@ -78,8 +78,6 @@ public class StoredFileServiceIT extends AbstractIntegrationCase {
 	private void checkStoredFile(StoredFile aStoredFile, int aIndex) {
 
 		Assert.assertNotNull(aStoredFile.getId());
-		Assert.assertNotNull(aStoredFile.getVersion());
-
 		Assert.assertNotNull(aStoredFile.getCreationDate());
 		Assert.assertNotNull(aStoredFile.getUpdateDate());
 

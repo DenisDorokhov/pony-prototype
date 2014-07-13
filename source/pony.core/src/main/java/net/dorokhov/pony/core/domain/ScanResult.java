@@ -12,8 +12,6 @@ public class ScanResult {
 
 	private Long id;
 
-	private Long version;
-
 	private Date date;
 
 	private Boolean success;
@@ -37,16 +35,6 @@ public class ScanResult {
 
 	public void setId(Long aId) {
 		id = aId;
-	}
-
-	@Version
-	@Column(name = "version")
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long aVersion) {
-		version = aVersion;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
