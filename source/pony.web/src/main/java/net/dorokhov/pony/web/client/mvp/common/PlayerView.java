@@ -184,7 +184,13 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 
 	private native void initPlayer(String aPlayerId, JavaScriptObject aOptions) /*-{
 
-		var self = this;
+		var player, volumeBarWidth, volumeBarOffset,
+            self = this,
+            volumeSliderClicked = false,
+            $volumeSlider = $wnd.$( '#volumeBarSlider'),
+            $volumeBar = $wnd.$( '#volumeBar');
+
+        $wnd.console.log( $volumeBar.offset() );
 
 		aOptions.volumechange = function(event) {
 			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onVolumeChange(F)(event.jPlayer.options.volume);
@@ -205,7 +211,7 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onError()();
 		};
 
-		$wnd.$("#" + aPlayerId).jPlayer(aOptions);
+		player = $wnd.$("#" + aPlayerId).jPlayer(aOptions).data( 'jPlayer' );
 
 		$wnd.UnityMusicShim().setCallbackObject({
 			pause: function() {
@@ -222,6 +228,34 @@ public class PlayerView extends ViewWithUiHandlers<PlayerUiHandlers> implements 
 		$wnd.$(".jp-play").click(function() {
 			self.@net.dorokhov.pony.web.client.mvp.common.PlayerView::onPlayClick()();
 		});
+
+        $volumeSlider.on( 'mousedown.volumebar', function( e ) {
+            volumeBarWidth = $volumeBar.outerWidth();
+            volumeBarOffset = $volumeBar.offset();
+            volumeSliderClicked = true;
+        });
+
+        $wnd.$( 'body' )
+            .on( 'mouseup.volumebar', function() {
+                volumeSliderClicked = false;
+            } )
+            .on( 'mousemove.volumebar', function( e ) {
+                var volume = 0;
+
+                if ( !volumeSliderClicked ) return;
+
+                if ( e.pageX <= volumeBarOffset.left ) {
+                    volume = 0;
+                }
+                else if (e.pageX >= volumeBarOffset.left + volumeBarWidth ) {
+                    volume = 1;
+                }
+                else {
+                    volume = (e.pageX - volumeBarOffset.left) / volumeBarWidth;
+                }
+
+                player.volume( volume );
+            });
 	}-*/;
 
 	private void updateSong() {
