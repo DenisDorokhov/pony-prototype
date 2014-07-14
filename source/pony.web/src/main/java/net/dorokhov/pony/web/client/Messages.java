@@ -31,6 +31,8 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
 
 	public String albumDiscCaption(int aDiscNumber);
 
+    public String settingsHeader();
+    public String settingsLibraryScanningHeader();
 	public String settingsNoLastScan();
 	public String settingsStartingScan();
 	public String settingsScanningUnknownProgress();

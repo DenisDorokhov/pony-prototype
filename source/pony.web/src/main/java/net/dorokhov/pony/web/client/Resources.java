@@ -22,7 +22,7 @@ public interface Resources  extends ClientBundle {
     ImageResource imgLogo();
 
 	@Source("css/common.css")
-	CssResource cssCommon();
+	CommonCssResource cssCommon();
 
     @Source("css/header.css")
     HeaderCssResource cssHeader();
@@ -32,6 +32,17 @@ public interface Resources  extends ClientBundle {
 
 	@Source("css/albumList.css")
 	AlbumListCssResource cssAlbumList();
+
+
+    public interface CommonCssResource extends CssResource {
+        String progress();
+        String progressBar();
+
+        String popupContent();
+        String settingsHeader();
+        String controlGroup();
+        String controlLabel();
+    }
 
     public interface HeaderCssResource extends CssResource {
         String headerBlock();

@@ -64,6 +64,9 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 	@UiField
 	Button saveButton;
 
+    @UiField
+    FlowPanel progressBar;
+
 	private ScanResultDto scanResult;
 
 	private ScanStatusDto progress;
@@ -233,6 +236,7 @@ public class SettingsView extends PopupViewWithUiHandlers<SettingsUiHandlers> im
 				String percentProgress = PROGRESS_FORMAT.format(getProgress().getProgress());
 
 				progressLabel.setText(Messages.IMPL.settingsScanningWithProgress(percentProgress, getProgress().getStep(), getProgress().getTotalSteps()));
+                progressBar.setWidth(percentProgress);
 
 			} else {
 				progressLabel.setText(Messages.IMPL.settingsScanningUnknownProgress());

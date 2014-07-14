@@ -2,46 +2,76 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:with field="mes" type="net.dorokhov.pony.web.client.Messages" />
+    <ui:with field="res" type="net.dorokhov.pony.web.client.Resources" />
 
 	<g:PopupPanel autoHideOnHistoryEventsEnabled="true" autoHideEnabled="true" glassEnabled="true">
 
-		<g:HTMLPanel width="400px" height="200px">
+		<g:HTMLPanel width="500px" height="400px" styleName="{res.cssCommon.popupContent}">
+            <g:FlowPanel styleName="{res.cssCommon.settingsHeader}">
+                <g:Label text="{mes.settingsHeader}" />
+            </g:FlowPanel>
 
-			<ui:text from="{mes.settingsScanProgress}" />
-			<g:InlineLabel ui:field="progressLabel" />
-			<g:Button ui:field="scanButton" text="Scan" /><br />
+            <g:DeckPanel ui:field="deck">
 
-			<ui:text from="{mes.settingsLastScan}" />
-			<g:InlineLabel ui:field="scanResultLabel" /><br />
+                <g:Label ui:field="loadingLabel" text="{mes.commonLoadingLabel}" />
 
-			<g:DeckPanel ui:field="deck">
+                <g:Label ui:field="errorLabel" text="{mes.commonErrorLabel}" />
 
-				<g:Label ui:field="loadingLabel" text="{mes.commonLoadingLabel}" />
+                <g:HTMLPanel ui:field="formPanel">
 
-				<g:Label ui:field="errorLabel" text="{mes.commonErrorLabel}" />
+                    <g:FlowPanel styleName="{res.cssCommon.controlGroup}">
+                        <g:Label styleName="{res.cssCommon.controlLabel}">
+                            <ui:text from="{mes.settingsLibraryFiles}" />
+                        </g:Label>
 
-				<g:HTMLPanel ui:field="formPanel">
+                        <g:TextBox ui:field="libraryFoldersText" width="100%" />
+                    </g:FlowPanel>
 
-					<p>
-						<ui:text from="{mes.settingsLibraryFiles}" /><br />
-						<g:TextBox ui:field="libraryFoldersText" width="300px" />
-					</p>
+                    <g:FlowPanel styleName="{res.cssCommon.controlGroup}">
+                        <g:Label styleName="{res.cssCommon.controlLabel}">
+                            <ui:text from="{mes.settingsAutoScan}" /><br />
+                        </g:Label>
 
-					<p>
-						<ui:text from="{mes.settingsAutoScan}" /><br />
-						<g:ListBox ui:field="autoScanIntervalList">
-							<g:item value="3600" text=""><ui:text from="{mes.settingsAutoScanEveryHour}" /></g:item>
-							<g:item value="86400"><ui:text from="{mes.settingsAutoScanEveryDay}" /></g:item>
-							<g:item value="604800"><ui:text from="{mes.settingsAutoScanEveryWeek}" /></g:item>
-							<g:item value="0"><ui:text from="{mes.settingsAutoScanOff}" /></g:item>
-						</g:ListBox>
-					</p>
+                        <g:ListBox ui:field="autoScanIntervalList">
+                            <g:item value="3600" text=""><ui:text from="{mes.settingsAutoScanEveryHour}" /></g:item>
+                            <g:item value="86400"><ui:text from="{mes.settingsAutoScanEveryDay}" /></g:item>
+                            <g:item value="604800"><ui:text from="{mes.settingsAutoScanEveryWeek}" /></g:item>
+                            <g:item value="0"><ui:text from="{mes.settingsAutoScanOff}" /></g:item>
+                        </g:ListBox>
+                    </g:FlowPanel>
 
-					<p><g:Button ui:field="saveButton" text="{mes.commonSaveLabel}" /></p>
+                    <g:FlowPanel styleName="{res.cssCommon.controlGroup}">
+                        <g:Button ui:field="saveButton" text="{mes.commonSaveLabel}" />
+                    </g:FlowPanel>
 
-				</g:HTMLPanel>
+                </g:HTMLPanel>
 
-			</g:DeckPanel>
+            </g:DeckPanel>
+
+            <g:FlowPanel styleName="{res.cssCommon.settingsHeader}">
+                <g:Label text="{mes.settingsLibraryScanningHeader}" />
+            </g:FlowPanel>
+
+            <g:FlowPanel styleName="{res.cssCommon.controlGroup}">
+                <g:Label styleName="{res.cssCommon.controlLabel}">
+                    <ui:text from="{mes.settingsLastScan}" />
+                </g:Label>
+                <g:InlineLabel ui:field="scanResultLabel" />
+                <g:Button ui:field="scanButton" text="Scan Now" />
+            </g:FlowPanel>
+
+            <g:FlowPanel styleName="{res.cssCommon.controlGroup}">
+                <g:Label styleName="{res.cssCommon.controlLabel}">
+                    <ui:text from="{mes.settingsScanProgress}" />
+                </g:Label>
+                <g:InlineLabel ui:field="progressLabel" />
+
+                <g:FlowPanel styleName="{res.cssCommon.progress}">
+                    <g:FlowPanel ui:field="progressBar" styleName="{res.cssCommon.progressBar}"></g:FlowPanel>
+                </g:FlowPanel>
+            </g:FlowPanel>
+
+
 
 		</g:HTMLPanel>
 
