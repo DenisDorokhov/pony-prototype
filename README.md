@@ -1,7 +1,7 @@
-Pony
-====
+Pony - Music Streamer (Prototype)
+=================================
 
-TODO: here must be project description
+This is the first version of [Pony Music Streamer](https://github.com/DenisDorokhov/pony). It is here just for history :-) New version has a better architecture, faster scan process, multi-user support, fancy Bootstrap design, more powerful REST API, easier installation, etc. etc.
 
 Installation
 ------------
@@ -24,8 +24,7 @@ Installation steps:
 3. Install compiled WAR file to your Apache Tomcat server.
 4. Open the application in your browser. Database schema will be installed automatically.
 5. Set up your music folders in application settings window and scan your library.
-6. If you want to use sway.fm media keys support on Mac OS X, then you need to install Play Button iTunes Patch available at http://www.thebitguru.com/projects/iTunesPatch.
-7. Enjoy listening to you MP3 collection :-)
+6. Enjoy listening to you MP3 collection :-)
 
 Development Hints
 -----------------
@@ -39,7 +38,5 @@ Configuration options for server.core integration tests are loaded the following
 
 1. Option is looked up in ${user.home}/.pony\_test/pony.properties
 2. If option is not found, it's looked up in classpath:pony.properties
-
-To avoid out of memory errors when running GWT project from IDE, please use the following VM options: -Xmx256m -XX:MaxPermSize=96M
 
 Application supports running in Jetty or Tomcat application containers.
